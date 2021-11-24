@@ -1,7 +1,8 @@
-package nl.tudelft.sem.template;
+package nl.tudelft.sem.project10b;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import nl.tudelft.sem.project10b.Example;
 import org.junit.jupiter.api.Test;
 
 public class ExampleTest {

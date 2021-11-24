@@ -1,4 +1,4 @@
-package nl.tudelft.sem.project10b;
+package nl.tudelft.sem.template;
 
 public class Example {
     private String name;

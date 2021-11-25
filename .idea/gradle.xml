@@ -9,6 +9,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/group" />
+            <option value="$PROJECT_DIR$/reservation" />
+            <option value="$PROJECT_DIR$/room" />
+            <option value="$PROJECT_DIR$/user" />
           </set>
         </option>
       </GradleProjectSettings>

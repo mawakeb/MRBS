@@ -26,7 +26,7 @@ plugins {
 	id 'info.solidsoft.pitest'
 }
 
-group = 'nl.tudelft.cse.sem.project10b'
+group = 'nl.tudelft.cse.sem.room'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -49,7 +49,7 @@ test {
 	useJUnitPlatform()
 	jacoco {
 		enabled = true
-		includes = ['nl.tudelft.sem.project10b.*']
+		includes = ['nl.tudelft.sem.room.*']
 		excludes = []
 	}
 }
@@ -64,7 +64,7 @@ jacocoTestCoverageVerification() {
 		rule {
 			enabled = true
 			element = 'CLASS'
-			includes = ['nl.tudelft.sem.project10b.*']
+			includes = ['nl.tudelft.sem.room.*']
 
 			limit {
 				counter = 'BRANCH'
@@ -89,7 +89,7 @@ pitest {
 	//adds dependency to org.pitest:pitest-junit5-plugin and sets "testPlugin" to "junit5"
 	junit5PluginVersion = '0.12'
 
-	targetClasses = ['nl.tudelft.sem.project10b.*']  //by default "${project.group}.*"
+	targetClasses = ['nl.tudelft.sem.room.*']  //by default "${project.group}.*"
 	pitestVersion = '1.5.1' //not needed when a default PIT version should be used
 	threads = 4
 	outputFormats = ['XML', 'HTML']

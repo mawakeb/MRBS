@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template;
+package nl.tudelft.sem.group;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

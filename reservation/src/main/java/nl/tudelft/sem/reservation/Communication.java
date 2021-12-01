@@ -14,10 +14,10 @@ public class Communication extends nl.tudelft.sem.reservation.ServerCommunicatio
      *
      * @return all lectures in the database
      */
-    public static List<Lecture> getAllLectures() {
+    public static List<String> getAllLectures() {
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(requestString)).build();
         return gson
-                .fromJson(requestHandler(request).body(), new TypeToken<List<Lecture>>() {}.getType());
+                .fromJson(requestHandler(request).body(), new TypeToken<List<String>>() {}.getType());
     }
 
     /**
@@ -26,10 +26,10 @@ public class Communication extends nl.tudelft.sem.reservation.ServerCommunicatio
      * @param lectureId the lecture id
      * @return the lecture by id
      */
-    public static Lecture getLectureById(Long lectureId) {
+    public static String getLectureById(Long lectureId) {
         HttpRequest request = HttpRequest.newBuilder().GET()
                 .uri(URI.create(requestString + "/getById?lectureId=" + lectureId)).build();
-        return gson.fromJson(requestHandler(request).body(), new TypeToken<Lecture>() {}.getType());
+        return gson.fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
     }
 
 

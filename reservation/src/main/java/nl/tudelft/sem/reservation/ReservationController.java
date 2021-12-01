@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("reservation")
 public class ReservationController {
 
-
+    /*
     @Autowired
     LectureRepository lectureRepository;
     @Autowired
-    UserRepository userRepository;
+    UserRepository userRepository;*/
 
     /**
      * Gets all lectures.

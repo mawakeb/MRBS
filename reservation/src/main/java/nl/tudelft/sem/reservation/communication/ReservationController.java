@@ -29,12 +29,6 @@ public class ReservationController {
         return "hi";
     }
 
-    /**
-     * Gets all lectures by join code.
-     *
-     * @param joinCode the join code
-     * @return the list
-     */
     /*@GetMapping("getByJoinCode")
     public Lecture getAllLecturesByJoinCode(String joinCode) {
         List<Lecture> lectureList = lectureRepository.findAllByJoinCodeEquals(joinCode);

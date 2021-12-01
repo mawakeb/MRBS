@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 public class Reservation {
 
     private int id;
-    private int roomID;
-    private String userID;
+    private int roomId;
+    private String userId;
     private LocalDateTime start;
     private LocalDateTime end;
     private String purpose;
@@ -18,16 +18,17 @@ public class Reservation {
      * Constructor for the Reservation class.
      *
      * @param id      unique reservation ID.
-     * @param roomID  location of the reservation.
-     * @param userID  netID of the user who made the reservation.
+     * @param roomId  location of the reservation.
+     * @param userId  netID of the user who made the reservation.
      * @param start   Date and time of the start of the reservation
      * @param end     Date and time of the end of the reservation
      * @param purpose purpose of the reservation
      */
-    public Reservation(int id, int roomID, String userID, LocalDateTime start, LocalDateTime end, String purpose) {
+    public Reservation(int id, int roomId, String userId, LocalDateTime start,
+                       LocalDateTime end, String purpose) {
         this.id = id;
-        this.roomID = roomID;
-        this.userID = userID;
+        this.roomId = roomId;
+        this.userId = userId;
         this.start = start;
         this.end = end;
         this.purpose = purpose;
@@ -42,20 +43,20 @@ public class Reservation {
         this.id = id;
     }
 
-    public int getRoomID() {
-        return roomID;
+    public int getRoomId() {
+        return roomId;
     }
 
-    public void setRoomID(int roomID) {
-        this.roomID = roomID;
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public LocalDateTime getStart() {
@@ -98,18 +99,18 @@ public class Reservation {
         this.cancelled = cancelled;
     }
 
-    public void changeLocation(int newRoomID, String editPurpose){
-        this.roomID = newRoomID;
+    public void changeLocation(int newRoomId, String editPurpose) {
+        this.roomId = newRoomId;
         this.editPurpose = editPurpose;
     }
 
-    public void changeTime(LocalDateTime newStart, LocalDateTime newEnd, String editPurpose){
+    public void changeTime(LocalDateTime newStart, LocalDateTime newEnd, String editPurpose) {
         this.start = newStart;
         this.end = newEnd;
         this.editPurpose = editPurpose;
     }
 
-    public void cancelReservation(int newRoomID, String editPurpose){
+    public void cancelReservation(String editPurpose) {
         this.cancelled = true;
         this.editPurpose = editPurpose;
     }

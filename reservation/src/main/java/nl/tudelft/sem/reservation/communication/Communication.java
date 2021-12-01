@@ -13,7 +13,8 @@ public class Communication extends ServerCommunication {
     public static List<String> getAllLectures() {
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(requestString)).build();
         return gson
-                .fromJson(requestHandler(request).body(), new TypeToken<List<String>>() {}.getType());
+                .fromJson(requestHandler(request).body(),
+                        new TypeToken<List<String>>() {}.getType());
     }
 
 

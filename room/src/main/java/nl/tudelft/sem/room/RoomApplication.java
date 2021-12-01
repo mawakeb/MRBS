@@ -1,5 +1,6 @@
 package nl.tudelft.sem.room;
 
+import nl.tudelft.sem.room.communication.Communication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

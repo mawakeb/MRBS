@@ -1,4 +1,4 @@
-package nl.tudelft.sem.room;
+package nl.tudelft.sem.room.communication;
 
 import com.google.gson.Gson;
 
@@ -7,7 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class ServerCommunication {
-    protected static String hostAddress = "http://localhost:8080";
+    protected static String hostAddress = "http://localhost:8081";
     protected static HttpClient client = HttpClient.newBuilder().build();
     protected static Gson gson = new Gson();
 

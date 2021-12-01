@@ -1,4 +1,4 @@
-package nl.tudelft.sem.reservation;
+package nl.tudelft.sem.reservation.communication;
 
 import com.google.gson.Gson;
 import java.net.http.HttpClient;

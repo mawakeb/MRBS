@@ -1,4 +1,4 @@
-package nl.tudelft.sem.reservation;
+package nl.tudelft.sem.reservation.communication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

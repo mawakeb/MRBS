@@ -13,9 +13,8 @@ public class RoomApplication {
 
 		//sleep a second
 		long current = System.currentTimeMillis();
-		int i = 0;
 		while (System.currentTimeMillis() - current < 1000) {
-			i++;
+			System.out.print(".");
 		}
 
 		System.out.println(Communication.getHi());

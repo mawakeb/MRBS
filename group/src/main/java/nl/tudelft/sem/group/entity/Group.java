@@ -119,6 +119,11 @@ public class Group {
                 Objects.equals(hashedPassword, r.hashedPassword);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, netId, name, hashedPassword);
+    }
+
 
     @Override
     public String toString() {

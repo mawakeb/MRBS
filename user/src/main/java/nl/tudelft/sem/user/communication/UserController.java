@@ -1,4 +1,4 @@
-package nl.tudelft.sem.user.controller;
+package nl.tudelft.sem.user.communication;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -7,6 +7,9 @@ gradle-app.setting
 **/build/
 .gradletasknamecache
 
+### IntelliJ ###
+.idea
+
 ### Java ###
 # Compiled class file
 *.class

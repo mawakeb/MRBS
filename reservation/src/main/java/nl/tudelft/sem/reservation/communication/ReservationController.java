@@ -24,9 +24,9 @@ public class ReservationController {
      * @return all lectures
      */
     @GetMapping
-    public String getAllLectures() {
+    public String returnHi() {
         //return lectureRepository.findAll();
-        return "hi";
+        return "hello from reservation";
     }
 
     /*@GetMapping("getByJoinCode")

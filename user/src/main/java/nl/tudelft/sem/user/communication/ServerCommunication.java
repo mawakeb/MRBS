@@ -1,4 +1,4 @@
-package nl.tudelft.sem.room.communication;
+package nl.tudelft.sem.user.communication;
 
 import com.google.gson.Gson;
 

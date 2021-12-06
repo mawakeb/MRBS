@@ -1,6 +1,7 @@
 package nl.tudelft.sem.room;
 
-import nl.tudelft.sem.room.communication.Communication;
+import nl.tudelft.sem.room.communication.ReservationCommunication;
+import nl.tudelft.sem.room.communication.UserCommunication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -14,10 +15,11 @@ public class RoomApplication {
 		//sleep a second
 		long current = System.currentTimeMillis();
 		while (System.currentTimeMillis() - current < 1000) {
-			System.out.print(".");
+			System.out.print("");
 		}
 
-		System.out.println(Communication.getHi());
+		System.out.println(ReservationCommunication.getHi());
+		System.out.println(UserCommunication.getHi());
 	}
 
 }

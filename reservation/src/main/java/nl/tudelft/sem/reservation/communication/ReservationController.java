@@ -44,16 +44,15 @@ public class ReservationController {
     @GetMapping("checkUser")
     public boolean checkUser(@RequestBody String q) {
         List<String> list = gson.fromJson(q, new TypeToken<List<String>>() {}.getType());
-        long userId = Long.parseLong(list.get(0));
         long reservationId = Long.parseLong(list.get(1));
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
         if (reservation!=null){
+            long userId = Long.parseLong(list.get(0));
             if (reservation.getUserId().equals(userId)) return true;
             else return false;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
         }
-        return false;
     }
 
     /*@GetMapping("getByJoinCode")

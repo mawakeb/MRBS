@@ -9,14 +9,14 @@ public class RoomCommunication extends ServerCommunication {
 
     private static final String requestString = hostAddress + ":8082/room";
 
-    public static String getBuildingOpeningHours(int roomID) {
+    public static boolean getRoomAvailability(String list) {
         HttpRequest request = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create(requestString + "/getBuildingOpeningHours?roomID=" + roomID))
+                .POST(HttpRequest.BodyPublishers.ofString(list))
+                .uri(URI.create(requestString + "/checkAvailable"))
                 .build();
         return gson
                 .fromJson(requestHandler(request)
-                        .body(), new TypeToken<String>() {}
+                        .body(), new TypeToken<Boolean>() {}
                         .getType());
     }
 }

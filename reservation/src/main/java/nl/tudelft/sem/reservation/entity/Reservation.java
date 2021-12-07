@@ -1,16 +1,37 @@
-package nl.tudelft.sem.reservation;
+package nl.tudelft.sem.reservation.entity;
 
 import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.util.Objects;
 
+@Entity
+@Table(name = "room")
 public class Reservation {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id")
     private int id;
+
+    @Column(name = "roomId")
     private int roomId;
+
+    @Column(name = "userId")
     private String userId;
+
+    @Column(name = "start")
     private LocalDateTime start;
+
+    @Column(name = "end")
     private LocalDateTime end;
+
+    @Column(name = "purpose")
     private String purpose;
+
+    @Column(name = "editPurpose")
     private String editPurpose;
+
+    @Column(name = "cancelled")
     private boolean cancelled;
 
 
@@ -113,5 +134,15 @@ public class Reservation {
     public void cancelReservation(String editPurpose) {
         this.cancelled = true;
         this.editPurpose = editPurpose;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

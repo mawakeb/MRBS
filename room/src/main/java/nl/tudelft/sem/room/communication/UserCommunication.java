@@ -16,13 +16,12 @@ public class UserCommunication extends ServerCommunication {
                 .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
     }
 
+    public static String getRole(Long userId) {
+        HttpRequest request =
+                HttpRequest.newBuilder().GET().uri(URI.create(requestString+ "/getRole?userId=" + userId)).build();
 
-    /*
-    public static String getLectureById(Long lectureId) {
-        HttpRequest request = HttpRequest.newBuilder().GET()
-                .uri(URI.create(requestString + "/getById?lectureId=" + lectureId)).build();
-        return gson.fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
-    }*/
-
+        return gson
+                .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
+    }
 
 }

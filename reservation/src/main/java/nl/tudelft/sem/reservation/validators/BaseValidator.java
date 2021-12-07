@@ -1,4 +1,7 @@
-package nl.tudelft.sem.reservation;
+package nl.tudelft.sem.reservation.validators;
+
+import nl.tudelft.sem.reservation.entity.Reservation;
+import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 
 public abstract class BaseValidator implements Validator {
     private Validator next;

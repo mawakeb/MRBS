@@ -10,6 +10,11 @@ public class WithinOpeningHoursValidator extends BaseValidator {
     @Override
     public boolean handle(Reservation reservation) throws InvalidReservationException {
 
+        int roomID = reservation.getRoomId();
+
+        //make http request for room building info from roomid
+
+
         return super.checkNext(reservation);
     }
 }

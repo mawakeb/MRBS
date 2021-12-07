@@ -10,6 +10,6 @@ public class RoomController {
 
     @GetMapping("")
     public String testMethod() {
-        return "Hello Room!";
+        return "Hello_Room!";
     }
 }

@@ -10,6 +10,6 @@ public class UserController {
 
     @GetMapping("")
     public String testMethod() {
-        return "Hello User!";
+        return "Hello_User!";
     }
 }

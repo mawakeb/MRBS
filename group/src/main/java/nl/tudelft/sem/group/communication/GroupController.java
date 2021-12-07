@@ -10,6 +10,6 @@ public class GroupController {
 
     @GetMapping("")
     public String testMethod() {
-        return "Hello Room!";
+        return "Hello_Group!";
     }
 }

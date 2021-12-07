@@ -11,7 +11,7 @@ public class ServerCommunication {
     protected static HttpClient client = HttpClient.newBuilder().build();
     protected static Gson gson = new Gson();
 
-    protected static HttpResponse<String> requestHandler(HttpRequest request, int portAddress) {
+    protected static HttpResponse<String> requestHandler(HttpRequest request) {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             int statusOK = 200;

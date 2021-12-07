@@ -7,14 +7,13 @@ import java.net.http.HttpRequest;
 
 public class ReservationCommunication extends ServerCommunication {
 
-    private static final String requestString = hostAddress + "/reservation";
-    private static final int port = 8081;
+    private static final String requestString = hostAddress + "8081/reservation";
 
 
     public static String getHi() {
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(requestString)).build();
         return gson
-                .fromJson(requestHandler(request, port).body(), new TypeToken<String>() {}.getType());
+                .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
     }
 
 

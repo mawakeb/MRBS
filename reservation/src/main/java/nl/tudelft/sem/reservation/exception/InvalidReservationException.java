@@ -1,4 +1,4 @@
-package nl.tudelft.sem.reservation;
+package nl.tudelft.sem.reservation.exception;
 
 public class InvalidReservationException extends Exception {
 

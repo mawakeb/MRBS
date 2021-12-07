@@ -5,9 +5,9 @@ import com.google.gson.reflect.TypeToken;
 import java.net.URI;
 import java.net.http.HttpRequest;
 
-public class Communication extends ServerCommunication {
+public class ReservationCommunication extends ServerCommunication {
 
-    private static final String requestString = hostAddress + "/reservation";
+    private static final String requestString = hostAddress + "8081/reservation";
 
 
     public static String getHi() {

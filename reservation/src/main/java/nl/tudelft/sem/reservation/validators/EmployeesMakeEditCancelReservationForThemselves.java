@@ -1,4 +1,7 @@
-package nl.tudelft.sem.reservation;
+package nl.tudelft.sem.reservation.validators;
+
+import nl.tudelft.sem.reservation.entity.Reservation;
+import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 
 public class EmployeesMakeEditCancelReservationForThemselves extends BaseValidator {
 

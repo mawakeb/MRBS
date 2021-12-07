@@ -5,9 +5,9 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.util.List;
 
-public class Communication extends ServerCommunication {
+public class UserCommunication extends ServerCommunication {
 
-    private static final String requestString = hostAddress + "/lecture";
+    private static final String requestString = hostAddress + "8083/user";
 
 
     public static List<String> getAllLectures() {

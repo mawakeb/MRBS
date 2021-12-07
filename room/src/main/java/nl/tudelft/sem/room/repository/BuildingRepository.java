@@ -12,5 +12,5 @@ public interface BuildingRepository extends JpaRepository<Building, Long>{
 
     List<Building> findAll();
 
-    Building findById(UUID id);
+    Building findById(long id);
 }

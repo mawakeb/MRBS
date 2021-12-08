@@ -41,7 +41,7 @@ public class ReservationController {
         return "hello_from_reservation";
     }
 
-    @GetMapping("checkUser")
+    @PostMapping("checkUser")
     public boolean checkUser(@RequestBody String q) {
         List<String> list = gson.fromJson(q, new TypeToken<List<String>>() {}.getType());
         long reservationId = Long.parseLong(list.get(1));

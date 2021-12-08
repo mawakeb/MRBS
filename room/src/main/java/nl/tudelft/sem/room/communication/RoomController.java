@@ -8,10 +8,7 @@ import nl.tudelft.sem.room.repository.BuildingRepository;
 import nl.tudelft.sem.room.repository.RoomRepository;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -36,7 +33,7 @@ public class RoomController {
         return "Hello_Room!";
     }
 
-    @GetMapping("checkAvailable")
+    @PostMapping("checkAvailable")
     public boolean checkAvailable(@RequestBody String q) {
 
         //extract list from the message

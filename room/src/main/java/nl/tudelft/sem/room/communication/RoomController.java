@@ -41,9 +41,14 @@ public class RoomController {
         return "Hello_Room!";
     }
 
-    @GetMapping("getRooms")
-    public List<Room> getRooms() {
-        return roomRepo.findAll();
+    @GetMapping("getRoomIds")
+    public List<Long> getRoomIds() {
+        List<Room> rooms = roomRepo.findAll();
+        List<Long> roomIds = new ArrayList<>();
+        for (Room r : rooms) {
+            roomIds.add(r.getId());
+        }
+        return roomIds;
     }
 
     @GetMapping("checkAvailable")
@@ -96,8 +101,10 @@ public class RoomController {
 
 
     @GetMapping("queryRooms")
-    public List<Room> queryRooms(@RequestParam int capacity, @RequestParam long buildingId, @RequestParam String equipmentName,
-                                 @RequestParam String startTime, @RequestParam String endTime) {
+    public List<Room> queryRooms(@RequestParam int capacity, @RequestParam long buildingId,
+                                 @RequestParam String equipmentName,
+                                 @RequestParam String startTime,
+                                 @RequestParam String endTime) {
         // lists to be used
         List<Room> rooms;
         List<Room> filteredRooms = new ArrayList<>();
@@ -108,7 +115,7 @@ public class RoomController {
             rooms = roomRepo.findAll();
         } else {
             // get the rooms within the timeslot
-            rooms = ReservationCommunication.getRoomsInTimeslot(startTime, endTime);
+            rooms = roomRepo.findAllById(ReservationCommunication.getRoomsInTimeslot(startTime, endTime));
         }
 
         // by using the property that a prime number is only divisible by 1 and itself
@@ -128,7 +135,7 @@ public class RoomController {
 
         // add the rooms that fit the first 3 characteristics to a new list
         for (Room r : rooms) {
-            if ((givenParameterChecksum % 2 != 0 || r.getCapacity() == capacity) &&
+            if ((givenParameterChecksum % 2 != 0 || r.getCapacity() >= capacity) &&
                     (givenParameterChecksum % 3 != 0 || r.getBuildingId() == buildingId) &&
                     (givenParameterChecksum % 5 != 0 || roomsWithEquipment.contains(r.getId()))) {
                 filteredRooms.add(r);

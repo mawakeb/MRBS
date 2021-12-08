@@ -26,12 +26,13 @@ public class ReservationCommunication extends ServerCommunication {
                 .fromJson(requestHandler(request).body(), new TypeToken<Boolean>() {}.getType());
     }
 
-    public static List<Room> getRoomsInTimeslot(String startTime, String endTime) {
+    public static List<Long> getRoomsInTimeslot(String startTime, String endTime) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET().uri(URI.create(requestString + "/checkTimeslot" +
                         "&startTime=" + startTime + "&endTime=" + endTime)).build();
         return gson
-                .fromJson(requestHandler(request).body(), new TypeToken<List<Room>>() {}.getType());
+                .fromJson(requestHandler(request).body(),
+                        new TypeToken<List<Long>>() {}.getType());
     }
 
 

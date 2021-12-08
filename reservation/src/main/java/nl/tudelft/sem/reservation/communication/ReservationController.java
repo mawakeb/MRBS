@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -44,11 +45,18 @@ public class ReservationController {
 
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
         if (reservation!=null){
-            if (reservation.getUserId().equals(userId)) return true;
-            else return false;
+            return reservation.getUserId().equals(userId);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
         }
+    }
+
+    @GetMapping("checkTimeslot")
+    public List<Long> checkTimeslot(@RequestParam String startTime, @RequestParam String endTime) {
+        List<Long> rooms = RoomCommunication.getAllRoomIds();
+        List<Long> filteredRooms = new ArrayList<>();
+
+        return filteredRooms;
     }
 
     /*@GetMapping("getByJoinCode")

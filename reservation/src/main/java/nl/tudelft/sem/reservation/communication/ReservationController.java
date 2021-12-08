@@ -52,9 +52,10 @@ public class ReservationController {
     }
 
     @GetMapping("checkTimeslot")
-    public List<Long> checkTimeslot(@RequestParam String startTime, @RequestParam String endTime) {
-        List<Long> rooms = RoomCommunication.getAllRoomIds();
+    public List<Long> checkTimeslot(@RequestParam List<Long> rooms, @RequestParam String startTime, @RequestParam String endTime) {
         List<Long> filteredRooms = new ArrayList<>();
+
+
 
         return filteredRooms;
     }

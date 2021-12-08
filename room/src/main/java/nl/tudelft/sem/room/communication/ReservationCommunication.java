@@ -26,9 +26,9 @@ public class ReservationCommunication extends ServerCommunication {
                 .fromJson(requestHandler(request).body(), new TypeToken<Boolean>() {}.getType());
     }
 
-    public static List<Long> getRoomsInTimeslot(String startTime, String endTime) {
+    public static List<Long> getRoomsInTimeslot(List<Long> rooms, String startTime, String endTime) {
         HttpRequest request = HttpRequest.newBuilder()
-                .GET().uri(URI.create(requestString + "/checkTimeslot" +
+                .GET().uri(URI.create(requestString + "/checkTimeslot" + "?rooms=" + rooms +
                         "&startTime=" + startTime + "&endTime=" + endTime)).build();
         return gson
                 .fromJson(requestHandler(request).body(),

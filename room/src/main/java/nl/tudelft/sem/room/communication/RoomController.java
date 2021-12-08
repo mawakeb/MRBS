@@ -115,7 +115,7 @@ public class RoomController {
             rooms = roomRepo.findAll();
         } else {
             // get the rooms within the timeslot
-            rooms = roomRepo.findAllById(ReservationCommunication.getRoomsInTimeslot(startTime, endTime));
+            rooms = roomRepo.findAllById(ReservationCommunication.getRoomsInTimeslot(getRoomIds(), startTime, endTime));
         }
 
         // by using the property that a prime number is only divisible by 1 and itself

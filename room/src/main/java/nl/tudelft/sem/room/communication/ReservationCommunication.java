@@ -16,6 +16,14 @@ public class ReservationCommunication extends ServerCommunication {
                 .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
     }
 
+    public static boolean checkUserToReservation(String parsedList) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .POST(HttpRequest.BodyPublishers.ofString(parsedList))
+                .uri(URI.create(requestString + "/checkUser")).build();
+        return gson
+                .fromJson(requestHandler(request).body(), new TypeToken<Boolean>() {}.getType());
+    }
+
 
     /*
     public static String getLectureById(Long lectureId) {

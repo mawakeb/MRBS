@@ -5,130 +5,89 @@ import javax.persistence.*;
 import java.util.Objects;
 
 /**
- * The User Entity.
+ * The Room Entity.
  */
 @Entity
-@Table(name = "user")
+@Table(name = "room")
 public class Room {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Long id;
-
-    @Column(name = "net_id")
-    private String netId;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "password")
-    private String hashedPassword;
+    @Column(name = "buildingId")
+    private Long buildingId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type")
-    private Type type;
+    @Column(name = "capacity")
+    private int capacity;
 
-    /**
-     * No-args constructor for Spring.
-     */
-    public Room() {
+    @Column(name = "underMaintenance")
+    private boolean underMaintenance;
+
+    public Room() {}
+
+    public Room(Long id, String name, Long buildingId, int capacity) {
+        this.id = id;
+        this.name = name;
+        this.buildingId = buildingId;
+        this.capacity = capacity;
     }
 
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id
-     */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /**
-     * @return the netId
-     */
-    public String getNetId() {
-        return netId;
-    }
-
-    /**
-     * @param netId the netId
-     */
-    public void setNetId(String netId) {
-        this.netId = netId;
-    }
-
-    /**
-     * @return the type
-     */
-    public Type getType() {
-        return type;
-    }
-
-    /**
-     * @param type the type
-     */
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * @return the hashed password
-     */
-    public String getHashedPassword() {
-        return hashedPassword;
+    public void setBuildingId(Long buildingId) {
+        this.buildingId = buildingId;
     }
 
-    /**
-     * @param hashedPassword the hashed password
-     */
-    public void setHashedPassword(String hashedPassword) {
-        this.hashedPassword = hashedPassword;
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public void setUnderMaintenance(boolean underMaintenance) {
+        this.underMaintenance = underMaintenance;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Long getBuildingId() {
+        return buildingId;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public boolean isUnderMaintenance() {
+        return underMaintenance;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Room r = (Room) o;
-        return Objects.equals(id, r.id) &&
-                Objects.equals(netId, r.netId) &&
-                Objects.equals(name, r.name) &&
-                Objects.equals(hashedPassword, r.hashedPassword);
+        Room room = (Room) o;
+        return Objects.equals(id, room.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, netId, name, hashedPassword);
+        return Objects.hash(id);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", netId='" + netId + '\'' +
-                ", name='" + name + '\'' +
-                ", hashedPassword='" + hashedPassword + '\'' +
-                '}';
-    }
 }
 

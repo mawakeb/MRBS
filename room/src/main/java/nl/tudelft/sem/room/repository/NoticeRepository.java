@@ -1,26 +1,23 @@
 package nl.tudelft.sem.room.repository;
 
-
-import nl.tudelft.sem.room.entity.Room;
+import nl.tudelft.sem.room.entity.RoomNotice;
 import org.h2.command.dml.Select;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 
 /**
- * The Room Repository Interface.
+ * The RoomNotice Repository Interface.
  */
-public interface RoomRepository extends JpaRepository<Room, Long> {
+public interface NoticeRepository extends JpaRepository<RoomNotice, Long> {
 
-    List<Room> findAll();
+    List<RoomNotice> findAll();
 
-    Room findById(long id);
+    RoomNotice findById(long id);
 
 
 
 }
-

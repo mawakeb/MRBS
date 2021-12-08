@@ -40,7 +40,7 @@ public class RoomController {
         return "Hello_Room!";
     }
 
-    @GetMapping("checkAvailable")
+    @PostMapping("checkAvailable")
     public boolean checkAvailable(@RequestBody String q) {
 
         //extract list from the message

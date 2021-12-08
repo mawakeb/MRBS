@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Array;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("room")
@@ -108,7 +106,8 @@ public class RoomController {
         // lists to be used
         List<Room> rooms;
         List<Room> filteredRooms = new ArrayList<>();
-        List<Long> roomsWithEquipment = new ArrayList<>();
+        Set<Long> roomsWithEquipment = equipmentRepo.findAllByEquipmentName(equipmentName)
+                .stream().map(EquipmentInRoom::getRoomId).collect(Collectors.toSet());
 
         // initialize the list of rooms
         if (Objects.equals(startTime, "") && Objects.equals(endTime, "")) {
@@ -118,26 +117,11 @@ public class RoomController {
             rooms = roomRepo.findAllById(ReservationCommunication.getRoomsInTimeslot(getRoomIds(), startTime, endTime));
         }
 
-        // by using the property that a prime number is only divisible by 1 and itself
-        // I can make a number that instantly allows me to know what parameters were given
-        int givenParameterChecksum = 1;
-        // multiply the checksum by a prime number to check later
-        if (capacity != -1) givenParameterChecksum *= 2;
-        if (buildingId != -1) givenParameterChecksum *= 3;
-        if (!Objects.equals(equipmentName, "")) {
-            givenParameterChecksum *= 5;
-
-            List<EquipmentInRoom> equipmentInRooms = equipmentRepo.findAllByEquipmentName(equipmentName);
-            for (EquipmentInRoom eir : equipmentInRooms) {
-                roomsWithEquipment.add(eir.getRoomId());
-            }
-        }
-
         // add the rooms that fit the first 3 characteristics to a new list
         for (Room r : rooms) {
-            if ((givenParameterChecksum % 2 != 0 || r.getCapacity() >= capacity) &&
-                    (givenParameterChecksum % 3 != 0 || r.getBuildingId() == buildingId) &&
-                    (givenParameterChecksum % 5 != 0 || roomsWithEquipment.contains(r.getId()))) {
+            if ((capacity != -1 || r.getCapacity() >= capacity) &&
+                    (buildingId != -1 || r.getBuildingId() == buildingId) &&
+                    (!Objects.equals(equipmentName, "") || roomsWithEquipment.contains(r.getId()))) {
                 filteredRooms.add(r);
             }
         }

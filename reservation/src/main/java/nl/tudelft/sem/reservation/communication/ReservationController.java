@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("reservation")
@@ -55,7 +59,15 @@ public class ReservationController {
     public List<Long> checkTimeslot(@RequestParam List<Long> rooms, @RequestParam String startTime, @RequestParam String endTime) {
         List<Long> filteredRooms = new ArrayList<>();
 
+        Set<Long> takenRooms = reservationRepo.findAllByRoomIdAndStartIsBeforeAndEndIsAfter(rooms,
+                LocalDateTime.parse(startTime), LocalDateTime.parse(endTime))
+                .stream().map(Reservation::getRoomId).collect(Collectors.toSet());
 
+        for (Long l : rooms) {
+            if (!takenRooms.contains(l)) {
+                filteredRooms.add(l);
+            }
+        }
 
         return filteredRooms;
     }

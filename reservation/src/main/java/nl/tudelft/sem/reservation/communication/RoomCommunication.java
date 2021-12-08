@@ -13,8 +13,8 @@ public class RoomCommunication extends ServerCommunication {
     public static boolean getRoomAvailability(long roomId, LocalTime start, LocalTime end) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(requestString + "/checkAvailable" + "?roomId" + roomId +
-                        "&start" + start + "&end" + end)).build();
+                .uri(URI.create(requestString + "/checkAvailable" + "?roomId=" + roomId +
+                        "&start=" + start + "&end=" + end)).build();
         return gson
                 .fromJson(requestHandler(request)
                         .body(), new TypeToken<Boolean>() {}

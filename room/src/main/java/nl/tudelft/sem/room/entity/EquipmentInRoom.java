@@ -18,12 +18,12 @@ public class EquipmentInRoom {
     @Column(name = "roomId")
     private Long roomId;
 
-    @Column(name = "equipmentId")
-    private Long equipmentId;
+    @Column(name = "equipmentName")
+    private String equipmentName;
 
-    public EquipmentInRoom(Long roomId, Long equipmentId) {
+    public EquipmentInRoom(Long roomId, String equipmentName) {
         this.roomId = roomId;
-        this.equipmentId = equipmentId;
+        this.equipmentName = equipmentName;
     }
 
     public Long getId() {
@@ -42,12 +42,12 @@ public class EquipmentInRoom {
         this.roomId = roomId;
     }
 
-    public Long getEquipmentId() {
-        return equipmentId;
+    public String getEquipmentName() {
+        return equipmentName;
     }
 
-    public void setEquipmentId(Long equipmentId) {
-        this.equipmentId = equipmentId;
+    public void setEquipmentName(String equipmentName) {
+        this.equipmentName = equipmentName;
     }
 }
 

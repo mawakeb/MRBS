@@ -12,6 +12,7 @@ import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class RoomController {
         return "Hello_Room!";
     }
 
-    @PostMapping("checkAvailable")
+    @GetMapping("checkAvailable")
     public boolean checkAvailable(@RequestBody String q) {
 
         //extract list from the message

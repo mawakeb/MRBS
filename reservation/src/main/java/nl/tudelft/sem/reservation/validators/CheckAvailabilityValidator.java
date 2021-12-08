@@ -15,14 +15,9 @@ public class CheckAvailabilityValidator extends BaseValidator {
 
         int roomID = reservation.getRoomId();
 
-        List<String> sendList = List.of(
-                Long.toString(roomID),
-                reservation.getStart().toLocalTime().toString(),
-                reservation.getEnd().toLocalTime().toString()
-                );
-        String parsedList = gson.toJson(sendList);
-
-        boolean availability = RoomCommunication.getRoomAvailability(parsedList);
+        boolean availability = RoomCommunication.getRoomAvailability(roomID,
+                reservation.getStart().toLocalTime(),
+                reservation.getEnd().toLocalTime());
 
         if (!availability) {
             throw new InvalidReservationException("The room is not available");

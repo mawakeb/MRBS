@@ -17,7 +17,7 @@ public class Reservation {
     private int roomId;
 
     @Column(name = "userId")
-    private String userId;
+    private Long userId;
 
     @Column(name = "start")
     private LocalDateTime start;
@@ -45,7 +45,7 @@ public class Reservation {
      * @param end     Date and time of the end of the reservation
      * @param purpose purpose of the reservation
      */
-    public Reservation(int id, int roomId, String userId, LocalDateTime start,
+    public Reservation(int id, int roomId, long userId, LocalDateTime start,
                        LocalDateTime end, String purpose) {
         this.id = id;
         this.roomId = roomId;
@@ -72,11 +72,11 @@ public class Reservation {
         this.roomId = roomId;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

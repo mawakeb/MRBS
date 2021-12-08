@@ -41,6 +41,11 @@ public class RoomController {
         return "Hello_Room!";
     }
 
+    @GetMapping("getRooms")
+    public List<Room> getRooms() {
+        return roomRepo.findAll();
+    }
+
     @GetMapping("checkAvailable")
     public boolean checkAvailable(@RequestBody String q) {
 
@@ -94,9 +99,17 @@ public class RoomController {
     public List<Room> queryRooms(@RequestParam int capacity, @RequestParam long buildingId, @RequestParam String equipmentName,
                                  @RequestParam String startTime, @RequestParam String endTime) {
         // lists to be used
-        List<Room> rooms = roomRepo.findAll();
+        List<Room> rooms;
         List<Room> filteredRooms = new ArrayList<>();
         List<Long> roomsWithEquipment = new ArrayList<>();
+
+        // initialize the list of rooms
+        if (Objects.equals(startTime, "") && Objects.equals(endTime, "")) {
+            rooms = roomRepo.findAll();
+        } else {
+            // get the rooms within the timeslot
+            rooms = ReservationCommunication.getRoomsInTimeslot(startTime, endTime);
+        }
 
         // by using the property that a prime number is only divisible by 1 and itself
         // I can make a number that instantly allows me to know what parameters were given
@@ -122,11 +135,6 @@ public class RoomController {
             }
         }
 
-        if (!Objects.equals(startTime, "") && !Objects.equals(endTime, "")) {
-            return ReservationCommunication.getRoomsInTimeslot(filteredRooms, startTime, endTime);
-        } else {
-            return filteredRooms;
-        }
-
+        return filteredRooms;
     }
 }

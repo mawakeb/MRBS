@@ -41,13 +41,5 @@ public class UserCommunication extends ServerCommunication {
                         .body(), new TypeToken<String>() {}
                         .getType());
     }
-
-    /*
-    public static String getLectureById(Long lectureId) {
-        HttpRequest request = HttpRequest.newBuilder().GET()
-                .uri(URI.create(requestString + "/getById?lectureId=" + lectureId)).build();
-        return gson.fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
-    }
-    */
 }
 

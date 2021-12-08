@@ -1,9 +1,11 @@
 package nl.tudelft.sem.room.communication;
 
 import com.google.gson.reflect.TypeToken;
+import nl.tudelft.sem.room.entity.Room;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
+import java.util.List;
 
 public class ReservationCommunication extends ServerCommunication {
 
@@ -22,6 +24,14 @@ public class ReservationCommunication extends ServerCommunication {
                 .uri(URI.create(requestString + "/checkUser")).build();
         return gson
                 .fromJson(requestHandler(request).body(), new TypeToken<Boolean>() {}.getType());
+    }
+
+    public static List<Room> getRoomsInTimeslot(List<Room> rooms, String startTime, String endTime) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(requestString + "/checkTimeslot")).build();
+        return gson
+                .fromJson(requestHandler(request).body(), new TypeToken<List<Room>>() {}.getType());
     }
 
 

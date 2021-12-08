@@ -1,6 +1,5 @@
 package nl.tudelft.sem.reservation.communication;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.repository.ReservationRepository;
@@ -22,7 +21,6 @@ public class ReservationController {
 
 
     private final transient ReservationRepository reservationRepo;
-    protected static Gson gson = new Gson();
 
     @Autowired
     public ReservationController(ReservationRepository reservationRepo) {
@@ -42,12 +40,10 @@ public class ReservationController {
     }
 
     @GetMapping("checkUser")
-    public boolean checkUser(@RequestBody String q) {
-        List<String> list = gson.fromJson(q, new TypeToken<List<String>>() {}.getType());
-        long reservationId = Long.parseLong(list.get(1));
+    public boolean checkUser(@RequestParam long userId, @RequestParam long reservationId) {
+
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
         if (reservation!=null){
-            long userId = Long.parseLong(list.get(0));
             if (reservation.getUserId().equals(userId)) return true;
             else return false;
         } else {

@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    List<Reservation> findAllByRoomIdAndStartIsBeforeAndEndIsAfter(
+    List<Reservation> findAllByRoomIdInAndStartBeforeAndEndAfter(
             Iterable<Long> roomIds, LocalDateTime startTime, LocalDateTime endTime);
 }

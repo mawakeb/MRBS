@@ -39,16 +39,6 @@ public class RoomController {
         return "Hello_Room!";
     }
 
-    @GetMapping("getRoomIds")
-    public List<Long> getRoomIds() {
-        List<Room> rooms = roomRepo.findAll();
-        List<Long> roomIds = new ArrayList<>();
-        for (Room r : rooms) {
-            roomIds.add(r.getId());
-        }
-        return roomIds;
-    }
-
     @GetMapping("checkAvailable")
     public boolean checkAvailable(@RequestBody String q) {
 
@@ -104,19 +94,11 @@ public class RoomController {
                                  @RequestParam String startTime,
                                  @RequestParam String endTime) {
         // lists to be used
-        List<Room> rooms;
+        List<Room> rooms = roomRepo.findAll();
         List<Room> filteredRooms = new ArrayList<>();
         @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
         Set<Long> roomsWithEquipment = equipmentRepo.findAllByEquipmentName(equipmentName)
                 .stream().map(EquipmentInRoom::getRoomId).collect(Collectors.toSet());
-
-        // initialize the list of rooms
-        if (Objects.equals(startTime, "") && Objects.equals(endTime, "")) {
-            rooms = roomRepo.findAll();
-        } else {
-            // get the rooms within the timeslot
-            rooms = roomRepo.findAllById(ReservationCommunication.getRoomsInTimeslot(getRoomIds(), startTime, endTime));
-        }
 
         // add the rooms that fit the first 3 characteristics to a new list
         for (Room r : rooms) {
@@ -127,6 +109,15 @@ public class RoomController {
             }
         }
 
-        return filteredRooms;
+        // do the last search characteristic timeslot availability
+        if (!Objects.equals(startTime, "") && !Objects.equals(endTime, "")) {
+            // get the rooms within the timeslot
+            return roomRepo.findAllById(ReservationCommunication.getRoomsInTimeslot(
+                    filteredRooms.stream().map(Room::getId).collect(Collectors.toList()),
+                    startTime, endTime));
+        } else {
+            return filteredRooms;
+        }
+
     }
 }

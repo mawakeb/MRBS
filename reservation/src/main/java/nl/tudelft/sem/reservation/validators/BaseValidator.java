@@ -10,6 +10,10 @@ public abstract class BaseValidator implements Validator {
         this.next = h;
     }
 
+    public Validator getNext(){
+        return this.next;
+    }
+
     /**
      * Runs check on the next object in chain or ends traversing if we're in
      * last object in chain.

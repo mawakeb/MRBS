@@ -1,6 +1,5 @@
 package nl.tudelft.sem.user.communication;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +30,13 @@ public class UserController {
     @GetMapping("getCurrentUserID")
     public Long getCurrentUserID()
     {
-        return new Long(0);
+        return (long) 0;
     }
 
     @GetMapping("getTeamMemberIDs")
     public List getBuildingOpeningHours(@RequestParam(value = "secretaryUserID") Long secretaryUserID) {
         ArrayList<Long> result = new ArrayList<Long>();
-        result.add(new Long(1234));
+        result.add((long) 1234);
         return result;
     }
 }

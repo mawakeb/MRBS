@@ -5,8 +5,6 @@ import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 import nl.tudelft.sem.reservation.communication.UserCommunication;
 import java.util.List;
 
-import nl.tudelft.sem.reservation.validators.BaseValidator;
-
 public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseValidator {
 
     @Override

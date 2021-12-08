@@ -106,6 +106,7 @@ public class RoomController {
         // lists to be used
         List<Room> rooms;
         List<Room> filteredRooms = new ArrayList<>();
+        @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
         Set<Long> roomsWithEquipment = equipmentRepo.findAllByEquipmentName(equipmentName)
                 .stream().map(EquipmentInRoom::getRoomId).collect(Collectors.toSet());
 

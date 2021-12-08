@@ -59,6 +59,7 @@ public class ReservationController {
     public List<Long> checkTimeslot(@RequestParam List<Long> rooms, @RequestParam String startTime, @RequestParam String endTime) {
         List<Long> filteredRooms = new ArrayList<>();
 
+        @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
         Set<Long> takenRooms = reservationRepo.findAllByRoomIdAndStartIsBeforeAndEndIsAfter(rooms,
                 LocalDateTime.parse(startTime), LocalDateTime.parse(endTime))
                 .stream().map(Reservation::getRoomId).collect(Collectors.toSet());

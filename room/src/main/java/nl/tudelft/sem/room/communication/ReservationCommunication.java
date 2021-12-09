@@ -7,7 +7,7 @@ import java.net.http.HttpRequest;
 
 public class ReservationCommunication extends ServerCommunication {
 
-    private static final String requestString = hostAddress + "8081/reservation";
+    private static final String requestString = hostAddress + "8090/reservation";
 
 
     public static String getHi() {

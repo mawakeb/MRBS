@@ -4,8 +4,9 @@ import nl.tudelft.sem.room.communication.ReservationCommunication;
 import nl.tudelft.sem.room.communication.UserCommunication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-
+@EnableDiscoveryClient
 @SpringBootApplication
 public class RoomApplication {
 

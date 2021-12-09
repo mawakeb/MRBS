@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("room")
+@RequestMapping("")
 public class RoomController {
 
     private final transient RoomRepository roomRepo;

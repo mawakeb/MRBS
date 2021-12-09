@@ -33,7 +33,7 @@ public class ReservationController {
      *
      * @return all lectures
      */
-    @GetMapping
+    @GetMapping("")
     public String returnHi() {
         //return lectureRepository.findAll();
         return "hello_from_reservation";

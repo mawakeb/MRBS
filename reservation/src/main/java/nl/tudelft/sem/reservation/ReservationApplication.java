@@ -22,6 +22,7 @@ public class ReservationApplication {
 				"SEM lecture");
 
 		Validator handler = new CheckAvailabilityValidator();
+		handler.setNext(new CheckIfRoomIsNotReservedAlready());
 		handler.setNext(new EmployeesCannotReserveMoreThanTwoWeeksInAdvance());
 		handler.setNext(new EmployeesMakeEditCancelReservationForThemselves());
 		handler.setNext(new EmployeesOneReservationDuringTimeSlot());

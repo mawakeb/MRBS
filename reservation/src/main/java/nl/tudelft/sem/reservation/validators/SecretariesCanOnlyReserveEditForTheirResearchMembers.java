@@ -10,8 +10,8 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseVa
     @Override
     public boolean handle(Reservation reservation) throws InvalidReservationException {
 
-        String type = UserCommunication.getUserType();
-        if(!type.equals("SECRETARY")) return super.checkNext(reservation);
+        String userType = UserCommunication.getUserType();
+        if(!userType.equals("SECRETARY")) return super.checkNext(reservation);
 
         Long userID = UserCommunication.getUser();
         List groupMembers = UserCommunication.getTeamMembers(userID);

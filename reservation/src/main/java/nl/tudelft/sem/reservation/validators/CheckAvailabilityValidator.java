@@ -4,16 +4,16 @@ import nl.tudelft.sem.reservation.communication.RoomCommunication;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 
-import java.util.List;
 import com.google.gson.Gson;
 
 public class CheckAvailabilityValidator extends BaseValidator {
+
     protected static Gson gson = new Gson();
 
     @Override
     public boolean handle(Reservation reservation) throws InvalidReservationException {
 
-        int roomID = reservation.getRoomId();
+        Long roomID = reservation.getRoomId();
 
         boolean availability = RoomCommunication.getRoomAvailability(roomID,
                 reservation.getStart().toLocalTime(),

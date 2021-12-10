@@ -9,10 +9,9 @@ public class EmployeesCannotReserveMoreThanTwoWeeksInAdvance extends BaseValidat
 {
 
     @Override
-    public boolean handle(Reservation reservation) throws InvalidReservationException
-    {
-        ZoneId zoneId = ZoneId.systemDefault(); //TODO: Figure out correct time zone?
-        System.out.print(zoneId);
+    public boolean handle(Reservation reservation) throws InvalidReservationException {
+
+        ZoneId zoneId = ZoneId.of("Europe/Amsterdam");
         LocalDateTime now = LocalDateTime.now(zoneId);
         LocalDateTime limit = now.plusWeeks(2);
 

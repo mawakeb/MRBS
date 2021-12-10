@@ -11,7 +11,7 @@ import java.util.List;
 public class CheckIfRoomIsNotReservedAlready extends BaseValidator {
 
     @Autowired
-    private ReservationRepository reservationRepo;
+    private transient ReservationRepository reservationRepo;
 
     @Override
     public boolean handle(Reservation reservation) throws InvalidReservationException {

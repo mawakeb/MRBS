@@ -11,10 +11,10 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Column(name = "roomId")
-    private int roomId;
+    private Long roomId;
 
     @Column(name = "userId")
     private Long userId;
@@ -45,7 +45,7 @@ public class Reservation {
      * @param end     Date and time of the end of the reservation
      * @param purpose purpose of the reservation
      */
-    public Reservation(int id, int roomId, long userId, LocalDateTime start,
+    public Reservation(Long id, Long roomId, Long userId, LocalDateTime start,
                        LocalDateTime end, String purpose) {
         this.id = id;
         this.roomId = roomId;
@@ -56,19 +56,19 @@ public class Reservation {
         this.cancelled = false;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getRoomId() {
+    public Long getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(int roomId) {
+    public void setRoomId(Long roomId) {
         this.roomId = roomId;
     }
 
@@ -120,7 +120,7 @@ public class Reservation {
         this.cancelled = cancelled;
     }
 
-    public void changeLocation(int newRoomId, String editPurpose) {
+    public void changeLocation(Long newRoomId, String editPurpose) {
         this.roomId = newRoomId;
         this.editPurpose = editPurpose;
     }

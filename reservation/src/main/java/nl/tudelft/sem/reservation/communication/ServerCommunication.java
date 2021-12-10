@@ -7,7 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class ServerCommunication {
-    protected static String hostAddress = "http://localhost";
+    protected static String hostAddress = "http://localhost:8090";
     protected static HttpClient client = HttpClient.newBuilder().build();
     protected static Gson gson = new Gson();
 

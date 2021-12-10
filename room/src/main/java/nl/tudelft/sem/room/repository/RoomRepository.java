@@ -20,7 +20,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     Room findById(long id);
 
-
-
+    List<Room> findAllById(Iterable<Long> ids);
 }
 

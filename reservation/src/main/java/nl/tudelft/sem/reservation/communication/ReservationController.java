@@ -1,6 +1,5 @@
 package nl.tudelft.sem.reservation.communication;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.repository.ReservationRepository;
@@ -12,7 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("")
@@ -20,7 +24,6 @@ public class ReservationController {
 
 
     private final transient ReservationRepository reservationRepo;
-    protected static Gson gson = new Gson();
 
     @Autowired
     public ReservationController(ReservationRepository reservationRepo) {
@@ -40,17 +43,32 @@ public class ReservationController {
     }
 
     @GetMapping("checkUser")
-    public boolean checkUser(@RequestBody String q) {
-        List<String> list = gson.fromJson(q, new TypeToken<List<String>>() {}.getType());
-        long reservationId = Long.parseLong(list.get(1));
+    public boolean checkUser(@RequestParam long userId, @RequestParam long reservationId) {
+
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
         if (reservation!=null){
-            long userId = Long.parseLong(list.get(0));
-            if (reservation.getUserId().equals(userId)) return true;
-            else return false;
+            return reservation.getUserId().equals(userId);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
         }
+    }
+
+    @GetMapping("checkTimeslot")
+    public List<Long> checkTimeslot(@RequestParam List<Long> rooms, @RequestParam String startTime, @RequestParam String endTime) {
+        List<Long> filteredRooms = new ArrayList<>();
+
+        @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+        Set<Long> takenRooms = reservationRepo.findAllByRoomIdInAndStartBeforeAndEndAfter(rooms,
+                LocalDateTime.parse(startTime), LocalDateTime.parse(endTime))
+                .stream().map(Reservation::getRoomId).collect(Collectors.toSet());
+
+        for (Long l : rooms) {
+            if (!takenRooms.contains(l)) {
+                filteredRooms.add(l);
+            }
+        }
+
+        return filteredRooms;
     }
 
     /*@GetMapping("getByJoinCode")

@@ -8,7 +8,7 @@ import java.time.LocalTime;
 
 public class RoomCommunication extends ServerCommunication {
 
-    private static final String requestString = hostAddress + ":8082/room";
+    private static final String requestString = hostAddress + "/room";
 
     public static boolean getRoomAvailability(long roomId, LocalTime start, LocalTime end) {
         HttpRequest request = HttpRequest.newBuilder()

@@ -1,6 +1,5 @@
 package nl.tudelft.sem.zuulgateway.config;
 
-import nl.tudelft.sem.zuulgateway.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // TODO: No longer let all endpoints be available to unauthenticated users.
         http
                 .csrf()
                 .disable()
@@ -41,7 +41,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth", "/user/signup", "/h2-console/**")
                 .permitAll()
                 .anyRequest()
-                .authenticated()
+                //.authenticated()
+                .permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

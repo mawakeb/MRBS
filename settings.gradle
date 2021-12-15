@@ -4,3 +4,6 @@ include 'group'
 include 'reservation'
 include 'room'
 include 'user'
+include 'discovery-server'
+include 'zuul-gateway'
+

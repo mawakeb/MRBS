@@ -7,7 +7,7 @@ import java.net.http.HttpRequest;
 
 public class UserCommunication extends ServerCommunication {
 
-    private static final String requestString = hostAddress + "8083/user";
+    private static final String requestString = hostAddress + "/user";
 
 
     public static String getHi() {

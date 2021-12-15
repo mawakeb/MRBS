@@ -68,6 +68,10 @@ public class Building {
         this.closeTime = closeTime;
     }
 
+    public boolean isOpen(LocalTime start, LocalTime end) {
+        return start.isAfter(openTime) && end.isBefore(closeTime);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

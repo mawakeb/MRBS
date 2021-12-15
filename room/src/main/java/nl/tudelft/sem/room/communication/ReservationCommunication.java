@@ -1,13 +1,15 @@
 package nl.tudelft.sem.room.communication;
 
 import com.google.gson.reflect.TypeToken;
+import nl.tudelft.sem.room.entity.Room;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
+import java.util.List;
 
 public class ReservationCommunication extends ServerCommunication {
 
-    private static final String requestString = hostAddress + "8081/reservation";
+    private static final String requestString = hostAddress + "/reservation";
 
 
     public static String getHi() {
@@ -16,12 +18,21 @@ public class ReservationCommunication extends ServerCommunication {
                 .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
     }
 
-    public static boolean checkUserToReservation(String parsedList) {
+    public static boolean checkUserToReservation(long userId, long reservationId) {
         HttpRequest request = HttpRequest.newBuilder()
-                .POST(HttpRequest.BodyPublishers.ofString(parsedList))
-                .uri(URI.create(requestString + "/checkUser")).build();
+                .GET().uri(URI.create(requestString + "/checkUser" + "?userId=" + userId +
+                        "&reservationId=" + reservationId)).build();
         return gson
                 .fromJson(requestHandler(request).body(), new TypeToken<Boolean>() {}.getType());
+    }
+
+    public static List<Long> getRoomsInTimeslot(List<Long> rooms, String startTime, String endTime) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET().uri(URI.create(requestString + "/checkTimeslot" + "?rooms=" + rooms +
+                        "&startTime=" + startTime + "&endTime=" + endTime)).build();
+        return gson
+                .fromJson(requestHandler(request).body(),
+                        new TypeToken<List<Long>>() {}.getType());
     }
 
 

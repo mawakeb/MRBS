@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface BuildingRepository extends JpaRepository<Building, Long>{
+public interface BuildingRepository extends JpaRepository<Building, Long> {
 
     List<Building> findAll();
 

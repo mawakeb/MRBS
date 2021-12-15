@@ -1,7 +1,6 @@
 package nl.tudelft.sem.user.communication;
 
 import com.google.gson.reflect.TypeToken;
-
 import java.net.URI;
 import java.net.http.HttpRequest;
 

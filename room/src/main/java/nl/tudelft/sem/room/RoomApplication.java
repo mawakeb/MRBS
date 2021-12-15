@@ -12,7 +12,7 @@ public class RoomApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RoomApplication.class, args);
-
+		/*
 		//sleep a second
 		long current = System.currentTimeMillis();
 		while (System.currentTimeMillis() - current < 1000) {
@@ -20,7 +20,7 @@ public class RoomApplication {
 		}
 
 		System.out.println(ReservationCommunication.getHi());
-		System.out.println(UserCommunication.getHi());
+		System.out.println(UserCommunication.getHi());*/
 	}
 
 }

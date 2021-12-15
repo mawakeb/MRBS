@@ -1,7 +1,6 @@
 package nl.tudelft.sem.user.entity;
 
 import nl.tudelft.sem.user.object.Type;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -112,9 +111,9 @@ public class User {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return Objects.equals(id, user.id) &&
-                Objects.equals(netId, user.netId) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(hashedPassword, user.hashedPassword);
+                Objects.equals(netId, user.netId)
+                && Objects.equals(name, user.name)
+                && Objects.equals(hashedPassword, user.hashedPassword);
     }
 
     @Override

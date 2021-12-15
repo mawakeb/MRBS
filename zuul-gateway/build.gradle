@@ -26,7 +26,7 @@ plugins {
     id 'info.solidsoft.pitest'
 }
 
-group = 'nl.tudelft.cse.sem.user'
+group = 'nl.tudelft.cse.sem.zuul-gateway'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -37,10 +37,12 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
+    implementation 'io.jsonwebtoken:jjwt:0.2'
 
     // Local test database (in-memory)
     implementation 'com.h2database:h2'
@@ -66,7 +68,7 @@ test {
     useJUnitPlatform()
     jacoco {
         enabled = true
-        includes = ['nl.tudelft.sem.user.*']
+        includes = ['nl.tudelft.sem.zuul-gateway.*']
         excludes = []
     }
 }
@@ -81,7 +83,7 @@ jacocoTestCoverageVerification() {
         rule {
             enabled = true
             element = 'CLASS'
-            includes = ['nl.tudelft.sem.user.*']
+            includes = ['nl.tudelft.sem.zuul-gateway.*']
 
             limit {
                 counter = 'BRANCH'
@@ -106,7 +108,7 @@ pitest {
     //adds dependency to org.pitest:pitest-junit5-plugin and sets "testPlugin" to "junit5"
     junit5PluginVersion = '0.12'
 
-    targetClasses = ['nl.tudelft.sem.user.*']  //by default "${project.group}.*"
+    targetClasses = ['nl.tudelft.sem.zuul-gateway.*']  //by default "${project.group}.*"
     pitestVersion = '1.5.1' //not needed when a default PIT version should be used
     threads = 4
     outputFormats = ['XML', 'HTML']

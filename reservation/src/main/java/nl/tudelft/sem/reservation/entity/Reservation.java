@@ -61,7 +61,7 @@ public class Reservation {
         this.cancelled = false;
     }
 
-    public class ReservationBuilder {
+    public static class ReservationBuilder {
 
         private ReservationType type;
         private Long roomId;

@@ -1,13 +1,14 @@
 package nl.tudelft.sem.reservation;
 
+import nl.tudelft.sem.reservation.builder.Director;
+import nl.tudelft.sem.reservation.builder.ReservationBuilder;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 import nl.tudelft.sem.reservation.validators.*;
+import java.time.LocalDateTime;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-
-import java.time.LocalDateTime;
 
 @EnableDiscoveryClient
 @SpringBootApplication
@@ -22,12 +23,11 @@ public class ReservationApplication {
 				"SEM lecture");
 		*/
 
-		Reservation reservation = new Reservation.ReservationBuilder(
-				1L,
-				LocalDateTime.of(2021, 12,23,12, 0,  0),
-				LocalDateTime.of(2021, 12, 23, 0, 0))
-				.purpose("SEM lecture")
-				.buildSingleReservation(2L);
+		ReservationBuilder builder = new ReservationBuilder(1L, 2L, LocalDateTime.of(2021, 12,23,12, 0, 0), LocalDateTime.of(2021, 12,23, 0, 0));
+		Director director = new Director();
+		director.buildGroupReservation(builder, "SEM lecture", 3L);
+
+		Reservation reservation = builder.build();
 
 		Validator handler = new CheckAvailabilityValidator();
 		handler.setNext(new CheckIfRoomIsNotReservedAlready());

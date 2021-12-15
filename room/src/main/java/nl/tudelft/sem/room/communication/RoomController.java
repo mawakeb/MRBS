@@ -40,13 +40,7 @@ public class RoomController {
     }
 
     @GetMapping("checkAvailable")
-    public boolean checkAvailable(@RequestBody String q) {
-
-        // extract list from the message
-        List<String> list = gson.fromJson(q, new TypeToken<List<String>>() {}.getType());
-
-        // get room from the repository
-        long roomId = Long.parseLong(list.get(0));
+    public boolean checkAvailable(@RequestParam long roomId, @RequestParam LocalTime start, @RequestParam LocalTime end) {
         Room room = roomRepo.findById(roomId);
         if (room == null) {
             // inform user that the room was not found
@@ -63,10 +57,6 @@ public class RoomController {
                 // do something but this shouldn't happen
                 return false;
             }
-
-            // get the timeslot of the reservation
-            LocalTime start = LocalTime.parse(list.get(1));
-            LocalTime end = LocalTime.parse(list.get(2));
 
             // return whether the building is open or not for the timeslot
             return building.isOpen(start, end);

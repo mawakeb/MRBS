@@ -9,21 +9,37 @@ public class UserCommunication extends ServerCommunication {
 
     private static final String requestString = hostAddress + "/user";
 
-
-    public static List<String> getAllLectures() {
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(requestString)).build();
+    public static Long getUser() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(requestString + "/getCurrentUserID"))
+                .build();
         return gson
-                .fromJson(requestHandler(request).body(),
-                        new TypeToken<List<String>>() {}.getType());
+                .fromJson(requestHandler(request)
+                        .body(), new TypeToken<String>() {}
+                        .getType());
     }
 
-
-    public static String getLectureById(Long lectureId) {
-        HttpRequest request = HttpRequest.newBuilder().GET()
-                .uri(URI.create(requestString + "/getById?lectureId=" + lectureId)).build();
-        return gson.fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
+    public static String getUserType() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(requestString + "/getCurrentUserType"))
+                .build();
+        return gson
+                .fromJson(requestHandler(request)
+                        .body(), new TypeToken<String>() {}
+                        .getType());
     }
 
-
+    public static List getTeamMembers(Long secretary) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(requestString + "/getTeamMemberIDs?secretaryUserID=" + secretary))
+                .build();
+        return gson
+                .fromJson(requestHandler(request)
+                        .body(), new TypeToken<String>() {}
+                        .getType());
+    }
 }
 

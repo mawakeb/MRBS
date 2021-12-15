@@ -1,11 +1,13 @@
 package nl.tudelft.sem.reservation.entity;
 
+import nl.tudelft.sem.reservation.entity.ReservationType;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "room")
+
 public class Reservation {
 
     @Id
@@ -18,6 +20,10 @@ public class Reservation {
 
     @Column(name = "userId")
     private Long userId;
+
+    private Long groupId;
+
+    private ReservationType type;
 
     @Column(name = "start")
     private LocalDateTime start;
@@ -45,16 +51,49 @@ public class Reservation {
      * @param end     Date and time of the end of the reservation
      * @param purpose purpose of the reservation
      */
-    public Reservation(Long id, Long roomId, Long userId, LocalDateTime start,
-                       LocalDateTime end, String purpose) {
-        this.id = id;
-        this.roomId = roomId;
-        this.userId = userId;
-        this.start = start;
-        this.end = end;
-        this.purpose = purpose;
+    private Reservation(ReservationBuilder builder) {
+        this.type = builder.type;
+        this.roomId = builder.roomId;
+        this.userId = builder.userId;
+        this.start = builder.start;
+        this.end = builder.end;
+        this.purpose = builder.purpose;
         this.cancelled = false;
     }
+
+    public class ReservationBuilder {
+
+        private ReservationType type;
+        private Long roomId;
+        private Long userId;
+        private Long groupId;
+        private LocalDateTime start;
+        private LocalDateTime end;
+        private String purpose;
+
+        public ReservationBuilder(Long roomId, LocalDateTime start, LocalDateTime end) {
+            this.roomId = roomId;
+            this.start = start;
+            this.end = end;
+        }
+
+        public ReservationBuilder purpose(String purpose) {
+            this.purpose = purpose;
+            return this;
+        }
+
+        public Reservation buildSingleReservation(Long userId) {
+            this.type = ReservationType.SINGLE;
+            this.userId = userId;
+            return new Reservation(this);
+        }
+        public Reservation buildGroupReservation(Long groupId) {
+            this.type = ReservationType.GROUP;
+            this.groupId = groupId;
+            return new Reservation(this);
+        }
+    }
+
 
     public Long getId() {
         return id;

@@ -15,11 +15,19 @@ public class ReservationApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ReservationApplication.class, args);
-
+		/*
 		Reservation reservation = new Reservation(1L, 2L, 23L,
 				LocalDateTime.of(2021, 12,23,12, 0,  0),
 				LocalDateTime.of(2021, 12, 23, 0, 0),
 				"SEM lecture");
+		*/
+
+		Reservation reservation = new Reservation.ReservationBuilder(
+				1L,
+				LocalDateTime.of(2021, 12,23,12, 0,  0),
+				LocalDateTime.of(2021, 12, 23, 0, 0))
+				.purpose("SEM lecture")
+				.buildSingleReservation(2L);
 
 		Validator handler = new CheckAvailabilityValidator();
 		handler.setNext(new CheckIfRoomIsNotReservedAlready());

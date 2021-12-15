@@ -14,8 +14,6 @@ public class UserCommunication extends ServerCommunication {
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(requestString)).build();
         HttpResponse<String> response = requestHandler(request);
 
-        if (response.statusCode() != 200) System.out.println(response.statusCode());
-
         return gson
                 .fromJson(response.body(), new TypeToken<String>() {}.getType());
     }

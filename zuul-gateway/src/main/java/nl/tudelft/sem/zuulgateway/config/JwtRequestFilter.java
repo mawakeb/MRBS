@@ -17,13 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    private MyUserDetailsService myUserDetailsService;
+    private transient MyUserDetailsService myUserDetailsService;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private transient JwtUtil jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

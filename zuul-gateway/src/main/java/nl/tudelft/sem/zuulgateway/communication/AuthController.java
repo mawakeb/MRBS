@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private transient AuthenticationManager authenticationManager;
 
     @Autowired
-    private MyUserDetailsService myUserDetailsService;
+    private transient MyUserDetailsService myUserDetailsService;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private transient JwtUtil jwtUtil;
 
     @PostMapping("")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody RequestUserDetails requestUserDetails) {
@@ -43,9 +43,6 @@ public class AuthController {
 
         final String jwt = jwtUtil.generateToken(userDetails);
 
-        System.out.println(UserCommunication.getHi());
-
         return ResponseEntity.ok(new ResponseToken(jwt));
     }
-
 }

@@ -14,7 +14,6 @@ public class ServerCommunication {
     protected static HttpResponse<String> requestHandler(HttpRequest request) {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            int statusOK = 200;
 
             return response;
         } catch (Exception e) {

@@ -5,8 +5,11 @@ import com.google.gson.reflect.TypeToken;
 import nl.tudelft.sem.room.entity.Building;
 import nl.tudelft.sem.room.entity.EquipmentInRoom;
 import nl.tudelft.sem.room.entity.Room;
+import nl.tudelft.sem.room.entity.RoomNotice;
+import nl.tudelft.sem.room.exception.RoomNotFoundException;
 import nl.tudelft.sem.room.repository.BuildingRepository;
 import nl.tudelft.sem.room.repository.EquipmentRepository;
+import nl.tudelft.sem.room.repository.NoticeRepository;
 import nl.tudelft.sem.room.repository.RoomRepository;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +28,16 @@ public class RoomController {
     private final transient RoomRepository roomRepo;
     private final transient BuildingRepository buildingRepo;
     private final transient EquipmentRepository equipmentRepo;
+    private final transient NoticeRepository noticeRepo;
     protected static Gson gson = new Gson();
 
     @Autowired
-    public RoomController(RoomRepository roomRepo, BuildingRepository buildingRepo, EquipmentRepository equipmentRepo) {
+    public RoomController(RoomRepository roomRepo, BuildingRepository buildingRepo, EquipmentRepository equipmentRepo, NoticeRepository noticeRepo) {
         this.roomRepo = roomRepo;
         this.buildingRepo = buildingRepo;
         this.equipmentRepo = equipmentRepo;
+        this.noticeRepo = noticeRepo;
+
     }
 
     @GetMapping("")
@@ -109,5 +115,30 @@ public class RoomController {
             return filteredRooms;
         }
 
+    }
+
+    @GetMapping("leaveNotice")
+    public void leaveNotice(long userId, long reservationId, String message) {
+
+        //if the user is the owner of the reservation, save a new notice in NoticeRepository
+        if (ReservationCommunication.checkUserToReservation(userId, reservationId)) {
+            long roomId = ReservationCommunication.getRoomWithReservation(reservationId);
+            RoomNotice notice = new RoomNotice(roomId, reservationId, message);
+            noticeRepo.save(notice);
+        }
+    }
+
+    @GetMapping("changeStatus")
+    public void changeStatus(long userId, long roomId, boolean status) throws RoomNotFoundException {
+
+        if (UserCommunication.getRole(userId).equals("ADMIN")) {
+            Room room = roomRepo.findById(roomId);
+            if (room !=null){
+                room.setUnderMaintenance(status);
+                roomRepo.save(room);
+            } else {
+                throw new RoomNotFoundException(roomId + "");
+            }
+        }
     }
 }

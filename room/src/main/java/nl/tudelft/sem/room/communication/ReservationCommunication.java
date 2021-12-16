@@ -35,14 +35,13 @@ public class ReservationCommunication extends ServerCommunication {
                         new TypeToken<List<Long>>() {}.getType());
     }
 
-
-    /*
-    public static String getLectureById(Long lectureId) {
-        HttpRequest request = HttpRequest.newBuilder().GET()
-                .uri(URI.create(requestString + "/getById?lectureId=" + lectureId)).build();
-        return gson.fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
-    }*/
-
+    public static long getRoomWithReservation(long reservationId) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET().uri(URI.create(requestString + "/getRoom" + "?id=" + reservationId)).build();
+        return gson
+                .fromJson(requestHandler(request).body(),
+                        new TypeToken<Long>() {}.getType());
+    }
 
 }
 

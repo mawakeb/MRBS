@@ -50,6 +50,17 @@ public class ReservationController {
         }
     }
 
+    @GetMapping("getRoom")
+    public boolean checkUser(@RequestParam long id) {
+
+        Reservation reservation = reservationRepo.findById(id).orElse(null);
+        if (reservation!=null){
+            return reservation.getroomId();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
+        }
+    }
+
     @GetMapping("checkTimeslot")
     public List<Long> checkTimeslot(@RequestParam List<Long> rooms, @RequestParam String startTime, @RequestParam String endTime) {
         List<Long> filteredRooms = new ArrayList<>();

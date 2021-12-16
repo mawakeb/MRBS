@@ -22,7 +22,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Reservation findById(long id);
 
-    List<Reservation> findAllByRoomIdInAndStartBeforeAndEndAfter(
+    List<Reservation> findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(
             Iterable<Long> roomIds, LocalDateTime startTime, LocalDateTime endTime);
 
     @Query("SELECT r FROM Reservation r " +

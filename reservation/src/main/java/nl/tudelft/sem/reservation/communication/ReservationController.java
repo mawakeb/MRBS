@@ -55,7 +55,8 @@ public class ReservationController {
         List<Long> filteredRooms = new ArrayList<>();
 
         @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-        Set<Long> takenRooms = reservationRepo.findAllByRoomIdInAndStartBeforeAndEndAfter(rooms,
+        Set<Long> takenRooms = reservationRepo
+                .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(rooms,
                 LocalDateTime.parse(startTime), LocalDateTime.parse(endTime))
                 .stream().map(Reservation::getRoomId).collect(Collectors.toSet());
 

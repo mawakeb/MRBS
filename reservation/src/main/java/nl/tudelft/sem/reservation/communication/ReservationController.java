@@ -51,11 +51,11 @@ public class ReservationController {
     }
 
     @GetMapping("getRoom")
-    public boolean checkUser(@RequestParam long id) {
+    public long getRoom(@RequestParam long id) {
 
         Reservation reservation = reservationRepo.findById(id).orElse(null);
         if (reservation!=null){
-            return reservation.getroomId();
+            return reservation.getRoomId();
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
         }
@@ -79,15 +79,11 @@ public class ReservationController {
         return filteredRooms;
     }
 
-    /*@GetMapping("getByJoinCode")
-    public Lecture getAllLecturesByJoinCode(String joinCode) {
-        List<Lecture> lectureList = lectureRepository.findAllByJoinCodeEquals(joinCode);
-        if (!lectureList.isEmpty()) {
-            return lectureList.get(0);
-        } else {
-            return null;
-        }
-    }*/
+
+    @GetMapping("getSchedule")
+    public List<Reservation> getSchedule(@RequestParam long userId) {
+        return reservationRepo.findAllByUserId(userId);
+    }
 
 
 }

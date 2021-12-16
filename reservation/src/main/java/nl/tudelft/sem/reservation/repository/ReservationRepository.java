@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Reservation Repository Interface.
@@ -20,7 +21,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
      */
     Reservation save(Reservation reservation);
 
-    Reservation findById(long id);
+    Optional<Reservation> findById(Long id);
+
+    Reservation findAllByRoomIdAndCancelledIsFalseAndStartBeforeAndEndAfter(
+            Long roomId, LocalDateTime startTime, LocalDateTime endTime);
 
     List<Reservation> findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(
             Iterable<Long> roomIds, LocalDateTime startTime, LocalDateTime endTime);

@@ -34,6 +34,6 @@ public class ReservationBuilder {
     }
 
     public Reservation build() {
-        return new Reservation(madeBy, roomId, start, end, type, userId, groupId, purpose)
+        return new Reservation(madeBy, roomId, start, end, type, userId, groupId, purpose);
     }
 }

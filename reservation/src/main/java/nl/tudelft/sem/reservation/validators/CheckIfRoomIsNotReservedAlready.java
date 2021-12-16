@@ -16,12 +16,12 @@ public class CheckIfRoomIsNotReservedAlready extends BaseValidator {
     @Override
     public boolean handle(Reservation reservation) throws InvalidReservationException {
 
-        Long userId = reservation.getUserId();
+        Long roomId = reservation.getRoomId();
         LocalDateTime reservationStart = reservation.getStart();
         LocalDateTime reservationEnd = reservation.getEnd();
 
         List<Reservation> overlappingReservationsOfUser = reservationRepo.findAllForASpecificRoomWithinGivenTimeRange
-                (userId, reservationStart, reservationEnd);
+                (roomId, reservationStart, reservationEnd);
 
         if (!overlappingReservationsOfUser.isEmpty()) {
             throw new InvalidReservationException("There is another reservation overlapping with your desired time range.");

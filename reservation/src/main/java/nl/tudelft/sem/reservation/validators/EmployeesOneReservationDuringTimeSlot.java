@@ -19,11 +19,19 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
     public boolean handle(Reservation reservation) throws InvalidReservationException {
 
         String userType = UserCommunication.getUserType();
-        if (!userType.equals("EMPLOYEE")) {
-            return super.checkNext(reservation);
+
+        if(reservation.getType().equals("GROUP")) {
+            /*
+            List<Reservation> reservationsAtThisTime = reservationRepo.findAllOverlapping(reservationStart, reservationEnd);
+            TODO: For each reservation in the list, check if the associated user is in the group
+            */
+            throw new InvalidReservationException("Not all group members are available at the given time. (Method not finished)");
         }
 
-        Long userId = reservation.getUserId();
+        Long userId;
+        if(reservation.getType().equals("ADMIN")) {userId = reservation.getUserId();}
+        else userId = reservation.getMadeBy();
+
         LocalDateTime reservationStart = reservation.getStart();
         LocalDateTime reservationEnd = reservation.getEnd();
 
@@ -31,7 +39,7 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
                                                                     (userId, reservationStart, reservationEnd);
 
         if (!overlappingReservationsOfUser.isEmpty()) {
-            throw new InvalidReservationException("Employees can only have one reservation within a given time range.");
+            throw new InvalidReservationException("Users can only have one reservation within a given time range.");
         }
 
         return super.checkNext(reservation);

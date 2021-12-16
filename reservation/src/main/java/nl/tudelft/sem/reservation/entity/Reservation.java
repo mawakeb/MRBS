@@ -123,6 +123,16 @@ public class Reservation {
         this.editPurpose = editPurpose;
     }
 
+    public ReservationType getType() {
+        return type;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    private long setUserId() {return userId;}
+
     public boolean isCancelled() {
         return cancelled;
     }
@@ -144,7 +154,7 @@ public class Reservation {
 
     public void cancelReservation(String editPurpose) {
         this.setCancelled(true);
-        this.setEditPurpose(setEditPurpose());
+        this.setEditPurpose(editPurpose);
     }
 
     @Override

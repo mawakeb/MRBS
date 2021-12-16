@@ -16,7 +16,7 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseVa
         Long userID = UserCommunication.getUser();
         List groupMembers = UserCommunication.getTeamMembers(userID);
         //Secretaries are assumed to be in their own group
-        if(groupMembers.contains(reservation.getUserId())) return super.checkNext(reservation);
+        if(groupMembers.contains(reservation.getMadeBy())) return super.checkNext(reservation);
 
         throw new InvalidReservationException("Employee is not part of this secretary's research group");
     }

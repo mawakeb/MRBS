@@ -13,7 +13,7 @@ public class EmployeesMakeEditCancelReservationForThemselves extends BaseValidat
         if(!userType.equals("EMPLOYEE")) return super.checkNext(reservation);
 
         Long userID = UserCommunication.getUser();
-        if(userID.equals(reservation.getUserId())) return super.checkNext(reservation);
+        if(userID.equals(reservation.getMadeBy())) return super.checkNext(reservation);
 
         throw new InvalidReservationException("Employees cannot manage reservations for someone else");
     }

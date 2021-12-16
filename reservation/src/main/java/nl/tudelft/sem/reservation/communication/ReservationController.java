@@ -42,7 +42,7 @@ public class ReservationController {
     @GetMapping("checkUser")
     public boolean checkUser(@RequestParam long userId, @RequestParam long reservationId) {
 
-        Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
+        Reservation reservation = reservationRepo.findById(reservationId);
         if (reservation!=null){
             return reservation.getUserId().equals(userId);
         } else {
@@ -68,15 +68,26 @@ public class ReservationController {
         return filteredRooms;
     }
 
-    /*@GetMapping("getByJoinCode")
-    public Lecture getAllLecturesByJoinCode(String joinCode) {
-        List<Lecture> lectureList = lectureRepository.findAllByJoinCodeEquals(joinCode);
-        if (!lectureList.isEmpty()) {
-            return lectureList.get(0);
+    @GetMapping("editReservation")
+    public boolean editReservation(@RequestParam long reservationId) {
+        return false;
+    }
+
+    @GetMapping("cancelReservation")
+    public boolean cancelReservation(@RequestParam long reservationId, @RequestParam String cancelPurpose) {
+        Reservation reservation = reservationRepo.findById(reservationId);
+
+        if (reservation == null) return false;
+
+        long userId = reservation.getUserId();
+
+        if (UserCommunication.getUserType().equals("ADMIN")) { // or user is same as userId
+            reservation.setCancelled(true);
+            reservation.setEditPurpose(cancelPurpose);
+            reservationRepo.save(reservation);
+            return true;
         } else {
-            return null;
+            return false;
         }
-    }*/
-
-
+    }
 }

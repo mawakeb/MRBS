@@ -118,7 +118,7 @@ public class RoomController {
     }
 
     @GetMapping("leaveNotice")
-    public void leaveNotice(long userId, long reservationId, String message) {
+    public void leaveNotice(@RequestParam long userId, @RequestParam long reservationId, @RequestParam String message) {
 
         //if the user is the owner of the reservation, save a new notice in NoticeRepository
         if (ReservationCommunication.checkUserToReservation(userId, reservationId)) {
@@ -129,7 +129,7 @@ public class RoomController {
     }
 
     @GetMapping("changeStatus")
-    public void changeStatus(long userId, long roomId, boolean status) throws RoomNotFoundException {
+    public void changeStatus(@RequestParam long userId, @RequestParam long roomId, @RequestParam boolean status) throws RoomNotFoundException {
 
         if (UserCommunication.getRole(userId).equals("ADMIN")) {
             Room room = roomRepo.findById(roomId);

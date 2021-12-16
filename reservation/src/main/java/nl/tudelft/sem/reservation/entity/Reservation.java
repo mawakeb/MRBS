@@ -71,7 +71,7 @@ public class Reservation {
         return id;
     }
 
-    public void setId(Long id) {
+    private void setId(Long id) {
         this.id = id;
     }
 
@@ -79,7 +79,7 @@ public class Reservation {
         return roomId;
     }
 
-    public void setRoomId(Long roomId) {
+    private void setRoomId(Long roomId) {
         this.roomId = roomId;
     }
 
@@ -87,7 +87,7 @@ public class Reservation {
         return madeBy;
     }
 
-    public void setMadeBy(Long madeBy) {
+    private void setMadeBy(Long madeBy) {
         this.madeBy = madeBy;
     }
 
@@ -95,7 +95,7 @@ public class Reservation {
         return start;
     }
 
-    public void setStart(LocalDateTime start) {
+    private void setStart(LocalDateTime start) {
         this.start = start;
     }
 
@@ -103,7 +103,7 @@ public class Reservation {
         return end;
     }
 
-    public void setEnd(LocalDateTime end) {
+    private void setEnd(LocalDateTime end) {
         this.end = end;
     }
 
@@ -111,7 +111,7 @@ public class Reservation {
         return purpose;
     }
 
-    public void setPurpose(String purpose) {
+    private void setPurpose(String purpose) {
         this.purpose = purpose;
     }
 
@@ -127,24 +127,24 @@ public class Reservation {
         return cancelled;
     }
 
-    public void setCancelled(boolean cancelled) {
+    private void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
 
     public void changeLocation(Long newRoomId, String editPurpose) {
-        this.roomId = newRoomId;
-        this.editPurpose = editPurpose;
+        this.setRoomId(newRoomId);
+        this.setEditPurpose(editPurpose);
     }
 
     public void changeTime(LocalDateTime newStart, LocalDateTime newEnd, String editPurpose) {
-        this.start = newStart;
-        this.end = newEnd;
-        this.editPurpose = editPurpose;
+        this.setStart(newStart);
+        this.setEnd(newEnd);
+        this.setEditPurpose(editPurpose);
     }
 
     public void cancelReservation(String editPurpose) {
-        this.cancelled = true;
-        this.editPurpose = editPurpose;
+        this.setCancelled(true);
+        this.setEditPurpose(setEditPurpose());
     }
 
     @Override

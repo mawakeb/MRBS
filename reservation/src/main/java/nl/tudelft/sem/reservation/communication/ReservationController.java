@@ -70,21 +70,37 @@ public class ReservationController {
     }
 
     @GetMapping("editReservation")
-    public boolean editReservation(@RequestParam long reservationId) {
-        return false;
+    public boolean editReservation(@RequestParam long reservationId, @RequestParam long roomId
+            , @RequestParam LocalDateTime start, @RequestParam LocalDateTime end
+            , @RequestParam String editPurpose) {
+        Reservation reservation = reservationRepo.findById(reservationId);
+        if (reservation == null) return false;
+        //long userId = reservation.getUserId(); needed when checking for the same user that made the reservation
+
+        if (UserCommunication.getUserType().equals("ADMIN")) { // or user is same as userId
+            if (roomId != 0) reservation.setRoomId(roomId);
+            if (start != null) reservation.setStart(start);
+            if (end != null) reservation.setEnd(end);
+            if (roomId != 0 || start != null || end != null) reservation.setEditPurpose(editPurpose);
+            else return false;
+
+            reservationRepo.save(reservation);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @GetMapping("cancelReservation")
     public boolean cancelReservation(@RequestParam long reservationId, @RequestParam String cancelPurpose) {
         Reservation reservation = reservationRepo.findById(reservationId);
-
         if (reservation == null) return false;
-
         //long userId = reservation.getUserId(); needed when checking for the same user that made the reservation
 
         if (UserCommunication.getUserType().equals("ADMIN")) { // or user is same as userId
             reservation.setCancelled(true);
             reservation.setEditPurpose(cancelPurpose);
+
             reservationRepo.save(reservation);
             return true;
         } else {

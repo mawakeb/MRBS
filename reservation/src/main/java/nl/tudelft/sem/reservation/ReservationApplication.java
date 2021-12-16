@@ -25,7 +25,8 @@ public class ReservationApplication {
 
 		ReservationBuilder builder = new ReservationBuilder(1L, 2L, LocalDateTime.of(2021, 12,23,12, 0, 0), LocalDateTime.of(2021, 12,23, 0, 0));
 		Director director = new Director();
-		director.buildGroupReservation(builder, "SEM lecture", 3L);
+		director.buildAdminReservation(builder, 3L);
+		builder.purpose("SEM lecture");
 
 		Reservation reservation = builder.build();
 

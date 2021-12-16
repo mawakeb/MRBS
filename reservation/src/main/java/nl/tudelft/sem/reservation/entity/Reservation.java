@@ -15,21 +15,22 @@ public class Reservation {
     @Column(name = "id")
     private Long id;
 
+    private Long madeBy;
+
     @Column(name = "roomId")
     private Long roomId;
-
-    @Column(name = "userId")
-    private Long userId;
-
-    private Long groupId;
-
-    private ReservationType type;
 
     @Column(name = "start")
     private LocalDateTime start;
 
     @Column(name = "end")
     private LocalDateTime end;
+
+    private ReservationType type;
+
+    private Long userId;
+
+    private Long groupId;
 
     @Column(name = "purpose")
     private String purpose;
@@ -40,25 +41,29 @@ public class Reservation {
     @Column(name = "cancelled")
     private boolean cancelled;
 
-
     /**
      * Constructor for the Reservation class.
      *
-     * @param id      unique reservation ID.
-     * @param roomId  location of the reservation.
-     * @param userId  netID of the user who made the reservation.
-     * @param start   Date and time of the start of the reservation
-     * @param end     Date and time of the end of the reservation
+     * @param id      Unique reservation ID.
+     * @param madeBy  ID of the user who made the reservation.
+     * @param roomId  Location of the reservation.
+     * @param start   Date and time of the start of the reservation.
+     * @param end     Date and time of the end of the reservation.
+     * @param type    Whether this reservation was made for the user themselves, another user or a research group.
+     * @param userId  The ID of the person the reservation was made for.
+     * @param groupId The ID of the research group the reservation was made for.
      * @param purpose purpose of the reservation
      */
-    public Reservation(Long roomId, Long userId, LocalDateTime start, LocalDateTime end, Long groupId, String purpose, ReservationType type) {
-        this.userId = userId;
+    public Reservation(Long madeBy, Long roomId, LocalDateTime start, LocalDateTime end, ReservationType type, Long userId, Long groupId, String purpose) {
+        this.madeBy = madeBy;
         this.roomId = roomId;
         this.start = start;
         this.end = end;
+        this.type = type;
+        this.userId = userId;
         this.groupId = groupId;
         this.purpose = purpose;
-        this.type = type;
+
         this.cancelled = false;
     }
 
@@ -78,12 +83,12 @@ public class Reservation {
         this.roomId = roomId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getMadeBy() {
+        return madeBy;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setMadeBy(Long madeBy) {
+        this.madeBy = madeBy;
     }
 
     public LocalDateTime getStart() {

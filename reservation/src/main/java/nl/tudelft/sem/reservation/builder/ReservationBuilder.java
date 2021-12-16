@@ -6,33 +6,34 @@ import java.time.LocalDateTime;
 
 public class ReservationBuilder {
 
+    private Long madeBy;
     private Long roomId;
-    //user who made the reservation
-    private Long userId;
     private LocalDateTime start;
     private LocalDateTime end;
+    private ReservationType type;
+    private Long userId;
     private Long groupId;
     private String purpose;
-    private ReservationType type;
 
-    public ReservationBuilder(Long userId, Long roomId, LocalDateTime start, LocalDateTime end) {
-        this.userId = userId;
+    public ReservationBuilder(Long madeBy, Long roomId, LocalDateTime start, LocalDateTime end) {
+        this.madeBy = madeBy;
         this.roomId = roomId;
         this.start = start;
         this.end = end;
     }
 
+    public void type(ReservationType type) {
+        this.type = type;
+    }
+    public void user(Long groupId) { this.userId = userId; }
     public void group(Long groupId) {
         this.groupId = groupId;
     }
     public void purpose(String message) {
-        this.purpose = purpose;
-    }
-    public void type(ReservationType type) {
-        this.type = type;
+        this.purpose = message;
     }
 
     public Reservation build() {
-        return new Reservation(roomId, userId, start, end, groupId, purpose, type);
+        return new Reservation(madeBy, roomId, start, end, type, userId, groupId, purpose)
     }
 }

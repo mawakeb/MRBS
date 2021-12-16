@@ -80,7 +80,7 @@ public class ReservationController {
 
         if (reservation == null) return false;
 
-        long userId = reservation.getUserId();
+        //long userId = reservation.getUserId(); needed when checking for the same user that made the reservation
 
         if (UserCommunication.getUserType().equals("ADMIN")) { // or user is same as userId
             reservation.setCancelled(true);

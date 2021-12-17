@@ -30,16 +30,5 @@ public class UserCommunication extends ServerCommunication {
                         .body(), new TypeToken<String>() {}
                         .getType());
     }
-
-    public static List getTeamMembers(Long secretary) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create(requestString + "/getTeamMemberIDs?secretaryUserID=" + secretary))
-                .build();
-        return gson
-                .fromJson(requestHandler(request)
-                        .body(), new TypeToken<String>() {}
-                        .getType());
-    }
 }
 

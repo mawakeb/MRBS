@@ -26,7 +26,7 @@ public class ReservationBuilder implements Builder {
     public void type(ReservationType type) {
         this.reservationType = type;
     }
-    public void user(Long groupId) { this.userId = userId; }
+    public void user(Long userId) { this.userId = userId; }
     public void group(Long groupId) {
         this.groupId = groupId;
     }

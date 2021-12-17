@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -131,14 +128,13 @@ public class ReservationController {
                                   @RequestParam LocalDateTime start, @RequestParam LocalDateTime end,
                                   @RequestParam String purpose) {
         Long userId = UserCommunication.getUser();
-        String userType = UserCommunication.getUserType();
         Builder builder = new ReservationBuilder(userId, roomId, start, end);
         Director director = new Director(builder);
 
-        if (targetUserOrGroupId == userId) {
+        if (Objects.equals(targetUserOrGroupId, userId)) {
             director.buildSelfReservation();
         }
-        else if (userType == "ADMIN") {
+        else if (UserCommunication.getUserType().equals("ADMIN")) {
             director.buildAdminReservation(targetUserOrGroupId);
         }
         else {

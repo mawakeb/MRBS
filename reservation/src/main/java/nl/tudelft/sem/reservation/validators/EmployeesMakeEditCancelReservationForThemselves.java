@@ -13,16 +13,15 @@ public class EmployeesMakeEditCancelReservationForThemselves extends BaseValidat
         String userType = UserCommunication.getUserType();
         if(userType.equals("ADMIN")) return super.checkNext(reservation);
 
-        Long userID = UserCommunication.getUser();
         if(userType.equals("EMPLOYEE"))
         {
-            if(userID.equals(reservation.getMadeBy())) return super.checkNext(reservation);
+            if(UserCommunication.getUser().equals(reservation.getMadeBy())) return super.checkNext(reservation);
             throw new InvalidReservationException("Employees cannot manage reservations for someone else");
         }
 
         if(userType.equals("SECRETARY"))
         {
-            if(GroupCommunication.isSecretaryOfUser(reservation.getMadeBy(), userID)) return super.checkNext(reservation);
+            if(GroupCommunication.isSecretaryOfUser(reservation.getMadeBy(), UserCommunication.getUser())) return super.checkNext(reservation);
             throw new InvalidReservationException("The given employee is not in your research group");
         }
 

@@ -1,8 +1,8 @@
 package nl.tudelft.sem.reservation.builder;
 
-import nl.tudelft.sem.reservation.builder.ReservationBuilder;
 import nl.tudelft.sem.reservation.entity.ReservationType;
 
+@SuppressWarnings("PMD.BeanMembersShouldSerialize")
 public class Director {
     private Builder builder;
 

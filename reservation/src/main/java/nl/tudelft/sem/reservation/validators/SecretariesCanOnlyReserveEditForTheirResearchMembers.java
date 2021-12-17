@@ -16,17 +16,15 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseVa
         if(type == ReservationType.SELF) return super.checkNext(reservation);
         if(!UserCommunication.getUserType().equals("SECRETARY")) return super.checkNext(reservation);
 
-        Long userId = UserCommunication.getUser();
-
         if(type == ReservationType.ADMIN)
         {
-            if(GroupCommunication.isSecretaryOfUser(userId, reservation.getUserId())) return super.checkNext(reservation);
+            if(GroupCommunication.isSecretaryOfUser(UserCommunication.getUser(), reservation.getUserId())) return super.checkNext(reservation);
             throw new InvalidReservationException("Employee is not part of this secretary's research group");
         }
 
         if(type == ReservationType.GROUP)
         {
-            if(GroupCommunication.isSecretaryOfGroup(userId, reservation.getGroupId())) return super.checkNext(reservation);
+            if(GroupCommunication.isSecretaryOfGroup(UserCommunication.getUser(), reservation.getGroupId())) return super.checkNext(reservation);
             throw new InvalidReservationException("User is not secretary of this group");
         }
 

@@ -1,6 +1,7 @@
 package nl.tudelft.sem.reservation;
 
 import nl.tudelft.sem.reservation.builder.Director;
+import nl.tudelft.sem.reservation.builder.Builder;
 import nl.tudelft.sem.reservation.builder.ReservationBuilder;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
@@ -23,9 +24,9 @@ public class ReservationApplication {
 				"SEM lecture");
 		*/
 
-		ReservationBuilder builder = new ReservationBuilder(1L, 2L, LocalDateTime.of(2021, 12,23,12, 0, 0), LocalDateTime.of(2021, 12,23, 0, 0));
-		Director director = new Director();
-		director.buildAdminReservation(builder, 3L);
+		Builder builder = new ReservationBuilder(1L, 2L, LocalDateTime.of(2021, 12,23,12, 0, 0), LocalDateTime.of(2021, 12,23, 0, 0));
+		Director director = new Director(builder);
+		director.buildAdminReservation(3L);
 		builder.purpose("SEM lecture");
 
 		Reservation reservation = builder.build();

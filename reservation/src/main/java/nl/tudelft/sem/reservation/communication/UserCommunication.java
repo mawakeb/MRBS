@@ -16,7 +16,7 @@ public class UserCommunication extends ServerCommunication {
                 .build();
         return gson
                 .fromJson(requestHandler(request)
-                        .body(), new TypeToken<String>() {}
+                        .body(), new TypeToken<Long>() {}
                         .getType());
     }
 
@@ -24,17 +24,6 @@ public class UserCommunication extends ServerCommunication {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(requestString + "/getCurrentUserType"))
-                .build();
-        return gson
-                .fromJson(requestHandler(request)
-                        .body(), new TypeToken<String>() {}
-                        .getType());
-    }
-
-    public static List getTeamMembers(Long secretary) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create(requestString + "/getTeamMemberIDs?secretaryUserID=" + secretary))
                 .build();
         return gson
                 .fromJson(requestHandler(request)

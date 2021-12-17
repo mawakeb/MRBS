@@ -1,10 +1,11 @@
 package nl.tudelft.sem.reservation.builder;
 
+import nl.tudelft.sem.reservation.builder.Builder;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
 import java.time.LocalDateTime;
 
-public class ReservationBuilder {
+public class ReservationBuilder implements Builder {
 
     private Long madeBy;
     private Long roomId;

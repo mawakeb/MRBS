@@ -133,6 +133,12 @@ public class Reservation {
 
     private long setUserId() {return userId;}
 
+    public long getGroupId() {
+        return userId;
+    }
+
+    private long setGroupId() {return userId;}
+
     public boolean isCancelled() {
         return cancelled;
     }

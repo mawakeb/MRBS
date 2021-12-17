@@ -1,6 +1,5 @@
 package nl.tudelft.sem.reservation.entity;
 
-import nl.tudelft.sem.reservation.entity.ReservationType;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import java.util.Objects;
@@ -125,6 +124,10 @@ public class Reservation {
 
     public ReservationType getType() {
         return type;
+    }
+
+    private void setType(ReservationType type) {
+        this.type = type;
     }
 
     public long getUserId() {

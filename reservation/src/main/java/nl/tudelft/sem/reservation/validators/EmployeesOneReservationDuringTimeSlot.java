@@ -19,10 +19,7 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
     @Override
     public boolean handle(Reservation reservation) throws InvalidReservationException {
 
-        String userType = UserCommunication.getUserType();
-
         if(reservation.getType().equals("GROUP")) {
-            Long group = reservation.getGroupId();
             List<Reservation> reservationsAtThisTime = reservationRepo.findAllOverlapping(reservation.getStart(), reservation.getEnd());
 
             //For each reservation in the list, check if the associated user is in the group
@@ -30,22 +27,23 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
             {
                 if(conflict.getType().equals("GROUP"))
                 {
-                    if(GroupCommunication.overlap(group, conflict.getGroupId())) {
+                    if(GroupCommunication.overlap(reservation.getGroupId(), conflict.getGroupId())) {
                         throw new InvalidReservationException("Group reservation conflicts with another group.");
                     }
                 }
 
-                Long userId = conflict.getMadeBy();
+                Long userId;
                 if(conflict.getType().equals("ADMIN")) {userId = conflict.getUserId();}
-                if(GroupCommunication.isInGroup(userId, group)) {
+                else userId = conflict.getMadeBy();
+                if(GroupCommunication.isInGroup(userId, reservation.getGroupId())) {
                     throw new InvalidReservationException("Not all group members are available at the given time.");
                 }
             }
         }
 
-
-        Long userId = reservation.getMadeBy();
+        Long userId;
         if(reservation.getType().equals("ADMIN")) {userId = reservation.getUserId();}
+        else userId = reservation.getMadeBy();
         LocalDateTime reservationStart = reservation.getStart();
         LocalDateTime reservationEnd = reservation.getEnd();
 

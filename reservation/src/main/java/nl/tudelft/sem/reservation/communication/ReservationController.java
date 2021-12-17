@@ -40,11 +40,11 @@ public class ReservationController {
     }
 
     @GetMapping("checkUser")
-    public boolean checkUser(@RequestParam long userId, @RequestParam long reservationId) {
+    public boolean checkUser(@RequestParam long madeBy, @RequestParam long reservationId) {
 
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
         if (reservation!=null){
-            return reservation.getUserId().equals(userId);
+            return reservation.getMadeBy().equals(madeBy);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
         }

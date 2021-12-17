@@ -1,8 +1,14 @@
 package nl.tudelft.sem.reservation.communication;
 
 import com.google.gson.reflect.TypeToken;
+import nl.tudelft.sem.reservation.builder.Builder;
+import nl.tudelft.sem.reservation.builder.Director;
+import nl.tudelft.sem.reservation.builder.ReservationBuilder;
 import nl.tudelft.sem.reservation.entity.Reservation;
+import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 import nl.tudelft.sem.reservation.repository.ReservationRepository;
+import nl.tudelft.sem.reservation.validators.*;
+import org.h2.engine.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -92,10 +98,8 @@ public class ReservationController {
                 return false;
             } else {
 
-                reservation.setRoomId(roomId);
-                reservation.setStart(start);
-                reservation.setEnd(end);
-                reservation.setEditPurpose(editPurpose);
+                reservation.changeLocation(roomId, editPurpose);
+                reservation.changeTime(start, end, editPurpose);
 
                 reservationRepo.save(reservation);
                 return true;
@@ -113,13 +117,51 @@ public class ReservationController {
         //long userId = reservation.getUserId(); needed when checking for the same user that made the reservation
 
         if (UserCommunication.getUserType().equals("ADMIN")) { // or user is same as userId
-            reservation.setCancelled(true);
-            reservation.setEditPurpose(cancelPurpose);
+            reservation.cancelReservation(cancelPurpose);
 
             reservationRepo.save(reservation);
             return true;
         } else {
             return false;
         }
+    }
+
+    @PostMapping("makeReservation")
+    public String makeReservation(@RequestParam Long targetUserOrGroupId, @RequestParam Long roomId,
+                                  @RequestParam LocalDateTime start, @RequestParam LocalDateTime end,
+                                  @RequestParam String purpose) {
+        Long userId = UserCommunication.getUser();
+        String userType = UserCommunication.getUserType();
+        Builder builder = new ReservationBuilder(userId, roomId, start, end);
+        Director director = new Director(builder);
+
+        if (targetUserOrGroupId == userId) {
+            director.buildSelfReservation();
+        }
+        else if (userType == "ADMIN") {
+            director.buildAdminReservation(targetUserOrGroupId);
+        }
+        else {
+            director.buildGroupReservation(targetUserOrGroupId, purpose);
+        }
+
+        Reservation reservation = builder.build();
+
+        Validator handler = new CheckAvailabilityValidator();
+        handler.setNext(new CheckIfRoomIsNotReservedAlready());
+        handler.setNext(new EmployeesCannotReserveMoreThanTwoWeeksInAdvance());
+        handler.setNext(new EmployeesMakeEditCancelReservationForThemselves());
+        handler.setNext(new EmployeesOneReservationDuringTimeSlot());
+        handler.setNext(new SecretariesCanOnlyReserveEditForTheirResearchMembers());
+
+        try {
+            boolean isValid = handler.handle(reservation);
+            System.out.print("Reservation status = " + isValid);
+            reservationRepo.save(reservation);
+        } catch (InvalidReservationException e) {
+            e.printStackTrace();
+        }
+
+        return "Reservation successful!";
     }
 }

@@ -51,11 +51,13 @@ public class ReservationController {
     }
 
     @GetMapping("checkTimeslot")
-    public List<Long> checkTimeslot(@RequestParam List<Long> rooms, @RequestParam String startTime, @RequestParam String endTime) {
+    public List<Long> checkTimeslot(@RequestParam List<Long> rooms, @RequestParam String startTime
+            , @RequestParam String endTime) {
         List<Long> filteredRooms = new ArrayList<>();
 
         @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-        Set<Long> takenRooms = reservationRepo.findAllByRoomIdInAndStartBeforeAndEndAfter(rooms,
+        Set<Long> takenRooms = reservationRepo
+                .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(rooms,
                 LocalDateTime.parse(startTime), LocalDateTime.parse(endTime))
                 .stream().map(Reservation::getRoomId).collect(Collectors.toSet());
 
@@ -68,15 +70,56 @@ public class ReservationController {
         return filteredRooms;
     }
 
-    /*@GetMapping("getByJoinCode")
-    public Lecture getAllLecturesByJoinCode(String joinCode) {
-        List<Lecture> lectureList = lectureRepository.findAllByJoinCodeEquals(joinCode);
-        if (!lectureList.isEmpty()) {
-            return lectureList.get(0);
+    // TODO: Check if the current user is the one that made the reservation
+    @GetMapping("editReservation")
+    public boolean editReservation(@RequestParam long reservationId, @RequestParam long roomId
+            , @RequestParam LocalDateTime start, @RequestParam LocalDateTime end
+            , @RequestParam String editPurpose) {
+        Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
+        if (reservation == null) return false;
+        //long userId = reservation.getUserId(); needed when checking for the same user that made the reservation
+
+        if (roomId != 0 || start != null || end != null) {
+            if (roomId != 0) roomId = reservation.getRoomId();
+            if (start != null) start = reservation.getStart();
+            if (end != null) end = reservation.getEnd();
         } else {
-            return null;
+            return false;
         }
-    }*/
 
+        if (UserCommunication.getUserType().equals("ADMIN")) { // or user is same as userId
+            if (reservationRepo.findAllByRoomIdAndCancelledIsFalseAndStartBeforeAndEndAfter(roomId, start, end) == null) {
+                return false;
+            } else {
 
+                reservation.setRoomId(roomId);
+                reservation.setStart(start);
+                reservation.setEnd(end);
+                reservation.setEditPurpose(editPurpose);
+
+                reservationRepo.save(reservation);
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    // TODO: Check if the current user is the one that made the reservation
+    @GetMapping("cancelReservation")
+    public boolean cancelReservation(@RequestParam long reservationId, @RequestParam String cancelPurpose) {
+        Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
+        if (reservation == null) return false;
+        //long userId = reservation.getUserId(); needed when checking for the same user that made the reservation
+
+        if (UserCommunication.getUserType().equals("ADMIN")) { // or user is same as userId
+            reservation.setCancelled(true);
+            reservation.setEditPurpose(cancelPurpose);
+
+            reservationRepo.save(reservation);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

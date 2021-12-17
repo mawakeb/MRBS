@@ -6,6 +6,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "room")
+
 public class Reservation {
 
     @Id
@@ -13,17 +14,22 @@ public class Reservation {
     @Column(name = "id")
     private Long id;
 
+    private Long madeBy;
+
     @Column(name = "roomId")
     private Long roomId;
-
-    @Column(name = "userId")
-    private Long userId;
 
     @Column(name = "start")
     private LocalDateTime start;
 
     @Column(name = "end")
     private LocalDateTime end;
+
+    private ReservationType type;
+
+    private Long userId;
+
+    private Long groupId;
 
     @Column(name = "purpose")
     private String purpose;
@@ -34,25 +40,29 @@ public class Reservation {
     @Column(name = "cancelled")
     private boolean cancelled;
 
-
     /**
      * Constructor for the Reservation class.
      *
-     * @param id      unique reservation ID.
-     * @param roomId  location of the reservation.
-     * @param userId  netID of the user who made the reservation.
-     * @param start   Date and time of the start of the reservation
-     * @param end     Date and time of the end of the reservation
+     * @param id      Unique reservation ID.
+     * @param madeBy  ID of the user who made the reservation.
+     * @param roomId  Location of the reservation.
+     * @param start   Date and time of the start of the reservation.
+     * @param end     Date and time of the end of the reservation.
+     * @param type    Whether this reservation was made for the user themselves, another user or a research group.
+     * @param userId  The ID of the person the reservation was made for.
+     * @param groupId The ID of the research group the reservation was made for.
      * @param purpose purpose of the reservation
      */
-    public Reservation(Long id, Long roomId, Long userId, LocalDateTime start,
-                       LocalDateTime end, String purpose) {
-        this.id = id;
+    public Reservation(Long madeBy, Long roomId, LocalDateTime start, LocalDateTime end, ReservationType type, Long userId, Long groupId, String purpose) {
+        this.madeBy = madeBy;
         this.roomId = roomId;
-        this.userId = userId;
         this.start = start;
         this.end = end;
+        this.type = type;
+        this.userId = userId;
+        this.groupId = groupId;
         this.purpose = purpose;
+
         this.cancelled = false;
     }
 
@@ -60,7 +70,7 @@ public class Reservation {
         return id;
     }
 
-    public void setId(Long id) {
+    private void setId(Long id) {
         this.id = id;
     }
 
@@ -68,23 +78,23 @@ public class Reservation {
         return roomId;
     }
 
-    public void setRoomId(Long roomId) {
+    private void setRoomId(Long roomId) {
         this.roomId = roomId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getMadeBy() {
+        return madeBy;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    private void setMadeBy(Long madeBy) {
+        this.madeBy = madeBy;
     }
 
     public LocalDateTime getStart() {
         return start;
     }
 
-    public void setStart(LocalDateTime start) {
+    private void setStart(LocalDateTime start) {
         this.start = start;
     }
 
@@ -92,7 +102,7 @@ public class Reservation {
         return end;
     }
 
-    public void setEnd(LocalDateTime end) {
+    private void setEnd(LocalDateTime end) {
         this.end = end;
     }
 
@@ -100,7 +110,7 @@ public class Reservation {
         return purpose;
     }
 
-    public void setPurpose(String purpose) {
+    private void setPurpose(String purpose) {
         this.purpose = purpose;
     }
 
@@ -112,28 +122,48 @@ public class Reservation {
         this.editPurpose = editPurpose;
     }
 
+    public ReservationType getType() {
+        return type;
+    }
+
+    private void setType(ReservationType type) {
+        this.type = type;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    private long setUserId() {return userId;}
+
+    public long getGroupId() {
+        return userId;
+    }
+
+    private long setGroupId() {return userId;}
+
     public boolean isCancelled() {
         return cancelled;
     }
 
-    public void setCancelled(boolean cancelled) {
+    private void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
 
     public void changeLocation(Long newRoomId, String editPurpose) {
-        this.roomId = newRoomId;
-        this.editPurpose = editPurpose;
+        this.setRoomId(newRoomId);
+        this.setEditPurpose(editPurpose);
     }
 
     public void changeTime(LocalDateTime newStart, LocalDateTime newEnd, String editPurpose) {
-        this.start = newStart;
-        this.end = newEnd;
-        this.editPurpose = editPurpose;
+        this.setStart(newStart);
+        this.setEnd(newEnd);
+        this.setEditPurpose(editPurpose);
     }
 
     public void cancelReservation(String editPurpose) {
-        this.cancelled = true;
-        this.editPurpose = editPurpose;
+        this.setCancelled(true);
+        this.setEditPurpose(editPurpose);
     }
 
     @Override

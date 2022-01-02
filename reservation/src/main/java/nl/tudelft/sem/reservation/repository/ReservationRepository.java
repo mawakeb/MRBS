@@ -8,13 +8,25 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Reservation Repository Interface.
  */
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    List<Reservation> findAllByRoomIdInAndStartBeforeAndEndAfter(
+    /** Saves a reservation.
+     * @param reservation the reservation
+     * @return the reservation
+     */
+    Reservation save(Reservation reservation);
+
+    Optional<Reservation> findById(Long id);
+
+    Reservation findAllByRoomIdAndCancelledIsFalseAndStartBeforeAndEndAfter(
+            Long roomId, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Reservation> findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(
             Iterable<Long> roomIds, LocalDateTime startTime, LocalDateTime endTime);
 
     @Query("SELECT r FROM Reservation r " +
@@ -33,5 +45,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                                                       @Param("end") LocalDateTime end);
     @Query("SELECT r FROM Reservation r WHERE r.userId = :userId")
     List<Reservation> findAllByUserId(@Param("userId") Long userId);
+
+    //find reservations that overlap with the given time
+    @Query("SELECT r FROM Reservation r " +
+            "WHERE (r.start >= :start AND r.start < :end)" +
+            "OR (:start >= r.start AND :start < r.end)")
+    List<Reservation> findAllOverlapping(@Param("start") LocalDateTime start,
+                                         @Param("end") LocalDateTime end);
 
 }

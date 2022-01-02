@@ -98,8 +98,8 @@ public class RoomController {
 
         // add the rooms that fit the first 3 characteristics to a new list
         for (Room r : rooms) {
-            if ((capacity != -1 || r.getCapacity() >= capacity) &&
-                    (buildingId != -1 || r.getBuildingId() == buildingId) &&
+            if ((capacity != 0 || r.getCapacity() >= capacity) &&
+                    (buildingId != 0 || r.getBuildingId() == buildingId) &&
                     (!Objects.equals(equipmentName, "") || roomsWithEquipment.contains(r.getId()))) {
                 filteredRooms.add(r);
             }

@@ -118,27 +118,74 @@ public class RoomController {
     }
 
     @GetMapping("leaveNotice")
-    public void leaveNotice(@RequestParam long userId, @RequestParam long reservationId, @RequestParam String message) {
+    public String leaveNotice(@RequestParam long userId, @RequestParam long reservationId, @RequestParam String message) {
 
         //if the user is the owner of the reservation, save a new notice in NoticeRepository
         if (ReservationCommunication.checkUserToReservation(userId, reservationId)) {
             long roomId = ReservationCommunication.getRoomWithReservation(reservationId);
             RoomNotice notice = new RoomNotice(roomId, reservationId, message);
             noticeRepo.save(notice);
+            return "Notice saved successfully";
+        } else {
+            return "There was an error";
         }
     }
 
     @GetMapping("changeStatus")
-    public void changeStatus(@RequestParam long userId, @RequestParam long roomId, @RequestParam boolean status) throws RoomNotFoundException {
+    public String changeStatus(@RequestParam long userId, @RequestParam long roomId, @RequestParam boolean status) throws RoomNotFoundException {
 
         if (UserCommunication.getRole(userId).equals("ADMIN")) {
             Room room = roomRepo.findById(roomId);
             if (room !=null){
                 room.setUnderMaintenance(status);
                 roomRepo.save(room);
+                return "Status changed successfully";
             } else {
-                throw new RoomNotFoundException(roomId + "");
+                return "Room was not found";
             }
         }
+        return "You do not have the access to change the status";
+    }
+
+    @GetMapping("createRoom")
+    public String createRoom(@RequestParam long userId, @RequestParam long id, @RequestParam String name, @RequestParam long buildingId, @RequestParam int capacity){
+        if (UserCommunication.getRole(userId).equals("ADMIN")) {
+            if(roomRepo.findById(id) == null){
+                Room room = new Room(id, name, buildingId, capacity);
+                roomRepo.save(room);
+                return "Room has been saved successfully";
+            } else {
+                return "There is a room with same id";
+            }
+        }
+        return "You do not have access to creating rooms in the database";
+    }
+
+    @GetMapping("createBuilding")
+    public String createBuilding(@RequestParam long userId, @RequestParam long id, @RequestParam String name, @RequestParam LocalTime openTime, @RequestParam LocalTime closeTime){
+        if (UserCommunication.getRole(userId).equals("ADMIN")) {
+            if(buildingRepo.findById(id) == null){
+                Building building = new Building(id, name, openTime, closeTime);
+                buildingRepo.save(building);
+                return "Building has been saved successfully";
+            } else {
+                return "There is a building with same id";
+            }
+        }
+        return "You do not have access to creating buildings in the database";
+    }
+
+    @GetMapping("createEquipment")
+    public String createEquipment(@RequestParam long userId, @RequestParam Long roomId, @RequestParam String equipmentName){
+        if (UserCommunication.getRole(userId).equals("ADMIN")) {
+            if(roomRepo.findById(roomId) != null){
+                EquipmentInRoom equipment = new EquipmentInRoom(roomId, equipmentName);
+                equipmentRepo.save(equipment);
+                return "Equipment has been saved successfully";
+            } else {
+                return "Room was not found";
+            }
+        }
+        return "You do not have access to creating equipments in the database";
     }
 }

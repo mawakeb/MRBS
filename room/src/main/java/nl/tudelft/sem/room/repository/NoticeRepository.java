@@ -18,6 +18,8 @@ public interface NoticeRepository extends JpaRepository<RoomNotice, Long> {
 
     RoomNotice findById(long id);
 
+    List<RoomNotice> findByRoomId(long roomId);
+
 
 
 }

@@ -30,6 +30,8 @@ public class RoomController {
     private final transient EquipmentRepository equipmentRepo;
     private final transient NoticeRepository noticeRepo;
     protected static Gson gson = new Gson();
+    //PMD: AvoidDuplicateLiterals
+    private transient String admin = "ADMIN";
 
     @Autowired
     public RoomController(RoomRepository roomRepo, BuildingRepository buildingRepo, EquipmentRepository equipmentRepo, NoticeRepository noticeRepo) {
@@ -131,10 +133,20 @@ public class RoomController {
         }
     }
 
+    @GetMapping("getNotice")
+    public List<RoomNotice> leaveNotice(@RequestParam long userId, @RequestParam long roomId) {
+
+        if (UserCommunication.getRole(userId).equals(admin)) {
+            List<RoomNotice> notices = noticeRepo.findByRoomId(roomId);
+            return notices;
+        }
+        return null;
+    }
+
     @GetMapping("changeStatus")
     public String changeStatus(@RequestParam long userId, @RequestParam long roomId, @RequestParam boolean status) throws RoomNotFoundException {
 
-        if (UserCommunication.getRole(userId).equals("ADMIN")) {
+        if (UserCommunication.getRole(userId).equals(admin)) {
             Room room = roomRepo.findById(roomId);
             if (room !=null){
                 room.setUnderMaintenance(status);
@@ -149,7 +161,7 @@ public class RoomController {
 
     @GetMapping("createRoom")
     public String createRoom(@RequestParam long userId, @RequestParam long id, @RequestParam String name, @RequestParam long buildingId, @RequestParam int capacity){
-        if (UserCommunication.getRole(userId).equals("ADMIN")) {
+        if (UserCommunication.getRole(userId).equals(admin)) {
             if(roomRepo.findById(id) == null){
                 Room room = new Room(id, name, buildingId, capacity);
                 roomRepo.save(room);
@@ -163,7 +175,7 @@ public class RoomController {
 
     @GetMapping("createBuilding")
     public String createBuilding(@RequestParam long userId, @RequestParam long id, @RequestParam String name, @RequestParam LocalTime openTime, @RequestParam LocalTime closeTime){
-        if (UserCommunication.getRole(userId).equals("ADMIN")) {
+        if (UserCommunication.getRole(userId).equals(admin)) {
             if(buildingRepo.findById(id) == null){
                 Building building = new Building(id, name, openTime, closeTime);
                 buildingRepo.save(building);
@@ -177,7 +189,7 @@ public class RoomController {
 
     @GetMapping("createEquipment")
     public String createEquipment(@RequestParam long userId, @RequestParam Long roomId, @RequestParam String equipmentName){
-        if (UserCommunication.getRole(userId).equals("ADMIN")) {
+        if (UserCommunication.getRole(userId).equals(admin)) {
             if(roomRepo.findById(roomId) != null){
                 EquipmentInRoom equipment = new EquipmentInRoom(roomId, equipmentName);
                 equipmentRepo.save(equipment);

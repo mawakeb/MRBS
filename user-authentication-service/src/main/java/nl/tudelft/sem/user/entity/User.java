@@ -35,10 +35,11 @@ public class User {
     public User() {
     }
 
-    public User(String netId, String name, String hashedPassword) {
+    public User(String netId, String name, String hashedPassword, Type type) {
         this.netId = netId;
         this.name = name;
         this.hashedPassword = hashedPassword;
+        this.type = type;
     }
 
     /**

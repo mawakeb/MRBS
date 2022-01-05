@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.html.Option;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -40,6 +41,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         final UserDetails userDetails = loadUserByUsername(userName);
 
         return new LoginResponse(jwtUtil.generateToken(userDetails));
+    }
+
+    public Optional<User> getAuthenticatedUser(String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            return Optional.empty();
+        } else {
+            String userName = jwtUtil.extractUsername(token.substring(7));
+
+            return userRepository.findByNetId(userName);
+        }
     }
 
 

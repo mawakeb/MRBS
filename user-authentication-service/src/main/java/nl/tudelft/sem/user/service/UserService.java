@@ -25,7 +25,8 @@ public class UserService {
             User newUser = new User(
                     registerRequest.getNetId(),
                     registerRequest.getName(),
-                    passwordEncoder.encode(registerRequest.getPassword())
+                    passwordEncoder.encode(registerRequest.getPassword()),
+                    registerRequest.getType()
             );
 
             return userRepository.save(newUser);

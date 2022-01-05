@@ -2,6 +2,7 @@ package nl.tudelft.sem.user.communication;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import nl.tudelft.sem.user.communication.request.LoginRequest;
 import nl.tudelft.sem.user.communication.request.RegisterRequest;
@@ -12,12 +13,7 @@ import nl.tudelft.sem.user.security.UserDetailsServiceImpl;
 import nl.tudelft.sem.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -45,7 +41,7 @@ public class UserController {
         try {
             User newUser = userService.create(request);
 
-            RegisterResponse responseBody = new RegisterResponse(newUser.getNetId(), newUser.getName());
+            RegisterResponse responseBody = new RegisterResponse(newUser.getNetId(), newUser.getName(), newUser.getType());
 
             return ResponseEntity.ok(responseBody);
         } catch (NetIdAlreadyExistsException exception) {
@@ -54,15 +50,19 @@ public class UserController {
     }
 
     @GetMapping("/getCurrentUserType")
-    public String getCurrentUserType()
+    public String getCurrentUserType(@RequestHeader("Authorization") String token)
     {
-        return "EMPLOYEE";
+        Optional<User> authenticatedUser = userDetailsService.getAuthenticatedUser(token);
+
+        return authenticatedUser.map(user -> user.getType().toString()).orElse(null);
     }
 
     @GetMapping("/getCurrentUserID")
-    public Long getCurrentUserID()
+    public Long getCurrentUserID(@RequestHeader("Authorization") String token)
     {
-        return (long) 0;
+        Optional<User> authenticatedUser = userDetailsService.getAuthenticatedUser(token);
+
+        return authenticatedUser.map(User::getId).orElse((long) - 1);
     }
 
     @GetMapping("/getTeamMemberIDs")

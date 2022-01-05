@@ -52,9 +52,6 @@ public class JwtRequestFilter implements GlobalFilter {
             }
 
             this.populateRequestWithHeaders(exchange, token);
-            System.out.println("This is a secured endpoint: " + request.getPath());
-        } else {
-            System.out.println("This is not a secured endpoint: " + request.getPath());
         }
 
         return chain.filter(exchange);

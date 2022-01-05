@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.util.List;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class GroupCommunication extends ServerCommunication {
 
     private static final String requestString = hostAddress + "/group";

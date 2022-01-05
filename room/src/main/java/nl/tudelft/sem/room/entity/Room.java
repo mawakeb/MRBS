@@ -1,6 +1,5 @@
 package nl.tudelft.sem.room.entity;
 
-import nl.tudelft.sem.room.object.Type;
 import javax.persistence.*;
 import java.util.Objects;
 

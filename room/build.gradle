@@ -43,6 +43,7 @@ dependencies {
 
 	// Local test database (in-memory)
 	implementation 'com.h2database:h2'
+    implementation 'junit:junit:4.13.1'
 	developmentOnly 'org.hibernate:hibernate-entitymanager'
 
 	// https://mvnrepository.com/artifact/com.google.code.gson/gson

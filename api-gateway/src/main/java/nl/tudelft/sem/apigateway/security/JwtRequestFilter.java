@@ -19,13 +19,13 @@ import reactor.core.publisher.Mono;
 @Order(1)
 public class JwtRequestFilter implements GlobalFilter {
 
-    private final Set<String> openEndpoints = Set.of(
+    private transient Set<String> openEndpoints = Set.of(
             "/user/register",
             "/user/login"
     );
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private transient JwtUtil jwtUtil;
 
     /**
      * Process the Web request and (optionally) delegate to the next {@code WebFilter}

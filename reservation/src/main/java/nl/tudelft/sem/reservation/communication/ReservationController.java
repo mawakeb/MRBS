@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/reservation")
 public class ReservationController {
 
 
@@ -42,7 +42,7 @@ public class ReservationController {
         return "hello_from_reservation";
     }
 
-    @GetMapping("checkUser")
+    @GetMapping("/checkUser")
     public boolean checkUser(@RequestParam long madeBy, @RequestParam long reservationId) {
 
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
@@ -53,7 +53,7 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("checkTimeslot")
+    @GetMapping("/checkTimeslot")
     public List<Long> checkTimeslot(@RequestParam List<Long> rooms, @RequestParam String startTime
             , @RequestParam String endTime) {
         List<Long> filteredRooms = new ArrayList<>();
@@ -74,7 +74,7 @@ public class ReservationController {
     }
 
     // TODO: Check if the current user is the one that made the reservation
-    @GetMapping("editReservation")
+    @GetMapping("/editReservation")
     public boolean editReservation(@RequestParam long reservationId, @RequestParam long roomId
             , @RequestParam LocalDateTime start, @RequestParam LocalDateTime end
             , @RequestParam String editPurpose) {
@@ -107,7 +107,7 @@ public class ReservationController {
     }
 
     // TODO: Check if the current user is the one that made the reservation
-    @GetMapping("cancelReservation")
+    @GetMapping("/cancelReservation")
     public boolean cancelReservation(@RequestParam long reservationId, @RequestParam String cancelPurpose) {
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
         if (reservation == null) return false;
@@ -123,7 +123,7 @@ public class ReservationController {
         }
     }
 
-    @PostMapping("makeReservation")
+    @PostMapping("/makeReservation")
     public String makeReservation(@RequestParam Long targetUserOrGroupId, @RequestParam Long roomId,
                                   @RequestParam LocalDateTime start, @RequestParam LocalDateTime end,
                                   @RequestParam String purpose) {

@@ -8,6 +8,14 @@ public class RegisterRequest {
     private String password;
     private Type type;
 
+    /**
+     * Instantiates a new Register request.
+     *
+     * @param netId    the net id
+     * @param name     the name
+     * @param password the password
+     * @param type     the type
+     */
     public RegisterRequest(String netId, String name, String password, Type type) {
         this.netId = netId;
         this.name = name;

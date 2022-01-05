@@ -7,6 +7,13 @@ public class RegisterResponse {
     private String name;
     private Type type;
 
+    /**
+     * Instantiates a new Register response.
+     *
+     * @param netId the net id
+     * @param name  the name
+     * @param type  the type
+     */
     public RegisterResponse(String netId, String name, Type type) {
         this.netId = netId;
         this.name = name;

@@ -12,7 +12,10 @@ public class ServerCommunication {
 
     protected static HttpResponse<String> requestHandler(HttpRequest request) {
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofString()
+            );
             int statusOk = 200;
             if (response.statusCode() != statusOk) {
                 System.out.println("Status: " + response.statusCode());

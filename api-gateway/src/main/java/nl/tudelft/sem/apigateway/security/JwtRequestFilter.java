@@ -1,6 +1,7 @@
 package nl.tudelft.sem.apigateway.security;
 
 import io.jsonwebtoken.Claims;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -12,8 +13,6 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import java.util.Set;
 
 @RefreshScope
 @Component
@@ -42,13 +41,21 @@ public class JwtRequestFilter implements GlobalFilter {
 
         if (!openEndpoints.contains(request.getPath().toString())) {
             if (this.isAuthMissing(request)) {
-                return this.onError(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
+                return this.onError(
+                        exchange,
+                        "Authorization header is missing in request",
+                        HttpStatus.UNAUTHORIZED
+                );
             }
 
             final String token = this.getAuthHeader(request);
 
             if (jwtUtil.isInvalid(token)) {
-                return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
+                return this.onError(
+                        exchange,
+                        "Authorization header is invalid",
+                        HttpStatus.UNAUTHORIZED
+                );
             }
 
             this.populateRequestWithHeaders(exchange, token);

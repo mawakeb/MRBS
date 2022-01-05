@@ -1,9 +1,8 @@
 package nl.tudelft.sem.user.repository;
 
+import java.util.Optional;
 import nl.tudelft.sem.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Optional;
 
 /**
  * The User Repository Interface.

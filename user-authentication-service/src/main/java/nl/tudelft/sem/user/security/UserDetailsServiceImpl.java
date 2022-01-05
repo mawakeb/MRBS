@@ -1,5 +1,8 @@
 package nl.tudelft.sem.user.security;
 
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import nl.tudelft.sem.user.communication.request.LoginRequest;
 import nl.tudelft.sem.user.communication.response.LoginResponse;
 import nl.tudelft.sem.user.entity.User;
@@ -15,11 +18,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.html.Option;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
+/**
+ * The type User details service.
+ */
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -27,12 +28,29 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
-    public UserDetailsServiceImpl(UserRepository userRepository, JwtUtil jwtUtil, @Lazy AuthenticationManager authenticationManager) {
+    /**
+     * Instantiates a new User details service.
+     *
+     * @param userRepository        the user repository
+     * @param jwtUtil               the jwt util
+     * @param authenticationManager the authentication manager
+     */
+    public UserDetailsServiceImpl(
+            UserRepository userRepository,
+            JwtUtil jwtUtil,
+            @Lazy AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
     }
 
+    /**
+     * Create jwt token login response.
+     *
+     * @param request the request
+     * @return the login response
+     * @throws Exception the exception
+     */
     public LoginResponse createJwtToken(LoginRequest request) throws Exception {
         String userName = request.getNetId();
         String password = request.getPassword();
@@ -43,6 +61,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new LoginResponse(jwtUtil.generateToken(userDetails));
     }
 
+    /**
+     * Gets authenticated user.
+     *
+     * @param token the token
+     * @return the authenticated user
+     */
     public Optional<User> getAuthenticatedUser(String token) {
         if (token == null || !token.startsWith("Bearer ")) {
             return Optional.empty();
@@ -73,7 +97,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user.isPresent()) {
             User userPresent = user.get();
 
-            return new org.springframework.security.core.userdetails.User(userPresent.getNetId(), userPresent.getHashedPassword(), this.getAuthoritiesForUser(userPresent));
+            return new org.springframework.security.core.userdetails.User(
+                    userPresent.getNetId(),
+                    userPresent.getHashedPassword(),
+                    this.getAuthoritiesForUser(userPresent)
+            );
         } else {
             throw new UsernameNotFoundException(username);
         }
@@ -84,12 +112,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return Set.of(new SimpleGrantedAuthority("ROLE_" + user.getType()));
     }
 
-    private void authenticate(String userName, String userPassword) throws Exception{
+    private void authenticate(String userName, String userPassword) throws Exception {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword));
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userName, userPassword)
+            );
         } catch (DisabledException e) {
             throw new Exception("User is disabled");
-        } catch(BadCredentialsException e) {
+        } catch (BadCredentialsException e) {
             throw new Exception("Bad credentials from user");
         }
     }

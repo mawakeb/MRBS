@@ -9,6 +9,11 @@ public class ReservationCommunication extends ServerCommunication {
     private static final String requestString = hostAddress + "/reservation";
 
 
+    /**
+     * Gets hi.
+     *
+     * @return the hi
+     */
     public static String getHi() {
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(requestString)).build();
         return gson

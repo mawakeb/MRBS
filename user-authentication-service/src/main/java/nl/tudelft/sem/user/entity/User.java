@@ -1,8 +1,15 @@
 package nl.tudelft.sem.user.entity;
 
-import nl.tudelft.sem.user.object.Type;
-import javax.persistence.*;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import nl.tudelft.sem.user.object.Type;
 
 /**
  * The User Entity.
@@ -35,6 +42,14 @@ public class User {
     public User() {
     }
 
+    /**
+     * Instantiates a new User.
+     *
+     * @param netId          the net id
+     * @param name           the name
+     * @param hashedPassword the hashed password
+     * @param type           the type
+     */
     public User(String netId, String name, String hashedPassword, Type type) {
         this.netId = netId;
         this.name = name;
@@ -43,6 +58,8 @@ public class User {
     }
 
     /**
+     * Gets id.
+     *
      * @return the id
      */
     public Long getId() {
@@ -50,6 +67,8 @@ public class User {
     }
 
     /**
+     * Sets id.
+     *
      * @param id the id
      */
     public void setId(Long id) {
@@ -57,6 +76,8 @@ public class User {
     }
 
     /**
+     * Gets net id.
+     *
      * @return the netId
      */
     public String getNetId() {
@@ -64,6 +85,8 @@ public class User {
     }
 
     /**
+     * Sets net id.
+     *
      * @param netId the netId
      */
     public void setNetId(String netId) {
@@ -71,6 +94,8 @@ public class User {
     }
 
     /**
+     * Gets type.
+     *
      * @return the type
      */
     public Type getType() {
@@ -78,6 +103,8 @@ public class User {
     }
 
     /**
+     * Sets type.
+     *
      * @param type the type
      */
     public void setType(Type type) {
@@ -85,6 +112,8 @@ public class User {
     }
 
     /**
+     * Gets name.
+     *
      * @return the name
      */
     public String getName() {
@@ -92,6 +121,8 @@ public class User {
     }
 
     /**
+     * Sets name.
+     *
      * @param name the name
      */
     public void setName(String name) {
@@ -99,6 +130,8 @@ public class User {
     }
 
     /**
+     * Gets hashed password.
+     *
      * @return the hashed password
      */
     public String getHashedPassword() {
@@ -106,6 +139,8 @@ public class User {
     }
 
     /**
+     * Sets hashed password.
+     *
      * @param hashedPassword the hashed password
      */
     public void setHashedPassword(String hashedPassword) {
@@ -114,13 +149,17 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(netId, user.netId)
-                && Objects.equals(name, user.name)
-                && Objects.equals(hashedPassword, user.hashedPassword);
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        } else {
+            User user = (User) o;
+            return Objects.equals(id, user.id)
+                    && Objects.equals(netId, user.netId)
+                    && Objects.equals(name, user.name)
+                    && Objects.equals(hashedPassword, user.hashedPassword);
+        }
     }
 
     @Override
@@ -130,11 +169,11 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", netId='" + netId + '\'' +
-                ", name='" + name + '\'' +
-                ", hashedPassword='" + hashedPassword + '\'' +
-                '}';
+        return "User{"
+                + "id=" + id
+                + ", netId='" + netId + '\''
+                + ", name='" + name + '\''
+                + ", hashedPassword='" + hashedPassword + '\''
+                + '}';
     }
 }

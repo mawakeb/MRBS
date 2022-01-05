@@ -119,7 +119,7 @@ public class RoomController {
 
     }
 
-    @GetMapping("leaveNotice")
+    @PostMapping("leaveNotice")
     public String leaveNotice(@RequestParam long userId, @RequestParam long reservationId, @RequestParam String message) {
 
         //if the user is the owner of the reservation, save a new notice in NoticeRepository
@@ -143,7 +143,7 @@ public class RoomController {
         return null;
     }
 
-    @GetMapping("changeStatus")
+    @PostMapping("changeStatus")
     public String changeStatus(@RequestParam long userId, @RequestParam long roomId, @RequestParam boolean status) throws RoomNotFoundException {
 
         if (UserCommunication.getRole(userId).equals(admin)) {
@@ -159,7 +159,7 @@ public class RoomController {
         return "You do not have the access to change the status";
     }
 
-    @GetMapping("createRoom")
+    @PostMapping("createRoom")
     public String createRoom(@RequestParam long userId, @RequestParam long id, @RequestParam String name, @RequestParam long buildingId, @RequestParam int capacity){
         if (UserCommunication.getRole(userId).equals(admin)) {
             if(roomRepo.findById(id) == null){
@@ -173,7 +173,7 @@ public class RoomController {
         return "You do not have access to creating rooms in the database";
     }
 
-    @GetMapping("createBuilding")
+    @PostMapping("createBuilding")
     public String createBuilding(@RequestParam long userId, @RequestParam long id, @RequestParam String name, @RequestParam LocalTime openTime, @RequestParam LocalTime closeTime){
         if (UserCommunication.getRole(userId).equals(admin)) {
             if(buildingRepo.findById(id) == null){

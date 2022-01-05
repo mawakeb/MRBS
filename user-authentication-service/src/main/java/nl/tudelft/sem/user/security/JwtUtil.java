@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
-    private final String secret = "a25cd3cc-f769-476e-a3bf-c52f069754cd";
+    private transient String secret = "a25cd3cc-f769-476e-a3bf-c52f069754cd";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

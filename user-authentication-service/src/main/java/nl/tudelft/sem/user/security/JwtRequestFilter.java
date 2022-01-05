@@ -13,10 +13,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
+@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailService;
+    private transient JwtUtil jwtUtil;
+    private transient UserDetailsServiceImpl userDetailService;
 
     public JwtRequestFilter(UserDetailsServiceImpl userDetailService, JwtUtil jwtUtil) {
         this.userDetailService = userDetailService;

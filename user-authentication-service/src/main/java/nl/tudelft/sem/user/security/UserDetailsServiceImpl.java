@@ -22,11 +22,12 @@ import org.springframework.stereotype.Component;
  * The type User details service.
  */
 @Component
+@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
-    private final AuthenticationManager authenticationManager;
+    private transient UserRepository userRepository;
+    private transient JwtUtil jwtUtil;
+    private transient AuthenticationManager authenticationManager;
 
     /**
      * Instantiates a new User details service.

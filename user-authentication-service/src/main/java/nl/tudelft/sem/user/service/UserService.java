@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private transient PasswordEncoder passwordEncoder;
+    private transient UserRepository userRepository;
 
     /**
      * Instantiates a new User service.

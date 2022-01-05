@@ -1,9 +1,6 @@
 package nl.tudelft.sem.user.security;
 
-import nl.tudelft.sem.user.security.JwtRequestFilter;
-import nl.tudelft.sem.user.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;

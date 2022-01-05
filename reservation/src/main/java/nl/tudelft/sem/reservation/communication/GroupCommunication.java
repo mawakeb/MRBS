@@ -9,9 +9,10 @@ public class GroupCommunication extends ServerCommunication {
 
     private static final String requestString = hostAddress + "/group";
 
-    public static boolean isSecretaryOfUser(Long secretaryId, Long employeeId) {
+    public static boolean isSecretaryOfUser(Long secretaryId, Long employeeId, String token) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
+                .setHeader("Authorization", token)
                 .uri(URI.create(requestString + "/isSecretaryOfUser" + "?secretaryId=" + secretaryId + "&employeeId=" + employeeId))
                 .build();
         return gson
@@ -20,9 +21,10 @@ public class GroupCommunication extends ServerCommunication {
                         .getType());
     }
 
-    public static boolean isSecretaryOfGroup(Long secretaryId, Long groupId) {
+    public static boolean isSecretaryOfGroup(Long secretaryId, Long groupId, String token) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
+                .setHeader("Authorization", token)
                 .uri(URI.create(requestString + "/isSecretaryOfGroup" + "?secretaryId=" + secretaryId + "&groupId=" + groupId))
                 .build();
         return gson
@@ -31,9 +33,10 @@ public class GroupCommunication extends ServerCommunication {
                         .getType());
     }
 
-    public static boolean isInGroup(Long userId, Long groupId) {
+    public static boolean isInGroup(Long userId, Long groupId, String token) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
+                .setHeader("Authorization", token)
                 .uri(URI.create(requestString + "/isInGroup" + "?userId=" + userId + "&groupId=" + groupId))
                 .build();
         return gson
@@ -42,9 +45,10 @@ public class GroupCommunication extends ServerCommunication {
                         .getType());
     }
 
-    public static boolean overlap(Long groupId1, Long groupId2) {
+    public static boolean overlap(Long groupId1, Long groupId2, String token) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
+                .setHeader("Authorization", token)
                 .uri(URI.create(requestString + "/overlap" + "?groupId1=" + groupId1 + "&groupId2=" + groupId2))
                 .build();
         return gson

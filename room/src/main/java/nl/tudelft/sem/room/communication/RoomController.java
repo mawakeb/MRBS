@@ -82,7 +82,8 @@ public class RoomController {
     public List<Room> queryRooms(@RequestParam int capacity, @RequestParam long buildingId,
                                  @RequestParam String equipmentName,
                                  @RequestParam String startTime,
-                                 @RequestParam String endTime) {
+                                 @RequestParam String endTime,
+                                 @RequestHeader("Authorization") String token) {
         // lists to be used
         List<Room> rooms = roomRepo.findAll();
         List<Room> filteredRooms = new ArrayList<>();
@@ -104,7 +105,7 @@ public class RoomController {
             // get the rooms within the timeslot
             return roomRepo.findAllById(ReservationCommunication.getRoomsInTimeslot(
                     filteredRooms.stream().map(Room::getId).collect(Collectors.toList()),
-                    startTime, endTime));
+                    startTime, endTime, token));
         } else {
             return filteredRooms;
         }

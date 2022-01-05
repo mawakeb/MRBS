@@ -14,7 +14,7 @@ public class CheckIfRoomIsNotReservedAlready extends BaseValidator {
     private transient ReservationRepository reservationRepo;
 
     @Override
-    public boolean handle(Reservation reservation) throws InvalidReservationException {
+    public boolean handle(Reservation reservation, String token) throws InvalidReservationException {
 
         Long roomId = reservation.getRoomId();
         LocalDateTime reservationStart = reservation.getStart();
@@ -27,6 +27,6 @@ public class CheckIfRoomIsNotReservedAlready extends BaseValidator {
             throw new InvalidReservationException("There is another reservation overlapping with your desired time range.");
         }
 
-        return super.checkNext(reservation);
+        return super.checkNext(reservation, token);
     }
 }

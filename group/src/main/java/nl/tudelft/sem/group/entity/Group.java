@@ -1,17 +1,14 @@
 package nl.tudelft.sem.group.entity;
 
-
-
-import nl.tudelft.sem.group.object.Type;
-
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * The User Entity.
+ * The Research group Entity.
  */
 @Entity
-@Table(name = "user")
+@Table(name = "group")
 public class Group {
 
     @Id
@@ -19,18 +16,8 @@ public class Group {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "net_id")
-    private String netId;
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "password")
-    private String hashedPassword;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type")
-    private Type type;
+    @Column(name = "members")
+    private List<Long> membersIds;
 
     /**
      * No-args constructor for Spring.
@@ -39,99 +26,47 @@ public class Group {
     }
 
     /**
-     * @return the id
+     * @return the id of the research group.
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * @param id the id
+     * @param id the id of the research group.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * @return the netId
+     * @return a list of the id-s of all the members of the research group.
      */
-    public String getNetId() {
-        return netId;
+    public List<Long> getMembersId() {
+        return membersIds;
     }
 
     /**
-     * @param netId the netId
+     * Sets new id-s for the members of a research group.
+     * @param membersId the id-s of all the members within that research group.
      */
-    public void setNetId(String netId) {
-        this.netId = netId;
-    }
-
-    /**
-     * @return the type
-     */
-    public Type getType() {
-        return type;
-    }
-
-    /**
-     * @param type the type
-     */
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the hashed password
-     */
-    public String getHashedPassword() {
-        return hashedPassword;
-    }
-
-    /**
-     * @param hashedPassword the hashed password
-     */
-    public void setHashedPassword(String hashedPassword) {
-        this.hashedPassword = hashedPassword;
+    public void setMembersId(List<Long> membersId) {
+        this.membersIds = membersId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Group r = (Group) o;
-        return Objects.equals(id, r.id) &&
-                Objects.equals(netId, r.netId) &&
-                Objects.equals(name, r.name) &&
-                Objects.equals(hashedPassword, r.hashedPassword);
+        Group group = (Group) o;
+        return Objects.equals(id, group.id) && Objects.equals(membersIds, group.membersIds);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, netId, name, hashedPassword);
-    }
-
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Group{" +
                 "id=" + id +
-                ", netId='" + netId + '\'' +
-                ", name='" + name + '\'' +
-                ", hashedPassword='" + hashedPassword + '\'' +
+                ", membersIds=" + membersIds.toString() +
                 '}';
     }
 }

@@ -13,6 +13,6 @@ public class GroupNotFoundException extends Exception {
      * @param message the detail message.
      */
     public GroupNotFoundException(String message) {
-        super("Room not found with id: " + message);
+        super("Group not found: " + message);
     }
 }

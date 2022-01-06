@@ -73,6 +73,7 @@ public class ReservationController {
         return filteredRooms;
     }
 
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @GetMapping("/editReservation")
     public boolean editReservation(@RequestParam long reservationId, @RequestParam long roomId
             , @RequestParam LocalDateTime start, @RequestParam LocalDateTime end

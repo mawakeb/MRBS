@@ -73,14 +73,14 @@ public class ReservationController {
         return filteredRooms;
     }
 
-    // TODO: Check if the current user is the one that made the reservation
     @GetMapping("/editReservation")
     public boolean editReservation(@RequestParam long reservationId, @RequestParam long roomId
             , @RequestParam LocalDateTime start, @RequestParam LocalDateTime end
             , @RequestParam String editPurpose, @RequestHeader("Authorization") String token) {
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
         if (reservation == null) return false;
-        //long userId = reservation.getUserId(); needed when checking for the same user that made the reservation
+        long isForId = reservation.getUserId();
+        long madeById = reservation.getMadeBy();
 
         if (roomId != 0 || start != null || end != null) {
             if (roomId != 0) roomId = reservation.getRoomId();
@@ -90,30 +90,46 @@ public class ReservationController {
             return false;
         }
 
-        if (UserCommunication.getUserType(token).equals("ADMIN")) { // or user is same as userId
-            if (reservationRepo.findAllByRoomIdAndCancelledIsFalseAndStartBeforeAndEndAfter(roomId, start, end) == null) {
-                return false;
-            } else {
+        if (UserCommunication.getUserType(token).equals("ADMIN")
+                || UserCommunication.getUser(token).equals(isForId)
+                || UserCommunication.getUser(token).equals(madeById)) {
+            // set up validators
+            Validator handler = new CheckAvailabilityValidator();
+            handler.setNext(new CheckIfRoomIsNotReservedAlready(), token);
+            handler.setNext(new EmployeesCannotReserveMoreThanTwoWeeksInAdvance(), token);
+            handler.setNext(new EmployeesMakeEditCancelReservationForThemselves(), token);
+            handler.setNext(new EmployeesOneReservationDuringTimeSlot(), token);
+            handler.setNext(new SecretariesCanOnlyReserveEditForTheirResearchMembers(), token);
 
-                reservation.changeLocation(roomId, editPurpose);
-                reservation.changeTime(start, end, editPurpose);
+            // edit the reservation
+            reservation.changeLocation(roomId, editPurpose);
+            reservation.changeTime(start, end, editPurpose);
 
+            // perform the checks and save the reservation if valid
+            try {
+                boolean isValid = handler.handle(reservation, token);
+                System.out.print("Reservation status = " + isValid);
                 reservationRepo.save(reservation);
-                return true;
+            } catch (InvalidReservationException e) {
+                e.printStackTrace();
             }
         } else {
             return false;
         }
+
+        return true;
     }
 
-    // TODO: Check if the current user is the one that made the reservation
     @GetMapping("/cancelReservation")
     public boolean cancelReservation(@RequestParam long reservationId, @RequestParam String cancelPurpose, @RequestHeader("Authorization") String token) {
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
         if (reservation == null) return false;
-        //long userId = reservation.getUserId(); needed when checking for the same user that made the reservation
+        long isForId = reservation.getUserId();
+        long madeById = reservation.getMadeBy();
 
-        if (UserCommunication.getUserType(token).equals("ADMIN")) { // or user is same as userId
+        if (UserCommunication.getUserType(token).equals("ADMIN")
+                || UserCommunication.getUser(token).equals(isForId)
+                || UserCommunication.getUser(token).equals(madeById)) {
             reservation.cancelReservation(cancelPurpose);
 
             reservationRepo.save(reservation);

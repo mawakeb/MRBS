@@ -11,12 +11,10 @@ import nl.tudelft.sem.room.repository.BuildingRepository;
 import nl.tudelft.sem.room.repository.EquipmentRepository;
 import nl.tudelft.sem.room.repository.NoticeRepository;
 import nl.tudelft.sem.room.repository.RoomRepository;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -120,11 +118,11 @@ public class RoomController {
 
     }
 
-    @PostMapping("leaveNotice")
-    public String leaveNotice(@RequestParam long userId, @RequestParam long reservationId, @RequestParam String message) {
+    @PostMapping("/leaveNotice")
+    public String leaveNotice(@RequestHeader("Authorization") String token, @RequestParam long reservationId, @RequestParam String message) {
 
         //if the user is the owner of the reservation, save a new notice in NoticeRepository
-        if (ReservationCommunication.checkUserToReservation(userId, reservationId)) {
+        if (UserCommunication.getUserType(token).equals(admin)) {
             long roomId = ReservationCommunication.getRoomWithReservation(reservationId);
             RoomNotice notice = new RoomNotice(roomId, reservationId, message);
             noticeRepo.save(notice);
@@ -134,20 +132,20 @@ public class RoomController {
         }
     }
 
-    @GetMapping("getNotice")
-    public List<RoomNotice> leaveNotice(@RequestParam long userId, @RequestParam long roomId) {
+    @GetMapping("/getNotice")
+    public List<RoomNotice> leaveNotice(@RequestHeader("Authorization") String token, @RequestParam long roomId) {
 
-        if (UserCommunication.getRole(userId).equals(admin)) {
+        if (UserCommunication.getUserType(token).equals(admin)) {
             List<RoomNotice> notices = noticeRepo.findByRoomId(roomId);
             return notices;
         }
         return null;
     }
 
-    @PostMapping("changeStatus")
-    public String changeStatus(@RequestParam long userId, @RequestParam long roomId, @RequestParam boolean status) throws RoomNotFoundException {
+    @PostMapping("/changeStatus")
+    public String changeStatus(@RequestHeader("Authorization") String token, @RequestParam long roomId, @RequestParam boolean status) throws RoomNotFoundException {
 
-        if (UserCommunication.getRole(userId).equals(admin)) {
+        if (UserCommunication.getUserType(token).equals(admin)) {
             Room room = roomRepo.findById(roomId);
             if (room !=null){
                 room.setUnderMaintenance(status);
@@ -160,9 +158,9 @@ public class RoomController {
         return "You do not have the access to change the status";
     }
 
-    @PostMapping("createRoom")
-    public String createRoom(@RequestParam long userId, @RequestParam long id, @RequestParam String name, @RequestParam long buildingId, @RequestParam int capacity){
-        if (UserCommunication.getRole(userId).equals(admin)) {
+    @PostMapping("/createRoom")
+    public String createRoom(@RequestHeader("Authorization") String token, @RequestParam long id, @RequestParam String name, @RequestParam long buildingId, @RequestParam int capacity){
+        if (UserCommunication.getUserType(token).equals(admin)) {
             if(roomRepo.findById(id) == null){
                 Room room = new Room(id, name, buildingId, capacity);
                 roomRepo.save(room);
@@ -174,9 +172,9 @@ public class RoomController {
         return "You do not have access to creating rooms in the database";
     }
 
-    @PostMapping("createBuilding")
-    public String createBuilding(@RequestParam long userId, @RequestParam long id, @RequestParam String name, @RequestParam LocalTime openTime, @RequestParam LocalTime closeTime){
-        if (UserCommunication.getRole(userId).equals(admin)) {
+    @PostMapping("/createBuilding")
+    public String createBuilding(@RequestHeader("Authorization") String token, @RequestParam long id, @RequestParam String name, @RequestParam LocalTime openTime, @RequestParam LocalTime closeTime){
+        if (UserCommunication.getUserType(token).equals(admin)) {
             if(buildingRepo.findById(id) == null){
                 Building building = new Building(id, name, openTime, closeTime);
                 buildingRepo.save(building);
@@ -188,9 +186,9 @@ public class RoomController {
         return "You do not have access to creating buildings in the database";
     }
 
-    @GetMapping("createEquipment")
-    public String createEquipment(@RequestParam long userId, @RequestParam Long roomId, @RequestParam String equipmentName){
-        if (UserCommunication.getRole(userId).equals(admin)) {
+    @GetMapping("/createEquipment")
+    public String createEquipment(@RequestHeader("Authorization") String token, @RequestParam Long roomId, @RequestParam String equipmentName){
+        if (UserCommunication.getUserType(token).equals(admin)) {
             if(roomRepo.findById(roomId) != null){
                 EquipmentInRoom equipment = new EquipmentInRoom(roomId, equipmentName);
                 equipmentRepo.save(equipment);

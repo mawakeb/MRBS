@@ -20,15 +20,16 @@ public class UserCommunication extends ServerCommunication {
                 .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
     }
 
-    public static String getRole(Long userId, String token) {
-        HttpRequest request = HttpRequest
-                .newBuilder()
+    public static String getUserType(String token) {
+        HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .setHeader("Authorization", token)
-                .uri(URI.create(requestString+ "/getRole?userId=" + userId)).build();
-
+                .uri(URI.create(requestString + "/getCurrentUserType"))
+                .build();
         return gson
-                .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
+                .fromJson(requestHandler(request)
+                        .body(), new TypeToken<String>() {}
+                        .getType());
     }
 
 }

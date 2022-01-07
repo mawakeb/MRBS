@@ -32,16 +32,22 @@ public class GroupController {
 
     @GetMapping("getSecretariesIdsOfAGroup")
     public List<Long> getSecretariesId(@RequestParam Long groupId) throws GroupNotFoundException {
-        List<Long> secretariesIds = new ArrayList<Long>();
         Group group = groupRepository.findById(groupId).orElse(null);
+
         if (group == null) {
             throw new GroupNotFoundException("Group was not found.");
         }
-        List<Long> membersIds = group.getMembersId();
+
+        List<Long> secretariesIds = new ArrayList<Long>();
+        List<Long> membersIds = group.getMembersIds();
+
         for(int i = 0; i < membersIds.size(); i++) {
             String memberType = UserCommunication.getUserType();
+
+            if (memberType.equals("SECRETARY")) {
+                secretariesIds.add(membersIds.get(i));
+            }
         }
-        //TODO: to be continued...
 
         return secretariesIds;
     }

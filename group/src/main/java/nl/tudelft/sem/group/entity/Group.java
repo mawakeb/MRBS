@@ -69,7 +69,7 @@ public class Group {
     /**
      * @return a list of the id-s of all the members of the research group.
      */
-    public List<Long> getMembersId() {
+    public List<Long> getMembersIds() {
         return membersIds;
     }
 
@@ -77,7 +77,7 @@ public class Group {
      * Sets new id-s for the members of a research group.
      * @param membersId the id-s of all the members within that research group.
      */
-    public void setMembersId(List<Long> membersId) {
+    public void setMembersIds(List<Long> membersId) {
         this.membersIds = membersId;
     }
 
@@ -87,6 +87,11 @@ public class Group {
         if (o == null || getClass() != o.getClass()) return false;
         Group group = (Group) o;
         return Objects.equals(id, group.id) && Objects.equals(membersIds, group.membersIds);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     @Override

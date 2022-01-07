@@ -17,7 +17,7 @@ public class Group {
     private Long id;
 
     @Column(name = "secretary")
-    private Long secretaryId;
+    private List<Long> secretaryIds;
 
     @Column(name = "members")
     private List<Long> membersIds;
@@ -30,11 +30,11 @@ public class Group {
     /**
      * Constructor for the Group class.
      *
-     * @param secretaryId   ID of the secretary of the research group.
+     * @param secretaryIds   ID of the secretaries of the research group.
      * @param membersIds     IDs of the members of the research group.
      */
-    public Group(Long secretaryId, List<Long> membersIds) {
-        this.secretaryId = secretaryId;
+    public Group(List<Long> secretaryIds, List<Long> membersIds) {
+        this.secretaryIds = secretaryIds;
         this.membersIds = membersIds;
     }
 
@@ -53,17 +53,18 @@ public class Group {
     }
 
     /**
-     * @return the secretary id of the research group.
+     * @return a list of the id-s of all the secretaries of the research group.
      */
-    public Long getSecretaryId() {
-        return id;
+    public List<Long> getSecretaryIds() {
+        return secretaryIds;
     }
 
     /**
-     * @param secretaryId the secretary id of the research group.
+     * Sets new id-s for the secretaries of a research group.
+     * @param secretaryIds the id-s of all the secretaries within that research group.
      */
-    public void setSecretaryId(Long secretaryId) {
-        this.secretaryId = secretaryId;
+    public void setSecretaryIds(List<Long> secretaryIds) {
+        this.secretaryIds = secretaryIds;
     }
 
     /**

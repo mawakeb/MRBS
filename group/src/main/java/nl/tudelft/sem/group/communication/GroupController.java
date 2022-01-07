@@ -20,16 +20,6 @@ public class GroupController {
         this.groupRepository = groupRepository;
     }
 
-    @GetMapping("getSecretaryIdOfAGroup")
-    public Long getSecretaryId(@RequestParam Long groupId) throws GroupNotFoundException {
-        Group group = groupRepository.findById(groupId).orElse(null);
-        if (group == null) {
-            throw new GroupNotFoundException("Group was not found.");
-        } else {
-            return group.getSecretaryId();
-        }
-    }
-
     @GetMapping("getSecretariesIdsOfAGroup")
     public List<Long> getSecretariesId(@RequestParam Long groupId) throws GroupNotFoundException {
         Group group = groupRepository.findById(groupId).orElse(null);
@@ -53,12 +43,14 @@ public class GroupController {
     }
 
     @PostMapping("createGroup")
-    public String createGroup(@RequestParam Long secretaryId, @RequestParam List<Long> membersIds) {
+    public String createGroup(@RequestParam List<Long> secretaryIds, @RequestParam List<Long> membersIds) {
         if (UserCommunication.getCurrentUserType().equals("ADMIN")) {
-            if (!UserCommunication.getUserType(secretaryId).equals("SECRETARY")) {
-                UserCommunication.setUserType(secretaryId, "SECRETARY");
+            for (Long l : secretaryIds) {
+                if (!UserCommunication.getUserType(l).equals("SECRETARY")) {
+                    UserCommunication.setUserType(l, "SECRETARY");
+                }
             }
-            Group group = new Group(secretaryId, membersIds);
+            Group group = new Group(secretaryIds, membersIds);
             groupRepository.save(group);
             return "Group has been saved successfully";
         }

@@ -18,10 +18,10 @@ public class RoomNoticeService implements RoomService {
         this.noticeRepo = repo;
     }
 
-    public void leaveNotice(long userId, long reservationId, String message) {
+    public void leaveNotice(long userId, long reservationId, String message, String token) {
 
         //if so, save a new notice in NoticeRepository
-        if (ReservationCommunication.checkUserToReservation(userId, reservationId)) {
+        if (ReservationCommunication.checkUserToReservation(userId, reservationId, token)) {
             RoomNotice notice = new RoomNotice(userId, reservationId, message);
             noticeRepo.save(notice);
         }

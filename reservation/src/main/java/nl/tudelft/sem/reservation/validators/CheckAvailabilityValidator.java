@@ -11,18 +11,19 @@ public class CheckAvailabilityValidator extends BaseValidator {
     protected static Gson gson = new Gson();
 
     @Override
-    public boolean handle(Reservation reservation) throws InvalidReservationException {
+    public boolean handle(Reservation reservation, String token) throws InvalidReservationException {
 
         Long roomID = reservation.getRoomId();
 
         boolean availability = RoomCommunication.getRoomAvailability(roomID,
                 reservation.getStart().toLocalTime(),
-                reservation.getEnd().toLocalTime());
+                reservation.getEnd().toLocalTime(),
+                token);
 
         if (!availability) {
             throw new InvalidReservationException("The room is not available");
         }
 
-        return super.checkNext(reservation);
+        return super.checkNext(reservation, token);
     }
 }

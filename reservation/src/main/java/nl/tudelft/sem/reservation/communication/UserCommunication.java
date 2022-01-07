@@ -9,9 +9,10 @@ public class UserCommunication extends ServerCommunication {
 
     private static final String requestString = hostAddress + "/user";
 
-    public static Long getUser() {
+    public static Long getUser(String token) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
+                .setHeader("Authorization", token)
                 .uri(URI.create(requestString + "/getCurrentUserID"))
                 .build();
         return gson
@@ -20,9 +21,10 @@ public class UserCommunication extends ServerCommunication {
                         .getType());
     }
 
-    public static String getUserType() {
+    public static String getUserType(String token) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
+                .setHeader("Authorization", token)
                 .uri(URI.create(requestString + "/getCurrentUserType"))
                 .build();
         return gson

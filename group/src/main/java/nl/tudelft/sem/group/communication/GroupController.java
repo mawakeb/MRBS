@@ -4,10 +4,7 @@ import nl.tudelft.sem.group.entity.Group;
 import nl.tudelft.sem.group.exception.GroupNotFoundException;
 import nl.tudelft.sem.group.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,19 +20,24 @@ public class GroupController {
         this.groupRepository = groupRepository;
     }
 
-    @GetMapping("getSecretariesIdsOfAGroup")
-    public List<Long> getSecretariesId(@RequestParam Long groupId) throws GroupNotFoundException {
-        List<Long> secretariesIds = new ArrayList<Long>();
+    @GetMapping("getSecretaryIdOfAGroup")
+    public Long getSecretaryId(@RequestParam Long groupId) throws GroupNotFoundException {
         Group group = groupRepository.findById(groupId).orElse(null);
         if (group == null) {
             throw new GroupNotFoundException("Group was not found.");
+        } else {
+            return group.getSecretaryId();
         }
-        List<Long> membersIds = group.getMembersId();
-        for(int i = 0; i < membersIds.size(); i++) {
-            String memberType = UserCommunication.getUserType();
-        }
-        //TODO: to be continued...
+    }
 
-        return secretariesIds;
+    @PostMapping("createGroup")
+    public String createGroup(@RequestParam Long secretaryId, @RequestParam List<Long> membersIds) {
+        if (UserCommunication.getUserType().equals("ADMIN")) {
+            //if () { check if the secretaryId is a secretary otherwise make it be or something
+            Group group = new Group(secretaryId, membersIds);
+            groupRepository.save(group);
+            return "Group has been saved successfully";
+        }
+        return "You do not have the permission to create a group in the database";
     }
 }

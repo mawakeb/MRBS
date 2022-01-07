@@ -16,13 +16,26 @@ public class Group {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "secretary")
+    private Long secretaryId;
+
     @Column(name = "members")
     private List<Long> membersIds;
 
     /**
      * No-args constructor for Spring.
      */
-    public Group() {
+    public Group() {}
+
+    /**
+     * Constructor for the Group class.
+     *
+     * @param secretaryId   ID of the secretary of the research group.
+     * @param membersIds     IDs of the members of the research group.
+     */
+    public Group(Long secretaryId, List<Long> membersIds) {
+        this.secretaryId = secretaryId;
+        this.membersIds = membersIds;
     }
 
     /**
@@ -37,6 +50,20 @@ public class Group {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @return the secretary id of the research group.
+     */
+    public Long getSecretaryId() {
+        return id;
+    }
+
+    /**
+     * @param secretaryId the secretary id of the research group.
+     */
+    public void setSecretaryId(Long secretaryId) {
+        this.secretaryId = secretaryId;
     }
 
     /**

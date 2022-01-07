@@ -19,10 +19,34 @@ public class UserCommunication extends ServerCommunication {
                         .getType());
     }
 
-    public static String getUserType() {
+    public static String getCurrentUserType() {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(requestString + "/getCurrentUserType"))
+                .build();
+        return gson
+                .fromJson(requestHandler(request)
+                        .body(), new TypeToken<String>() {}
+                        .getType());
+    }
+
+    public static String getUserType(Long id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(requestString + "/getUserType"
+                        + "?id=" + id))
+                .build();
+        return gson
+                .fromJson(requestHandler(request)
+                        .body(), new TypeToken<String>() {}
+                        .getType());
+    }
+
+    public static String setUserType(Long id, String type) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(requestString + "/getUserType"
+                        + "?id=" + id + "&type=" + type))
                 .build();
         return gson
                 .fromJson(requestHandler(request)

@@ -42,7 +42,7 @@ public class GroupController {
         List<Long> membersIds = group.getMembersIds();
 
         for(int i = 0; i < membersIds.size(); i++) {
-            String memberType = UserCommunication.getUserType();
+            String memberType = UserCommunication.getUserType(membersIds.get(i));
 
             if (memberType.equals("SECRETARY")) {
                 secretariesIds.add(membersIds.get(i));
@@ -54,8 +54,10 @@ public class GroupController {
 
     @PostMapping("createGroup")
     public String createGroup(@RequestParam Long secretaryId, @RequestParam List<Long> membersIds) {
-        if (UserCommunication.getUserType().equals("ADMIN")) {
-            //if () { check if the secretaryId is a secretary otherwise make it be or something
+        if (UserCommunication.getCurrentUserType().equals("ADMIN")) {
+            if (!UserCommunication.getUserType(secretaryId).equals("SECRETARY")) {
+                UserCommunication.setUserType(secretaryId, "SECRETARY");
+            }
             Group group = new Group(secretaryId, membersIds);
             groupRepository.save(group);
             return "Group has been saved successfully";

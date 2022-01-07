@@ -5,7 +5,7 @@ import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 
 public interface Validator {
 
-    void setNext(Validator handler);
+    void setNext(Validator handler, String token);
 
-    boolean handle(Reservation reservation) throws InvalidReservationException;
+    boolean handle(Reservation reservation, String token) throws InvalidReservationException;
 }

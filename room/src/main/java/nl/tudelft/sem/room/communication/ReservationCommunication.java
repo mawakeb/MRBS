@@ -11,24 +11,34 @@ public class ReservationCommunication extends ServerCommunication {
 
     private static final String requestString = hostAddress + "/reservation";
 
-
-    public static String getHi() {
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(requestString)).build();
+    public static String getHi(String token) {
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .GET()
+                .setHeader("Authorization", token)
+                .uri(URI.create(requestString))
+                .build();
         return gson
                 .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
     }
 
-    public static boolean checkUserToReservation(long userId, long reservationId) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .GET().uri(URI.create(requestString + "/checkUser" + "?userId=" + userId +
+    public static boolean checkUserToReservation(long userId, long reservationId, String token) {
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .GET()
+                .setHeader("Authorization", token)
+                .uri(URI.create(requestString + "/checkUser" + "?userId=" + userId +
                         "&reservationId=" + reservationId)).build();
         return gson
                 .fromJson(requestHandler(request).body(), new TypeToken<Boolean>() {}.getType());
     }
 
-    public static List<Long> getRoomsInTimeslot(List<Long> rooms, String startTime, String endTime) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .GET().uri(URI.create(requestString + "/checkTimeslot" + "?rooms=" + rooms +
+    public static List<Long> getRoomsInTimeslot(List<Long> rooms, String startTime, String endTime, String token) {
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .GET()
+                .setHeader("Authorization", token)
+                .uri(URI.create(requestString + "/checkTimeslot" + "?rooms=" + rooms +
                         "&startTime=" + startTime + "&endTime=" + endTime)).build();
         return gson
                 .fromJson(requestHandler(request).body(),

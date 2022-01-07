@@ -1,7 +1,6 @@
-package nl.tudelft.sem.group.communication;
+package nl.tudelft.sem.user.communication;
 
 import com.google.gson.reflect.TypeToken;
-
 import java.net.URI;
 import java.net.http.HttpRequest;
 
@@ -10,6 +9,11 @@ public class ReservationCommunication extends ServerCommunication {
     private static final String requestString = hostAddress + "/reservation";
 
 
+    /**
+     * Gets hi.
+     *
+     * @return the hi
+     */
     public static String getHi(String token) {
         HttpRequest request = HttpRequest
                 .newBuilder()

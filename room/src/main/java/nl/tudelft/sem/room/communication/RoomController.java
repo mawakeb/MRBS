@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/room")
 public class RoomController {
 
     private final transient RoomRepository roomRepo;
@@ -47,7 +47,7 @@ public class RoomController {
         return "Hello_Room!";
     }
 
-    @GetMapping("checkAvailable")
+    @GetMapping("/checkAvailable")
     public boolean checkAvailable(@RequestParam long roomId, @RequestParam LocalTime start, @RequestParam LocalTime end) {
         Room room = roomRepo.findById(roomId);
         if (room == null) {
@@ -80,17 +80,18 @@ public class RoomController {
      * @param roomId the room id
      * @return the room
      */
-    @GetMapping("getById")
+    @GetMapping("/getById")
     public Room getById(@RequestParam Long roomId) {
         return roomRepo.findById(roomId).orElse(null);
     }
 
 
-    @GetMapping("queryRooms")
+    @GetMapping("/queryRooms")
     public List<Room> queryRooms(@RequestParam int capacity, @RequestParam long buildingId,
                                  @RequestParam String equipmentName,
                                  @RequestParam String startTime,
-                                 @RequestParam String endTime) {
+                                 @RequestParam String endTime,
+                                 @RequestHeader("Authorization") String token) {
         // lists to be used
         List<Room> rooms = roomRepo.findAll();
         List<Room> filteredRooms = new ArrayList<>();
@@ -112,7 +113,7 @@ public class RoomController {
             // get the rooms within the timeslot
             return roomRepo.findAllById(ReservationCommunication.getRoomsInTimeslot(
                     filteredRooms.stream().map(Room::getId).collect(Collectors.toList()),
-                    startTime, endTime));
+                    startTime, endTime, token));
         } else {
             return filteredRooms;
         }

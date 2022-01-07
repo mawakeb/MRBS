@@ -10,15 +10,22 @@ public class UserCommunication extends ServerCommunication {
     private static final String requestString = hostAddress + "/user";
 
 
-    public static String getHi() {
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(requestString)).build();
+    public static String getHi(String token) {
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .GET()
+                .setHeader("Authorization", token)
+                .uri(URI.create(requestString)).build();
         return gson
                 .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
     }
 
-    public static String getRole(Long userId) {
-        HttpRequest request =
-                HttpRequest.newBuilder().GET().uri(URI.create(requestString+ "/getRole?userId=" + userId)).build();
+    public static String getRole(Long userId, String token) {
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .GET()
+                .setHeader("Authorization", token)
+                .uri(URI.create(requestString+ "/getRole?userId=" + userId)).build();
 
         return gson
                 .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());

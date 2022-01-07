@@ -1,7 +1,6 @@
-package nl.tudelft.sem.group.communication;
+package nl.tudelft.sem.user.communication;
 
 import com.google.gson.Gson;
-
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -16,9 +15,9 @@ public class ServerCommunication {
             HttpResponse<String> response = client.send(
                     request,
                     HttpResponse.BodyHandlers.ofString()
-                    );
-            int statusOK = 200;
-            if (response.statusCode() != statusOK) {
+            );
+            int statusOk = 200;
+            if (response.statusCode() != statusOk) {
                 System.out.println("Status: " + response.statusCode());
                 return null;
             }

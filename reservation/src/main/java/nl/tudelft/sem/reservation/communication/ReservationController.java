@@ -75,11 +75,11 @@ public class ReservationController {
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @GetMapping("/editReservation")
-    public boolean editReservation(@RequestParam long reservationId, @RequestParam long roomId
+    public String editReservation(@RequestParam long reservationId, @RequestParam long roomId
             , @RequestParam LocalDateTime start, @RequestParam LocalDateTime end
             , @RequestParam String editPurpose, @RequestHeader("Authorization") String token) {
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
-        if (reservation == null) return false;
+        if (reservation == null) return "Reservation was not found";
         long isForId = reservation.getUserId();
         long madeById = reservation.getMadeBy();
 
@@ -88,7 +88,7 @@ public class ReservationController {
             if (start != null) start = reservation.getStart();
             if (end != null) end = reservation.getEnd();
         } else {
-            return false;
+            return "There is nothing to edit for the reservation";
         }
 
         if (UserCommunication.getUserType(token).equals("ADMIN")
@@ -115,16 +115,16 @@ public class ReservationController {
                 e.printStackTrace();
             }
         } else {
-            return false;
+            return "You do not have access to edit this reservation";
         }
 
-        return true;
+        return "Reservation was edited successfully";
     }
 
     @GetMapping("/cancelReservation")
-    public boolean cancelReservation(@RequestParam long reservationId, @RequestParam String cancelPurpose, @RequestHeader("Authorization") String token) {
+    public String cancelReservation(@RequestParam long reservationId, @RequestParam String cancelPurpose, @RequestHeader("Authorization") String token) {
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
-        if (reservation == null) return false;
+        if (reservation == null) return "Reservation was not found";
         long isForId = reservation.getUserId();
         long madeById = reservation.getMadeBy();
 
@@ -134,9 +134,9 @@ public class ReservationController {
             reservation.cancelReservation(cancelPurpose);
 
             reservationRepo.save(reservation);
-            return true;
+            return "Reservation was cancelled successfully";
         } else {
-            return false;
+            return "You do not have access to cancel this reservation";
         }
     }
 

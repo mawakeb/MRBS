@@ -26,20 +26,9 @@ public class GroupController {
 
         if (group == null) {
             throw new GroupNotFoundException("Group was not found.");
+        } else {
+            return group.getSecretaryIds();
         }
-
-        List<Long> secretariesIds = new ArrayList<Long>();
-        List<Long> membersIds = group.getMembersIds();
-
-        for(int i = 0; i < membersIds.size(); i++) {
-            String memberType = UserCommunication.getUserType(membersIds.get(i));
-
-            if (memberType.equals("SECRETARY")) {
-                secretariesIds.add(membersIds.get(i));
-            }
-        }
-
-        return secretariesIds;
     }
 
     @PostMapping("createGroup")

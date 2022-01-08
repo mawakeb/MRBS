@@ -22,7 +22,6 @@ public class ReservationApplication {
 				LocalDateTime.of(2021, 12,23,12, 0,  0),
 				LocalDateTime.of(2021, 12, 23, 0, 0),
 				"SEM lecture");
-		*/
 
 		Builder builder = new ReservationBuilder(1L, 2L, LocalDateTime.of(2021, 12,23,12, 0, 0), LocalDateTime.of(2021, 12,23, 0, 0));
 		Director director = new Director(builder);
@@ -44,6 +43,8 @@ public class ReservationApplication {
 		} catch (InvalidReservationException e) {
 			e.printStackTrace();
 		}
+
+		 */
 	}
 
 }

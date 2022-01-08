@@ -17,7 +17,7 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
     private transient ReservationRepository reservationRepo;
 
     @Override
-    public boolean handle(Reservation reservation) throws InvalidReservationException {
+    public boolean handle(Reservation reservation, String token) throws InvalidReservationException {
 
         if(reservation.getType().equals("GROUP")) {
             List<Reservation> reservationsAtThisTime = reservationRepo.findAllOverlapping(reservation.getStart(), reservation.getEnd());
@@ -27,7 +27,7 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
             {
                 if(conflict.getType().equals("GROUP"))
                 {
-                    if(GroupCommunication.overlap(reservation.getGroupId(), conflict.getGroupId())) {
+                    if(GroupCommunication.overlap(reservation.getGroupId(), conflict.getGroupId(), token)) {
                         throw new InvalidReservationException("Group reservation conflicts with another group.");
                     }
                 }
@@ -35,7 +35,7 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
                 Long userId;
                 if(conflict.getType().equals("ADMIN")) {userId = conflict.getUserId();}
                 else userId = conflict.getMadeBy();
-                if(GroupCommunication.isInGroup(userId, reservation.getGroupId())) {
+                if(GroupCommunication.isInGroup(userId, reservation.getGroupId(), token)) {
                     throw new InvalidReservationException("Not all group members are available at the given time.");
                 }
             }
@@ -53,6 +53,6 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
         if (!overlappingReservationsOfUser.isEmpty()) {
             throw new InvalidReservationException("Users can only have one reservation within a given time range.");
         }
-        return super.checkNext(reservation);
+        return super.checkNext(reservation, token);
     }
 }

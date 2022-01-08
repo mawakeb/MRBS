@@ -10,8 +10,13 @@ public class ReservationCommunication extends ServerCommunication {
     private static final String requestString = hostAddress + "/reservation";
 
 
-    public static String getHi() {
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(requestString)).build();
+    public static String getHi(String token) {
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .GET()
+                .setHeader("Authorization", token)
+                .uri(URI.create(requestString))
+                .build();
         return gson
                 .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
     }

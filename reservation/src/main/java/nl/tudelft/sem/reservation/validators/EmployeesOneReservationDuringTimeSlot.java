@@ -33,18 +33,14 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
                     }
                 }
 
-                Long userId;
-                if(conflict.getType().equals(ReservationType.ADMIN)) {userId = conflict.getUserId();}
-                else userId = conflict.getMadeBy();
+                Long userId = conflict.getUserId();
                 if(GroupCommunication.isInGroup(userId, reservation.getGroupId(), token)) {
                     throw new InvalidReservationException("Not all group members are available at the given time.");
                 }
             }
         }
 
-        Long userId;
-        if(reservation.getType().equals(ReservationType.ADMIN)) {userId = reservation.getUserId();}
-        else userId = reservation.getMadeBy();
+        Long userId = reservation.getUserId();
         LocalDateTime reservationStart = reservation.getStart();
         LocalDateTime reservationEnd = reservation.getEnd();
 

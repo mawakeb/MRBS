@@ -17,6 +17,6 @@ public class EmployeesCannotReserveMoreThanTwoWeeksInAdvance extends BaseValidat
 
         if(reservation.getEnd().isBefore(limit)) return super.checkNext(reservation, token);
 
-        throw new InvalidReservationException("Reservation exceeds two-week limit");
+        throw new InvalidReservationException("Reservation exceeds two-week limit.");
     }
 }

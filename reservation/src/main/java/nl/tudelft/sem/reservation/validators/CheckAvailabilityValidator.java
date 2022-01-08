@@ -21,7 +21,7 @@ public class CheckAvailabilityValidator extends BaseValidator {
                 token);
 
         if (!availability) {
-            throw new InvalidReservationException("The room is not available");
+            throw new InvalidReservationException("The room is not available.");
         }
 
         return super.checkNext(reservation, token);

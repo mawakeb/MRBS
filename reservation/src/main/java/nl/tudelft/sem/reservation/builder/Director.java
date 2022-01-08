@@ -15,6 +15,13 @@ public class Director {
         builder.user(builder.getMadeBy());
     }
 
+    public void buildSingleReservation(Long forUser, Long ofGroup, String purpose) {
+        builder.type(ReservationType.SINGLE);
+        builder.user(forUser);
+        builder.group(ofGroup);
+        builder.purpose(purpose);
+    }
+
     public void buildAdminReservation(Long forUser) {
         builder.type(ReservationType.ADMIN);
         builder.user(forUser);

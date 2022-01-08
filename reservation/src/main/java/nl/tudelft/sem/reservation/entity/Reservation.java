@@ -43,7 +43,6 @@ public class Reservation {
     /**
      * Constructor for the Reservation class.
      *
-     * @param id      Unique reservation ID.
      * @param madeBy  ID of the user who made the reservation.
      * @param roomId  Location of the reservation.
      * @param start   Date and time of the start of the reservation.
@@ -137,10 +136,10 @@ public class Reservation {
     private long setUserId() {return userId;}
 
     public long getGroupId() {
-        return userId;
+        return groupId;
     }
 
-    private long setGroupId() {return userId;}
+    private long setGroupId() {return groupId;}
 
     public boolean isCancelled() {
         return cancelled;

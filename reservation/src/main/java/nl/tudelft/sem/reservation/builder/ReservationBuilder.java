@@ -16,6 +16,10 @@ public class ReservationBuilder implements Builder {
     private Long groupId;
     private String purposeMessage;
 
+    public Long getMadeBy() {
+        return madeBy;
+    }
+
     public ReservationBuilder(Long madeBy, Long roomId, LocalDateTime start, LocalDateTime end) {
         this.madeBy = madeBy;
         this.roomId = roomId;

@@ -12,6 +12,7 @@ public class Director {
 
     public void buildSelfReservation() {
         builder.type(ReservationType.SELF);
+        builder.user(builder.getMadeBy());
     }
 
     public void buildAdminReservation(Long forUser) {

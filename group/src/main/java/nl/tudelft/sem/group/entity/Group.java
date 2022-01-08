@@ -16,7 +16,7 @@ public class Group {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "secretary")
+    @Column(name = "secretaries")
     private List<Long> secretaryIds;
 
     @Column(name = "members")
@@ -106,6 +106,7 @@ public class Group {
     public String toString() {
         return "Group{" +
                 "id=" + id +
+                ", secretaryIds=" + secretaryIds.toString() +
                 ", membersIds=" + membersIds.toString() +
                 '}';
     }

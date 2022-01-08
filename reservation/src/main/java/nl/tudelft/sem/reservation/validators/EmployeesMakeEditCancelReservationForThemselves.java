@@ -11,7 +11,7 @@ public class EmployeesMakeEditCancelReservationForThemselves extends BaseValidat
     @Override
     public boolean handle(Reservation reservation, String token) throws InvalidReservationException {
 
-        if(!UserCommunication.getUserType(token).equals("EMPLOYEE")) return super.checkNext(reservation, token);
+        if(UserCommunication.getUserType(token).equals("EMPLOYEE")) return super.checkNext(reservation, token);
 
         if(reservation.getMadeBy().equals(reservation.getUserId())) return super.checkNext(reservation, token);
         throw new InvalidReservationException("Employees cannot manage reservations for someone else.");

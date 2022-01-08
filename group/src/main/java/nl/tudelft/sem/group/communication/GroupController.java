@@ -32,10 +32,10 @@ public class GroupController {
     }
 
     @GetMapping("isSecretaryOfGroup")
-    public boolean isSecretaryOfGroup(Long secretaryId, Long groupId)
+    public boolean isSecretaryOfGroup(Long secretaryId, Long groupId) throws GroupNotFoundException
     {
-        List<Long> secretries = getSecretariesId(groupId);
-        return secretries.contains(secretaryId);
+        List<Long> secretaries = getSecretariesId(groupId);
+        return secretaries.contains(secretaryId);
     }
 
     @GetMapping("isSecretaryOfUser")
@@ -45,7 +45,7 @@ public class GroupController {
     }
 
     @GetMapping("isInGroup")
-    public boolean isInGroup(Long userId, Long groupId)
+    public boolean isInGroup(Long userId, Long groupId) throws GroupNotFoundException
     {
         Group group = groupRepository.findById(groupId).orElse(null);
 
@@ -58,7 +58,8 @@ public class GroupController {
 
     //returns true iff there is at least one employee in group 1 that is also in group 2
     @GetMapping("overlap")
-    public boolean overlap(Long groupId1, Long groupId2)
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public boolean overlap(Long groupId1, Long groupId2) throws GroupNotFoundException
     {
         Group group1 = groupRepository.findById(groupId1).orElse(null);
         Group group2 = groupRepository.findById(groupId2).orElse(null);
@@ -67,10 +68,10 @@ public class GroupController {
             throw new GroupNotFoundException("Groups were not found.");
         }
 
-        List<Long> members1 = group.getMembersIds();
-        List<Long> members2 = group.getMembersIds();
+        List<Long> members1 = group1.getMembersIds();
+        List<Long> members2 = group2.getMembersIds();
 
-        for(member : members1)
+        for(Long member : members1)
         {
             if(members2.contains(member)) return true;
         }

@@ -36,6 +36,13 @@ public class Group {
     public Group(List<Long> secretaryIds, List<Long> membersIds) {
         this.secretaryIds = secretaryIds;
         this.membersIds = membersIds;
+
+        // add the secretaries to the members list if they weren't already
+        for (Long l : secretaryIds) {
+            if (!membersIds.contains(l)) {
+                membersIds.add(l);
+            }
+        }
     }
 
     /**

@@ -1,10 +1,6 @@
 package nl.tudelft.sem.reservation.builder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import nl.tudelft.sem.reservation.builder.Director;
-import nl.tudelft.sem.reservation.builder.Builder;
-import nl.tudelft.sem.reservation.builder.ReservationBuilder;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +9,13 @@ import java.time.LocalDateTime;
 
 public class BuilderTest {
 
-    static Long madeBy = 123L;
-    static Long roomId = 321L;
-    static LocalDateTime start = LocalDateTime.of(1,2,3,4,5);
-    static LocalDateTime end = LocalDateTime.of(5,4,3,2,1);
-    static String testPurpose = "Test";
-    static Builder testBuilder;
-    static Director testDirector;
+    private static Long madeBy = 123L;
+    private static Long roomId = 321L;
+    private static LocalDateTime start = LocalDateTime.of(1,2,3,4,5);
+    private static LocalDateTime end = LocalDateTime.of(5,4,3,2,1);
+    private static String testPurpose = "Test";
+    private static Builder testBuilder;
+    private static Director testDirector;
 
     @BeforeEach
     public void setValues()

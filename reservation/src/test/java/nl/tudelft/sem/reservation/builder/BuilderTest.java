@@ -1,4 +1,4 @@
-package nl.tudelft.sem.reservation;
+package nl.tudelft.sem.reservation.builder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

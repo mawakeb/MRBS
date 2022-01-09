@@ -6,19 +6,24 @@ import nl.tudelft.sem.group.repository.GroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class GroupControllerTest {
 
     private transient Group group;
     private transient Group otherGroup;
     private transient GroupController groupController;
+    private transient GroupController spyController;
+    private transient final String token = "token";
+    private transient final String adminToken = "adminToken";
 
     @BeforeEach
     void setUp() {
@@ -44,11 +49,21 @@ class GroupControllerTest {
         GroupRepository groupRepository = Mockito.mock(GroupRepository.class);
 
         //Mocking the calls to the database.
-        when(groupRepository.findById(groupId)).thenReturn(Optional.ofNullable(group));
-        when(groupRepository.findById(otherGroupId)).thenReturn(Optional.ofNullable(otherGroup));
+        lenient().when(groupRepository.findById(groupId)).thenReturn(Optional.ofNullable(group));
+        lenient().when(groupRepository.findById(otherGroupId)).thenReturn(Optional.ofNullable(otherGroup));
 
         //Initializing the GroupController class to test.
+        MockitoAnnotations.initMocks(this);
         groupController = new GroupController(groupRepository);
+
+        //mock static communication methods
+        spyController = Mockito.spy(groupController);
+        lenient().doReturn("EMPLOYEE").when(spyController).getCurrentUserType(token);
+        lenient().doReturn("ADMIN").when(spyController).getCurrentUserType(adminToken);
+        lenient().doReturn("EMPLOYEE").when(spyController).getUserType(23L, adminToken);
+        lenient().doReturn("SECRETARY").when(spyController).getUserType(29L, adminToken);
+        lenient().doReturn("User type changed successfully").when(spyController)
+                .setUserType(anyLong(), anyString(), anyString());
     }
 
     @Test
@@ -145,8 +160,33 @@ class GroupControllerTest {
         assertTrue(actualMessage3.contains(expectedMessage));
     }
 
+    /**
+     * Test the creation of a group without permission.
+     */
     @Test
-    void createGroup() {
-        //TODO
+    void createGroupNoPermission() {
+        String resultString = spyController.createGroup(Arrays.asList(23L, 29L),
+                Arrays.asList(41L, 53L, 67L, 73L, 83L, 91L, 97L), token);
+
+        verify(spyController, times(1)).getCurrentUserType(token);
+        verify(spyController, times(0)).getUserType(anyLong(), any());
+        verify(spyController, times(0)).setUserType(anyLong(), anyString(), any());
+        assertEquals("You do not have the permission to create a group in the database.",
+                resultString);
+    }
+
+    /**
+     * Test the creation of a group with permission.
+     */
+    @Test
+    void createGroupWithPermission() {
+        String resultString = spyController.createGroup(Arrays.asList(23L, 29L),
+                new ArrayList<>(Arrays.asList(41L, 53L, 67L, 73L, 83L, 91L, 97L)), adminToken);
+
+        verify(spyController, times(1)).getCurrentUserType(adminToken);
+        verify(spyController, times(2)).getUserType(anyLong(), anyString());
+        verify(spyController, times(1)).setUserType(23, "SECRETARY", adminToken);
+        assertEquals("The research group has been saved successfully!",
+                resultString);
     }
 }

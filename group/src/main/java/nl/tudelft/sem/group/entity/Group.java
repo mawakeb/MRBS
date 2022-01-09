@@ -1,6 +1,7 @@
 package nl.tudelft.sem.group.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,8 +40,8 @@ public class Group {
 
         // add the secretaries to the members list if they weren't already
         for (Long l : secretaryIds) {
-            if (!membersIds.contains(l)) {
-                membersIds.add(l);
+            if (!this.membersIds.contains(l)) {
+                this.membersIds.add(l);
             }
         }
     }

@@ -50,17 +50,6 @@ public class GroupController {
     }
 
     /**
-     * Check if a given secretary is the secretary of a certain user.
-     * @param secretaryId - the id of the secretary for which we want to check.
-     * @param employeeId - the id of the user for which we want to check.
-     * @return - true if the given secretary is actually a secretary of the given user, false otherwise.
-     */
-    @GetMapping("isSecretaryOfUser")
-    public boolean isSecretaryOfUser(Long secretaryId, Long employeeId) {
-        return  false;
-    }
-
-    /**
      * Check if a user is a part of a certain research group.
      * @param userId - the id of the user for which we want to check.
      * @param groupId - the id of the research group for which we want to check.
@@ -113,17 +102,58 @@ public class GroupController {
      * OR if the user does not have the rights to create a research group it lets them know.
      */
     @PostMapping("createGroup")
-    public String createGroup(@RequestParam List<Long> secretaryIds, @RequestParam List<Long> membersIds) {
-        if (UserCommunication.getCurrentUserType().equals("ADMIN")) {
+    public String createGroup(@RequestParam List<Long> secretaryIds,
+                              @RequestParam List<Long> membersIds,
+                              @RequestHeader("Authorization") String token) {
+        if (getCurrentUserType(token).equals("ADMIN")) {
             for (Long l : secretaryIds) {
-                if (!UserCommunication.getUserType(l).equals("SECRETARY")) {
-                    UserCommunication.setUserType(l, "SECRETARY");
+                if (!getUserType(l, token).equals("SECRETARY")) {
+                    setUserType(l, "SECRETARY", token);
                 }
             }
+
             Group group = new Group(secretaryIds, membersIds);
             groupRepository.save(group);
             return "The research group has been saved successfully!";
         }
         return "You do not have the permission to create a group in the database.";
     }
+
+
+    /**
+     * Get the type of user with the auth token.
+     * Added to allow unit testing.
+     *
+     * @param token the authentication token of the user
+     * @return the type of the user
+     */
+    public String getCurrentUserType(String token) {
+        return UserCommunication.getCurrentUserType(token);
+    }
+
+    /**
+     * Get the type of user with the id.
+     * Added to allow unit testing.
+     *
+     * @param id the id of the requested user
+     * @param token the authentication token of the current user
+     * @return the type of the user
+     */
+    public String getUserType(long id, String token) {
+        return UserCommunication.getUserType(id, token);
+    }
+
+    /**
+     * Set the type of user with the id.
+     * Added to allow unit testing.
+     *
+     * @param id the id of the requested user
+     * @param type the new type for the requested user
+     * @param token the authentication token of the current user
+     * @return a status message
+     */
+    public String setUserType(long id, String type, String token) {
+        return UserCommunication.setUserType(id, type, token);
+    }
+
 }

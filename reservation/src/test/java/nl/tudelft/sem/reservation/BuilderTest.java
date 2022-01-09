@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 
 public class BuilderTest {
 
-    Long madeBy = 123L;
-    Long roomId = 321L;
-    LocalDateTime start = LocalDateTime.of(1,2,3,4,5);
-    LocalDateTime end = LocalDateTime.of(5,4,3,2,1);
-    Builder testBuilder;
-    Director testDirector;
+    static Long madeBy = 123L;
+    static Long roomId = 321L;
+    static LocalDateTime start = LocalDateTime.of(1,2,3,4,5);
+    static LocalDateTime end = LocalDateTime.of(5,4,3,2,1);
+    static Builder testBuilder;
+    static Director testDirector;
 
     @BeforeEach
     public void setValues()

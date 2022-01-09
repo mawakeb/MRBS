@@ -69,7 +69,7 @@ public class ReservationTest {
         reservation.changeLocation(789L, "Location edit purpose");
 
         assertEquals(789L, reservation.getRoomId());
-        assertEquals("Edit purpose", reservation.getEditPurpose());
+        assertEquals("Location edit purpose", reservation.getEditPurpose());
     }
 
     @Test
@@ -91,5 +91,4 @@ public class ReservationTest {
         assertEquals("Cancel purpose", reservation.getEditPurpose());
 
     }
-
 }

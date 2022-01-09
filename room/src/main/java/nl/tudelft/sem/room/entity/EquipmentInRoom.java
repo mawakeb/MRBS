@@ -1,7 +1,11 @@
 package nl.tudelft.sem.room.entity;
 
-import javax.persistence.*;
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * The Equipment in Room Entity.
@@ -21,6 +25,12 @@ public class EquipmentInRoom {
     @Column(name = "equipmentName")
     private String equipmentName;
 
+    /**
+     * Constructor for EquipmentInRoom.
+     *
+     * @param roomId        id of the room that the equipment is in
+     * @param equipmentName name of the equipments
+     */
     public EquipmentInRoom(Long roomId, String equipmentName) {
         this.roomId = roomId;
         this.equipmentName = equipmentName;

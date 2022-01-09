@@ -53,6 +53,17 @@ public class ReservationController {
         }
     }
 
+    @GetMapping("/getRoom")
+    public long getRoom(@RequestParam long id) {
+
+        Reservation reservation = reservationRepo.findById(id).orElse(null);
+        if (reservation!=null){
+            return reservation.getRoomId();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
+        }
+    }
+
     @GetMapping("/checkTimeslot")
     public List<Long> checkTimeslot(@RequestParam List<Long> rooms, @RequestParam String startTime
             , @RequestParam String endTime) {
@@ -177,5 +188,10 @@ public class ReservationController {
         }
 
         return "Reservation successful!";
+    }
+    
+     @GetMapping("getSchedule")
+    public List<Reservation> getSchedule(@RequestParam long userId) {
+        return reservationRepo.findAllByUserId(userId);
     }
 }

@@ -1,17 +1,20 @@
 package nl.tudelft.sem.group.entity;
 
-
-
-import nl.tudelft.sem.group.object.Type;
-
-import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- * The User Entity.
+ * The Research group Entity.
  */
 @Entity
-@Table(name = "user")
+@Table(name = "group")
 public class Group {
 
     @Id
@@ -19,120 +22,131 @@ public class Group {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "net_id")
-    private String netId;
+    @ElementCollection
+    @Column(name = "secretaries")
+    private List<Long> secretaryIds;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "password")
-    private String hashedPassword;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type")
-    private Type type;
+    @ElementCollection
+    @Column(name = "members")
+    private List<Long> membersIds;
 
     /**
      * No-args constructor for Spring.
      */
-    public Group() {
+    public Group() {}
+
+    /**
+     * Constructor for the Group class.
+     *
+     * @param secretaryIds   ID of the secretaries of the research group.
+     * @param membersIds     IDs of the members of the research group.
+     */
+    public Group(List<Long> secretaryIds, List<Long> membersIds) {
+        this.secretaryIds = secretaryIds;
+        this.membersIds = membersIds;
+
+        // add the secretaries to the members list if they weren't already
+        for (Long l : secretaryIds) {
+            if (!this.membersIds.contains(l)) {
+                this.membersIds.add(l);
+            }
+        }
     }
 
     /**
-     * @return the id
+     * Get the id of the research group.
+     *
+     * @return the id of the research group.
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * @param id the id
+     * Set the id of the research group.
+     *
+     * @param id the id of the research group.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * @return the netId
+     * Gets the ids for the secretaries of a research group.
+     *
+     * @return a list of the id-s of all the secretaries of the research group.
      */
-    public String getNetId() {
-        return netId;
+    public List<Long> getSecretaryIds() {
+        return secretaryIds;
     }
 
     /**
-     * @param netId the netId
+     * Sets new ids for the secretaries of a research group.
+     *
+     * @param secretaryIds the ids of all the secretaries within that research group.
      */
-    public void setNetId(String netId) {
-        this.netId = netId;
+    public void setSecretaryIds(List<Long> secretaryIds) {
+        this.secretaryIds = secretaryIds;
     }
 
     /**
-     * @return the type
+     * Gets the ids for the members of a research group.
+     *
+     * @return a list of the ids of all the members of the research group.
      */
-    public Type getType() {
-        return type;
+    public List<Long> getMembersIds() {
+        return membersIds;
     }
 
     /**
-     * @param type the type
+     * Sets new ids for the members of a research group.
+     *
+     * @param membersId the ids of all the members within that research group.
      */
-    public void setType(Type type) {
-        this.type = type;
+    public void setMembersIds(List<Long> membersId) {
+        this.membersIds = membersId;
     }
 
     /**
-     * @return the name
+     * Checks if the given object is equal to this Group object.
+     *
+     * @param o - the object to compare against.
+     * @return - true if the objects are equal, false otherwise.
      */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the hashed password
-     */
-    public String getHashedPassword() {
-        return hashedPassword;
-    }
-
-    /**
-     * @param hashedPassword the hashed password
-     */
-    public void setHashedPassword(String hashedPassword) {
-        this.hashedPassword = hashedPassword;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Group r = (Group) o;
-        return Objects.equals(id, r.id) &&
-                Objects.equals(netId, r.netId) &&
-                Objects.equals(name, r.name) &&
-                Objects.equals(hashedPassword, r.hashedPassword);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Group group = (Group) o;
+        return Objects.equals(id, group.id) && Objects.equals(membersIds, group.membersIds);
     }
 
+    /**
+     * Creates a hash of this Group object.
+     *
+     * @return - the int hash value of that object.
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id, netId, name, hashedPassword);
+        return super.hashCode();
     }
 
-
+    /**
+     * A human-friendly String representation of this Group object.
+     *
+     * @return - the human-readable String of this Group.
+     */
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", netId='" + netId + '\'' +
-                ", name='" + name + '\'' +
-                ", hashedPassword='" + hashedPassword + '\'' +
-                '}';
+        return "Group{"
+                + "id=" + id
+                + ", secretaryIds=" + secretaryIds.toString()
+                + ", membersIds=" + membersIds.toString()
+                + '}';
     }
 }
 

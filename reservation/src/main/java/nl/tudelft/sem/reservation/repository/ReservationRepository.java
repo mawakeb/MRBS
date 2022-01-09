@@ -40,6 +40,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findAllOverlappingWithAGivenReservationByUserId(@Param("userId") Long userId,
                                                                       @Param("start") LocalDateTime start,
                                                                       @Param("end") LocalDateTime end);
+    @Query("SELECT r FROM Reservation r WHERE r.userId = :userId")
+    List<Reservation> findAllByUserId(@Param("userId") Long userId);
 
     //find reservations that overlap with the given time
     @Query("SELECT r FROM Reservation r " +

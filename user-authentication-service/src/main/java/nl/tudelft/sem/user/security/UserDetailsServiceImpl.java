@@ -53,10 +53,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         String userName = request.getNetId();
         String password = request.getPassword();
 
-        this.authenticate(userName, password);
-        final UserDetails userDetails = loadUserByUsername(userName);
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userName, password)
+        );
 
-        return new LoginResponse(jwtUtil.generateToken(userDetails));
+        return new LoginResponse(jwtUtil.generateToken(this.loadUserByUsername(userName)));
     }
 
     /**
@@ -102,16 +103,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             );
         } else {
             throw new UsernameNotFoundException(username);
-        }
-    }
-
-    private void authenticate(String userName, String userPassword) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userName, userPassword)
-            );
-        } catch (Exception e) {
-            throw new Exception("");
         }
     }
 }

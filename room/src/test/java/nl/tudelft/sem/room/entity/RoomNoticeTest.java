@@ -1,9 +1,10 @@
 package nl.tudelft.sem.room.entity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class RoomNoticeTest {
 
@@ -14,10 +15,10 @@ class RoomNoticeTest {
 
     @BeforeEach
     void setUp() {
-       roomId = 1L;
-       reservationId = 2L;
-       message = "test";
-       notice = new RoomNotice(roomId, reservationId, message);
+        roomId = 1L;
+        reservationId = 2L;
+        message = "test";
+        notice = new RoomNotice(roomId, reservationId, message);
     }
 
     @Test

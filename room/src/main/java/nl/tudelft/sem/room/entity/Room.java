@@ -1,7 +1,11 @@
 package nl.tudelft.sem.room.entity;
 
-import javax.persistence.*;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 
 /**
  * The Room Entity.
@@ -26,14 +30,24 @@ public class Room {
     @Column(name = "underMaintenance")
     private boolean underMaintenance;
 
-    public Room() {}
+    public Room() {
+    }
 
+    /**
+     * Constructor for room entity.
+     *
+     * @param id         room id
+     * @param name       name of the building
+     * @param buildingId id of the building that the room is in
+     * @param capacity   capacity of the room
+     */
     public Room(Long id, String name, Long buildingId, int capacity) {
         this.id = id;
         this.name = name;
         this.buildingId = buildingId;
         this.capacity = capacity;
     }
+
 
     public void setId(Long id) {
         this.id = id;
@@ -77,8 +91,12 @@ public class Room {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Room room = (Room) o;
         return Objects.equals(id, room.id);
     }

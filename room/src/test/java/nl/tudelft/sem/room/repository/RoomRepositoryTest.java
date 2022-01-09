@@ -1,6 +1,8 @@
 package nl.tudelft.sem.room.repository;
 
-import nl.tudelft.sem.room.entity.EquipmentInRoom;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
 import nl.tudelft.sem.room.entity.Room;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -9,10 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Iterator;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

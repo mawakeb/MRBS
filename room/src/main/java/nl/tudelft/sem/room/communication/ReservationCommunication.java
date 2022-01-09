@@ -1,8 +1,6 @@
 package nl.tudelft.sem.room.communication;
 
 import com.google.gson.reflect.TypeToken;
-import nl.tudelft.sem.room.entity.Room;
-
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.util.List;
@@ -11,6 +9,12 @@ public class ReservationCommunication extends ServerCommunication {
 
     private static final String requestString = hostAddress + "/reservation";
 
+    /**
+     * Test method.
+     *
+     * @param token the authentication token of the user
+     * @return hi is communicated successfully, status otherwise
+     */
     public static String getHi(String token) {
         HttpRequest request = HttpRequest
                 .newBuilder()
@@ -19,38 +23,72 @@ public class ReservationCommunication extends ServerCommunication {
                 .uri(URI.create(requestString))
                 .build();
         return gson
-                .fromJson(requestHandler(request).body(), new TypeToken<String>() {}.getType());
+                .fromJson(requestHandler(request).body(), new TypeToken<String>(){}
+                        .getType());
     }
 
+    /**
+     * Asks the reservation service if the given user is the user who made the reservation.
+     *
+     * @param userId id of the user
+     * @param reservationId if of the reservation to compare to
+     * @param token authentication token
+     * @return boolean of the check
+     */
     public static boolean checkUserToReservation(long userId, long reservationId, String token) {
         HttpRequest request = HttpRequest
                 .newBuilder()
                 .GET()
                 .setHeader("Authorization", token)
-                .uri(URI.create(requestString + "/checkUser" + "?userId=" + userId +
-                        "&reservationId=" + reservationId)).build();
+                .uri(URI.create(requestString + "/checkUser" + "?userId=" + userId
+                        + "&reservationId=" + reservationId)).build();
         return gson
-                .fromJson(requestHandler(request).body(), new TypeToken<Boolean>() {}.getType());
+                .fromJson(requestHandler(request).body(), new TypeToken<Boolean>() {
+                }.getType());
     }
 
-    public static List<Long> getRoomsInTimeslot(List<Long> rooms, String startTime, String endTime, String token) {
+    /**
+     * Gets a list of rooms that are free of reservation in the given time and list of rooms.
+     *
+     * @param rooms list of rooms to check among
+     * @param startTime start of the timeslot to check
+     * @param endTime end of the timeslot to check
+     * @param token authentication token of the user
+     * @return list of room ids of the room within the timeslot
+     */
+    public static List<Long> getRoomsInTimeslot(List<Long> rooms,
+                                                String startTime,
+                                                String endTime,
+                                                String token) {
         HttpRequest request = HttpRequest
                 .newBuilder()
                 .GET()
                 .setHeader("Authorization", token)
-                .uri(URI.create(requestString + "/checkTimeslot" + "?rooms=" + rooms +
-                        "&startTime=" + startTime + "&endTime=" + endTime)).build();
+                .uri(URI.create(requestString + "/checkTimeslot" + "?rooms=" + rooms
+                        + "&startTime=" + startTime + "&endTime=" + endTime)).build();
         return gson
                 .fromJson(requestHandler(request).body(),
-                        new TypeToken<List<Long>>() {}.getType());
+                        new TypeToken<List<Long>>() {
+                        }.getType());
     }
 
-    public static long getRoomWithReservation(long reservationId) {
+    /**
+     * Gets id of the room that the given reservation took place in.
+     *
+     * @param reservationId id of the reservation
+     * @param token authentication token of the user
+     * @return id of the room
+     */
+    public static long getRoomWithReservation(long reservationId,
+                                              String token) {
         HttpRequest request = HttpRequest.newBuilder()
-                .GET().uri(URI.create(requestString + "/getRoom" + "?id=" + reservationId)).build();
+                .setHeader("Authorization", token)
+                .GET().uri(URI.create(requestString + "/getRoom"
+                        + "?id=" + reservationId)).build();
         return gson
                 .fromJson(requestHandler(request).body(),
-                        new TypeToken<Long>() {}.getType());
+                        new TypeToken<Long>() {
+                        }.getType());
     }
 
 }

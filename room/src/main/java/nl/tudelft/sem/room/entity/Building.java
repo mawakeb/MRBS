@@ -1,11 +1,11 @@
 package nl.tudelft.sem.room.entity;
 
+import java.time.LocalTime;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalTime;
-import java.util.Objects;
 
 /**
  * The Building Entity.
@@ -27,8 +27,17 @@ public class Building {
     @Column(name = "closeTime")
     private LocalTime closeTime;
 
-    public Building() {}
+    public Building() {
+    }
 
+    /**
+     * Constructor for building.
+     *
+     * @param id        id of the building
+     * @param name      name of the building
+     * @param openTime  the time that the building opens
+     * @param closeTime the time that the building closes
+     */
     public Building(Long id, String name, LocalTime openTime, LocalTime closeTime) {
         this.id = id;
         this.name = name;
@@ -74,8 +83,12 @@ public class Building {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Building building = (Building) o;
         return Objects.equals(id, building.id);
     }

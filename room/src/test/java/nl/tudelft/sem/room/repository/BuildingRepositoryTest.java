@@ -1,5 +1,9 @@
 package nl.tudelft.sem.room.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.LocalTime;
+import java.util.List;
 import nl.tudelft.sem.room.entity.Building;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -8,12 +12,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -27,9 +25,12 @@ class BuildingRepositoryTest {
 
     @Test
     void findAll() {
-        Building building1 = new Building(1L, "test1", LocalTime.of(8,0), LocalTime.of(18,0) );
-        Building building2 = new Building(2L, "test2", LocalTime.of(8,0), LocalTime.of(18,0) );
-        Building building3 = new Building(3L, "test3", LocalTime.of(8,0), LocalTime.of(18,0) );
+        Building building1 = new Building(1L, "test1",
+                LocalTime.of(8, 0), LocalTime.of(18, 0));
+        Building building2 = new Building(2L, "test2",
+                LocalTime.of(8, 0), LocalTime.of(18, 0));
+        Building building3 = new Building(3L, "test3",
+                LocalTime.of(8, 0), LocalTime.of(18, 0));
         entityManager.persist(building1);
         entityManager.persist(building2);
         entityManager.persist(building3);
@@ -42,7 +43,9 @@ class BuildingRepositoryTest {
     @Test
     void findById() {
         // Sets up a dummy DB
-        Building building = new Building(1L, "test", LocalTime.of(8,0), LocalTime.of(18,0) );
+        Building building = new Building(1L, "test",
+                LocalTime.of(8, 0),
+                LocalTime.of(18, 0));
         entityManager.persist(building);
         entityManager.flush();
         Building found = repo.findById(1L);

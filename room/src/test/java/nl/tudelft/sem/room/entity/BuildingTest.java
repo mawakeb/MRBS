@@ -1,12 +1,14 @@
 package nl.tudelft.sem.room.entity;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalTime;
 import java.util.Objects;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class BuildingTest {
 
@@ -20,8 +22,8 @@ class BuildingTest {
     void setUp() {
         id = 1L;
         name = "test";
-        openTime = LocalTime.of(8,0);
-        closeTime = LocalTime.of(18,30);
+        openTime = LocalTime.of(8, 0);
+        closeTime = LocalTime.of(18, 30);
         building = new Building(id, name, openTime, closeTime);
     }
 
@@ -56,41 +58,41 @@ class BuildingTest {
 
     @Test
     void setOpenTime() {
-        LocalTime newTime = LocalTime.of(9,0);
+        LocalTime newTime = LocalTime.of(9, 0);
         building.setOpenTime(newTime);
         assertEquals(newTime, building.getOpenTime());
     }
 
     @Test
     void getCloseTime() {
-        assertEquals(closeTime, building.getCloseTime() );
+        assertEquals(closeTime, building.getCloseTime());
     }
 
     @Test
     void setCloseTime() {
-        LocalTime newTime = LocalTime.of(9,0);
+        LocalTime newTime = LocalTime.of(9, 0);
         building.setCloseTime(newTime);
         assertEquals(newTime, building.getCloseTime());
     }
 
     @Test
     void isOpen() {
-        LocalTime start = LocalTime.of(9,0);
-        LocalTime end = LocalTime.of(10,0);
+        LocalTime start = LocalTime.of(9, 0);
+        LocalTime end = LocalTime.of(10, 0);
         assertTrue(building.isOpen(start, end));
     }
 
     @Test
     void tooEarly() {
-        LocalTime start = LocalTime.of(6,0);
-        LocalTime end = LocalTime.of(10,0);
+        LocalTime start = LocalTime.of(6, 0);
+        LocalTime end = LocalTime.of(10, 0);
         assertFalse(building.isOpen(start, end));
     }
 
     @Test
     void tooLate() {
-        LocalTime start = LocalTime.of(9,0);
-        LocalTime end = LocalTime.of(23,0);
+        LocalTime start = LocalTime.of(9, 0);
+        LocalTime end = LocalTime.of(23, 0);
         assertFalse(building.isOpen(start, end));
     }
 

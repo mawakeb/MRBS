@@ -1,7 +1,8 @@
 package nl.tudelft.sem.room.repository;
 
-import nl.tudelft.sem.room.entity.EquipmentInRoom;
-import nl.tudelft.sem.room.entity.Room;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
 import nl.tudelft.sem.room.entity.RoomNotice;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -10,9 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -34,7 +32,7 @@ class NoticeRepositoryTest {
         entityManager.persist(notice3);
         entityManager.flush();
 
-       List<RoomNotice> expected = List.of(notice1, notice2, notice3);
+        List<RoomNotice> expected = List.of(notice1, notice2, notice3);
         assertEquals(expected, repo.findAll());
     }
 

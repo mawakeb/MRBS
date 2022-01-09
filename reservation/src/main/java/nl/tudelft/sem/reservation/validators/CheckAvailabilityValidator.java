@@ -6,6 +6,8 @@ import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 
 import com.google.gson.Gson;
 
+import java.time.LocalTime;
+
 public class CheckAvailabilityValidator extends BaseValidator {
 
     protected static Gson gson = new Gson();
@@ -15,7 +17,7 @@ public class CheckAvailabilityValidator extends BaseValidator {
 
         Long roomID = reservation.getRoomId();
 
-        boolean availability = RoomCommunication.getRoomAvailability(roomID,
+        boolean availability = getRoomAvailability(roomID,
                 reservation.getStart().toLocalTime(),
                 reservation.getEnd().toLocalTime(),
                 token);
@@ -25,5 +27,19 @@ public class CheckAvailabilityValidator extends BaseValidator {
         }
 
         return super.checkNext(reservation, token);
+    }
+
+    /**
+     * Check if the room is available at given time.
+     * Added to allow unit testing.
+     *
+     * @param roomId id of room to check
+     * @param start start of the timeslot to check
+     * @param end end of the timeslot to check
+     * @param token authentication token of the user
+     * @return true if room is available, false if otherwise
+     */
+    boolean getRoomAvailability(Long roomId, LocalTime start, LocalTime end, String token) {
+        return RoomCommunication.getRoomAvailability(roomId, start, end, token);
     }
 }

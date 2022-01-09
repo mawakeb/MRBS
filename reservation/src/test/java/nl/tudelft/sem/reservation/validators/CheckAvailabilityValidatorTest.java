@@ -38,6 +38,7 @@ public class CheckAvailabilityValidatorTest {
         doReturn(false).when(spyValidator).getRoomAvailability(any(),
                 any(), any(), any());
 
+        @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
         Reservation reservation = new Reservation(89L, 9L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T17:22:23.643606500"),

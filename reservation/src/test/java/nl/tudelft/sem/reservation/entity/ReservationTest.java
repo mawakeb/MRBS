@@ -1,4 +1,4 @@
-package nl.tudelft.sem.reservation;
+package nl.tudelft.sem.reservation.entity;
 
 import nl.tudelft.sem.reservation.builder.Builder;
 import nl.tudelft.sem.reservation.builder.Director;

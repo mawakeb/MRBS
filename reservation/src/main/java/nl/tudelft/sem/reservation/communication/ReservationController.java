@@ -83,17 +83,17 @@ public class ReservationController {
         long isForId = reservation.getUserId();
         long madeById = reservation.getMadeBy();
 
-        if (roomId != 0 || start != null || end != null) {
-            if (roomId != 0) roomId = reservation.getRoomId();
-            if (start != null) start = reservation.getStart();
-            if (end != null) end = reservation.getEnd();
+        if (roomId != -1 || start != null || end != null) {
+            if (roomId == -1) roomId = reservation.getRoomId();
+            if (start == null) start = reservation.getStart();
+            if (end == null) end = reservation.getEnd();
         } else {
             return "There is nothing to edit for the reservation";
         }
 
-        if (UserCommunication.getUserType(token).equals("ADMIN")
-                || UserCommunication.getUser(token).equals(isForId)
-                || UserCommunication.getUser(token).equals(madeById)) {
+        if (getUserType(token).equals("ADMIN")
+                || getUser(token).equals(isForId)
+                || getUser(token).equals(madeById)) {
             // set up validators
             Validator handler = new CheckAvailabilityValidator();
             handler.setNext(new CheckIfRoomIsNotReservedAlready(), token);
@@ -108,7 +108,7 @@ public class ReservationController {
 
             // perform the checks and save the reservation if valid
             try {
-                boolean isValid = handler.handle(reservation, token);
+                boolean isValid = handle(handler, reservation, token);
                 System.out.print("Reservation status = " + isValid);
                 reservationRepo.save(reservation);
             } catch (InvalidReservationException e) {
@@ -122,15 +122,16 @@ public class ReservationController {
     }
 
     @GetMapping("/cancelReservation")
-    public String cancelReservation(@RequestParam long reservationId, @RequestParam String cancelPurpose, @RequestHeader("Authorization") String token) {
+    public String cancelReservation(@RequestParam long reservationId, @RequestParam String cancelPurpose,
+                                    @RequestHeader("Authorization") String token) {
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
         if (reservation == null) return "Reservation was not found";
         long isForId = reservation.getUserId();
         long madeById = reservation.getMadeBy();
 
-        if (UserCommunication.getUserType(token).equals("ADMIN")
-                || UserCommunication.getUser(token).equals(isForId)
-                || UserCommunication.getUser(token).equals(madeById)) {
+        if (getUserType(token).equals("ADMIN")
+                || getUser(token).equals(isForId)
+                || getUser(token).equals(madeById)) {
             reservation.cancelReservation(cancelPurpose);
 
             reservationRepo.save(reservation);
@@ -177,5 +178,27 @@ public class ReservationController {
         }
 
         return "Reservation successful!";
+    }
+
+
+
+    /**
+     * Get type of the user with given authentication token.
+     * Added to allow unit testing possible.
+     *
+     * @param token the authentication token of the user
+     * @return the type of the user
+     */
+    public String getUserType(String token) {
+        return UserCommunication.getUserType(token);
+    }
+
+    public Long getUser(String token) {
+        return UserCommunication.getUser(token);
+    }
+
+    public boolean handle(Validator handler, Reservation reservation, String token)
+            throws InvalidReservationException {
+        return handler.handle(reservation, token);
     }
 }

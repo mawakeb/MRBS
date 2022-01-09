@@ -23,9 +23,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Optional<Reservation> findById(Long id);
 
-    Reservation findAllByRoomIdAndCancelledIsFalseAndStartBeforeAndEndAfter(
-            Long roomId, LocalDateTime startTime, LocalDateTime endTime);
-
     List<Reservation> findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(
             Iterable<Long> roomIds, LocalDateTime startTime, LocalDateTime endTime);
 

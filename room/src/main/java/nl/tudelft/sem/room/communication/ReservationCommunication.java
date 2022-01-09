@@ -62,10 +62,10 @@ public class ReservationCommunication extends ServerCommunication {
                                                 String endTime,
                                                 String token) {
         String roomList = "";
-        for (Long room : rooms){
+        for (Long room : rooms) {
             roomList += room + ",";
         }
-        roomList = roomList.substring(0,roomList.length()-1);
+        roomList = roomList.substring(0, roomList.length() - 1);
 
         HttpRequest request = HttpRequest
                 .newBuilder()

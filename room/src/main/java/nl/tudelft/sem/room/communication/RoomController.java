@@ -334,7 +334,7 @@ public class RoomController {
      * @param token the authentication token of the user
      * @return the role of the user
      */
-    public String getRole(String token){
+    public String getRole(String token) {
         return UserCommunication.getUserType(token);
     }
 
@@ -345,7 +345,7 @@ public class RoomController {
      * @param token the authentication token of the user
      * @return id of the user
      */
-    public long getUserId(String token){
+    public long getUserId(String token) {
         return UserCommunication.getUserId(token);
     }
 

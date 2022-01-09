@@ -19,16 +19,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 public class UserControllerCompleteTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private transient MockMvc mockMvc;
 
     @MockBean
-    private UserDetailsServiceImpl userDetailsService;
+    private transient UserDetailsServiceImpl userDetailsService;
 
     @MockBean
-    private UserService userService;
+    private transient UserService userService;
 
     @MockBean
-    private JwtUtil jwtUtil;
+    private transient JwtUtil jwtUtil;
 
     @Test
     void testNotAuthorized() throws Exception {

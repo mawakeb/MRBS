@@ -32,9 +32,9 @@ class UserDetailsServiceImplTest {
 
     @Test
     void testGetAuthenticatedUserNotStartingWithBearer() {
-        User user = new User("random@random.com", "Name", "password", Type.EMPLOYEE);
+        User user = new User("user@random.com", "Name", "password", Type.EMPLOYEE);
 
-        Mockito.when(jwtUtil.extractUsername(Mockito.any())).thenReturn("random@random.com");
+        Mockito.when(jwtUtil.extractUsername(Mockito.any())).thenReturn("user@random.com");
         Mockito.when(userRepository.findByNetId(Mockito.any())).thenReturn(Optional.of(user));
 
         Optional<User> response = userDetailsService.getAuthenticatedUser("token");
@@ -44,9 +44,9 @@ class UserDetailsServiceImplTest {
 
     @Test
     void testGetAuthenticatedUser() {
-        User user = new User("random@random.com", "Name", "password", Type.EMPLOYEE);
+        User user = new User("random@email.com", "User", "password123", Type.EMPLOYEE);
 
-        Mockito.when(jwtUtil.extractUsername(Mockito.any())).thenReturn("random@random.com");
+        Mockito.when(jwtUtil.extractUsername(Mockito.any())).thenReturn("random@email.com");
         Mockito.when(userRepository.findByNetId(Mockito.any())).thenReturn(Optional.of(user));
 
         Optional<User> response = userDetailsService.getAuthenticatedUser("Bearer token");
@@ -66,15 +66,15 @@ class UserDetailsServiceImplTest {
 
     @Test
     void testLoadUserByUserNameValid() {
-        User user = new User("random@random.com", "Name", "password", Type.EMPLOYEE);
+        User user = new User("random@user.com", "User", "password123", Type.EMPLOYEE);
 
         Mockito.when(userRepository.findByNetId(Mockito.any())).thenReturn(Optional.of(user));
 
         Assertions.assertEquals(
-                userDetailsService.loadUserByUsername("random@random.com"),
+                userDetailsService.loadUserByUsername("random@user.com"),
                 new org.springframework.security.core.userdetails.User(
-                        "random@random.com",
-                        "password",
+                        "random@user.com",
+                        "password123",
                         Set.of(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))
                 )
         );

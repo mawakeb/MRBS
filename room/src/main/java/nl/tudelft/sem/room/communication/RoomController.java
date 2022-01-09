@@ -11,6 +11,7 @@ import nl.tudelft.sem.room.entity.Building;
 import nl.tudelft.sem.room.entity.EquipmentInRoom;
 import nl.tudelft.sem.room.entity.Room;
 import nl.tudelft.sem.room.entity.RoomNotice;
+import nl.tudelft.sem.room.exception.RoomNotFoundException;
 import nl.tudelft.sem.room.repository.BuildingRepository;
 import nl.tudelft.sem.room.repository.EquipmentRepository;
 import nl.tudelft.sem.room.repository.NoticeRepository;
@@ -89,9 +90,9 @@ public class RoomController {
 
         boolean available = room.isUnderMaintenance();
 
-        if (available) {
+        if (!available) {
             Long buildingId = room.getBuildingId();
-            Building building = buildingRepo.findById(buildingId).orElse(null);
+            Building building = buildingRepo.findById(buildingId).orElseGet(null);
 
             if (building == null) {
                 // do something but this shouldn't happen
@@ -215,7 +216,7 @@ public class RoomController {
      * @param token authentication token of the user
      * @param roomId id of the room to change the status
      * @param status the new status
-     * @return a success message if the process was successfull, return an error message otherwise
+     * @return a success message if the process was successful, return an error message otherwise
      */
     @PostMapping("/changeStatus")
     public String changeStatus(@RequestHeader(authorization) String token,
@@ -246,7 +247,7 @@ public class RoomController {
      * @param name name of the room
      * @param buildingId id of the building that the room is in
      * @param capacity capacity of the room
-     * @return a success message if the process was successfull, return an error message otherwise
+     * @return a success message if the process was successful, return an error message otherwise
      */
     @PostMapping("/createRoom")
     public String createRoom(@RequestHeader(authorization) String token,
@@ -277,7 +278,7 @@ public class RoomController {
      * @param name name of the building
      * @param openTime opening time of the building
      * @param closeTime closing time of the building
-     * @return a success message if the process was successfull, return an error message otherwise
+     * @return a success message if the process was successful, return an error message otherwise
      */
     @PostMapping("/createBuilding")
     public String createBuilding(@RequestHeader(authorization) String token,
@@ -306,7 +307,7 @@ public class RoomController {
      * @param token authentication token of the user
      * @param roomId id of the room that the equipment is in
      * @param equipmentName name of the equipment
-     * @return a success message if the process was successfull, return an error message otherwise
+     * @return a success message if the process was successful, return an error message otherwise
      */
     @GetMapping("/createEquipment")
     public String createEquipment(@RequestHeader(authorization) String token,

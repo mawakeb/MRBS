@@ -10,11 +10,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import nl.tudelft.sem.room.entity.Building;
 import nl.tudelft.sem.room.entity.EquipmentInRoom;
 import nl.tudelft.sem.room.entity.Room;
@@ -87,13 +87,12 @@ class RoomControllerTest {
         eir4 = new EquipmentInRoom(7L, testingUsedEquipment);
 
         //mock RoomRepository
-        lenient().when(roomRepo.findById(1L)).thenReturn(roomList.get(0));
         lenient().when(roomRepo.findAllById(Arrays.asList(6L, 7L)))
                 .thenReturn(Arrays.asList(room3, room4));
         lenient().when(roomRepo.findAll()).thenReturn(Arrays.asList(room1, room2, room3, room4));
 
         //mock BuildingRepository
-        lenient().when(buildingRepo.findById(10L)).thenReturn(building);
+        lenient().when(buildingRepo.findById(any())).thenReturn(Optional.ofNullable(building));
 
         //mock EquipmentRepository
         lenient().when(equipmentRepo.findAllByEquipmentName("")).thenReturn(List.of());
@@ -124,6 +123,7 @@ class RoomControllerTest {
 
     @Test
     void checkAvailable() {
+        when(roomRepo.findById(1L)).thenReturn(roomList.get(0));
         boolean actual = controller.checkAvailable(1L,
                 LocalTime.of(12, 0),
                 LocalTime.of(14, 0));
@@ -132,6 +132,7 @@ class RoomControllerTest {
 
     @Test
     void checkNotAvailable() {
+        when(roomRepo.findById(1L)).thenReturn(roomList.get(0));
         boolean actual1 = controller.checkAvailable(1L,
                 LocalTime.of(15, 0),
                 LocalTime.of(19, 0));
@@ -145,11 +146,8 @@ class RoomControllerTest {
 
     @Test
     void getById() {
+        when(roomRepo.findById(any())).thenReturn(Optional.ofNullable(roomList.get(0)));
         assertEquals(roomList.get(0), controller.getById(1L));
-    }
-
-    @Test
-    void queryRooms() {
     }
 
     @Test
@@ -168,6 +166,7 @@ class RoomControllerTest {
 
     @Test
     void changeStatus() {
+        when(roomRepo.findById(1L)).thenReturn((roomList.get(0)));
         String success = spyController.changeStatus(token, 1L, true);
         assertEquals("Status changed successfully", success);
         assertTrue(roomList.get(0).isUnderMaintenance());

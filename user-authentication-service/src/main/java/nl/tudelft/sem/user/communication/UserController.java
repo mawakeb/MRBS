@@ -1,7 +1,5 @@
 package nl.tudelft.sem.user.communication;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import nl.tudelft.sem.user.communication.request.LoginRequest;
 import nl.tudelft.sem.user.communication.request.RegisterRequest;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -78,6 +75,7 @@ public class UserController {
      */
     @GetMapping("/getCurrentUserType")
     public String getCurrentUserType(@RequestHeader("Authorization") String token) {
+        System.out.println("random");
         Optional<User> authenticatedUser = userDetailsService.getAuthenticatedUser(token);
 
         return authenticatedUser.map(user -> user.getType().toString()).orElse(null);
@@ -94,19 +92,5 @@ public class UserController {
         Optional<User> authenticatedUser = userDetailsService.getAuthenticatedUser(token);
 
         return authenticatedUser.map(User::getId).orElse((long) - 1);
-    }
-
-    /**
-     * Gets building opening hours.
-     *
-     * @param secretaryUserId the secretary user id
-     * @return the building opening hours
-     */
-    @GetMapping("/getTeamMemberIDs")
-    public List<Long> getBuildingOpeningHours(
-            @RequestParam(value = "secretaryUserId") Long secretaryUserId) {
-        ArrayList<Long> result = new ArrayList<>();
-        result.add((long) 1234);
-        return result;
     }
 }

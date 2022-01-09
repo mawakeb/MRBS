@@ -55,6 +55,7 @@ dependencies {
 	testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
 	testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
 	testImplementation('org.assertj:assertj-core:3.14.0')
+	testImplementation('org.springframework.security:spring-security-test')
 }
 
 dependencyManagement {
@@ -67,7 +68,7 @@ test {
 	useJUnitPlatform()
 	jacoco {
 		enabled = true
-		includes = ['nl.tudelft.sem.user-authentication-service.*']
+		includes = ['nl.tudelft.sem.user.*']
 		excludes = []
 	}
 }
@@ -82,7 +83,7 @@ jacocoTestCoverageVerification() {
 		rule {
 			enabled = true
 			element = 'CLASS'
-			includes = ['nl.tudelft.sem.user-authentication-service.*']
+			includes = ['nl.tudelft.sem.user.*']
 
 			limit {
 				counter = 'BRANCH'
@@ -107,7 +108,7 @@ pitest {
 	//adds dependency to org.pitest:pitest-junit5-plugin and sets "testPlugin" to "junit5"
 	junit5PluginVersion = '0.12'
 
-	targetClasses = ['nl.tudelft.sem.user-authentication-service.*']  //by default "${project.group}.*"
+	targetClasses = ['nl.tudelft.sem.user.*']  //by default "${project.group}.*"
 	pitestVersion = '1.5.1' //not needed when a default PIT version should be used
 	threads = 4
 	outputFormats = ['XML', 'HTML']

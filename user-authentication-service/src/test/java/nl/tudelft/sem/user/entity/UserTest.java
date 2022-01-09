@@ -78,6 +78,78 @@ class UserTest {
     }
 
     @Test
+    void testEqualsSameId() {
+        User user1 = new User();
+        User user2 = new User();
+
+        user1.setId(1L);
+        user2.setId(1L);
+
+        Assertions.assertTrue(user1.equals(user2));
+    }
+
+    @Test
+    void testEqualsDifferentId() {
+        User user1 = new User();
+        User user2 = new User();
+
+        user1.setId(1L);
+        user2.setId(2L);
+
+        Assertions.assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    void testEqualsSameName() {
+        User user1 = new User();
+        User user2 = new User();
+
+        user1.setName("Name");
+        user2.setName("Name");
+
+        Assertions.assertTrue(user1.equals(user2));
+    }
+
+    @Test
+    void testEqualsDifferentName() {
+        User user1 = new User();
+        User user2 = new User();
+
+        user1.setName("Name");
+        user2.setName("Other");
+
+        Assertions.assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    void testEqualsSameHashedPassword() {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        String hashed = passwordEncoder.encode("test");
+
+        User user1 = new User();
+        User user2 = new User();
+
+        user1.setHashedPassword(hashed);
+        user2.setHashedPassword(hashed);
+
+        Assertions.assertTrue(user1.equals(user2));
+    }
+
+    @Test
+    void testEqualsDifferentHashedPassword() {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        User user1 = new User();
+        User user2 = new User();
+
+        user1.setHashedPassword(passwordEncoder.encode("test"));
+        user2.setHashedPassword(passwordEncoder.encode("other"));
+
+        Assertions.assertFalse(user1.equals(user2));
+    }
+
+    @Test
     void testEqualsDifferentValues() {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -87,6 +159,37 @@ class UserTest {
         User user2 = new User("random@email.com", "Other name", hashedPassword, Type.ADMIN);
 
         Assertions.assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    void testEqualsNull() {
+        User user1 = new User("user@random.com", "User name", "password123", Type.EMPLOYEE);
+        User user2 = null;
+
+        Assertions.assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    void testEqualsDifferentClass() {
+        User user1 = new User("user@random.com", "User name", "password123", Type.EMPLOYEE);
+        String user2 = "";
+
+        Assertions.assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    void testHashCode() {
+        User user1 = new User();
+        User user2 = new User();
+
+        Assertions.assertTrue(user1.hashCode() == user2.hashCode());
+    }
+
+    @Test
+    void testToString() {
+        User user = new User("user@random.com", "User name", "password123", Type.EMPLOYEE);
+
+        Assertions.assertNotNull(user.toString());
     }
 
 }

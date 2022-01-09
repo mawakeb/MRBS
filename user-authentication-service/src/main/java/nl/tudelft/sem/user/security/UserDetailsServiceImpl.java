@@ -1,6 +1,5 @@
 package nl.tudelft.sem.user.security;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import nl.tudelft.sem.user.communication.request.LoginRequest;
@@ -9,8 +8,6 @@ import nl.tudelft.sem.user.entity.User;
 import nl.tudelft.sem.user.repository.UserRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -101,16 +98,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return new org.springframework.security.core.userdetails.User(
                     userPresent.getNetId(),
                     userPresent.getHashedPassword(),
-                    this.getAuthoritiesForUser(userPresent)
+                    Set.of(new SimpleGrantedAuthority("ROLE_" + userPresent.getType()))
             );
         } else {
             throw new UsernameNotFoundException(username);
         }
-    }
-
-    private Set<SimpleGrantedAuthority> getAuthoritiesForUser(User user) {
-        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        return Set.of(new SimpleGrantedAuthority("ROLE_" + user.getType()));
     }
 
     private void authenticate(String userName, String userPassword) throws Exception {
@@ -118,10 +110,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userName, userPassword)
             );
-        } catch (DisabledException e) {
-            throw new Exception("User is disabled");
-        } catch (BadCredentialsException e) {
-            throw new Exception("Bad credentials from user");
+        } catch (Exception e) {
+            throw new Exception("");
         }
     }
 }

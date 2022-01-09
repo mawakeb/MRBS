@@ -183,7 +183,7 @@ public class ReservationController {
 
 
     /**
-     * Get type of the user with given authentication token.
+     * Get the type of the user with given authentication token.
      * Added to allow unit testing possible.
      *
      * @param token the authentication token of the user
@@ -193,10 +193,26 @@ public class ReservationController {
         return UserCommunication.getUserType(token);
     }
 
+    /**
+     * Get the id of the user with given authentication token.
+     * Added to allow unit testing possible.
+     *
+     * @param token the authentication token of the user
+     * @return the id of the user
+     */
     public Long getUser(String token) {
         return UserCommunication.getUser(token);
     }
 
+    /**
+     * Activate the handle method of a validator.
+     * Added to allow unit testing possible.
+     *
+     * @param handler the validator in use
+     * @param reservation the reservation to validate
+     * @param token the authentication token of the user
+     * @return the success of the validator
+     */
     public boolean handle(Validator handler, Reservation reservation, String token)
             throws InvalidReservationException {
         return handler.handle(reservation, token);

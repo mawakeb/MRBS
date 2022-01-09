@@ -1,7 +1,5 @@
 package nl.tudelft.sem.user.communication;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import nl.tudelft.sem.user.communication.request.LoginRequest;
 import nl.tudelft.sem.user.communication.request.RegisterRequest;
@@ -29,14 +27,9 @@ public class UserController {
     private transient UserDetailsServiceImpl userDetailsService;
     private transient UserService userService;
 
-    private final transient UserRepository userRepository;
-
-    public UserController(UserDetailsServiceImpl userDetailsService, UserService userService
-            , UserRepository userRepository) {
+    public UserController(UserDetailsServiceImpl userDetailsService, UserService userService) {
         this.userDetailsService = userDetailsService;
         this.userService = userService;
-
-        this.userRepository = userRepository;
     }
 
     /**
@@ -85,7 +78,7 @@ public class UserController {
      */
     @GetMapping("getUserType")
     public String getUserType(@RequestParam Long id) {
-        return userRepository.findById(id).get().getType().toString();
+        return userService.getUserType(id).toString();
     }
 
     /**
@@ -97,14 +90,7 @@ public class UserController {
      */
     @GetMapping("setUserType")
     public String setUserType(@RequestParam Long id, @RequestParam String type) {
-        if (userRepository.findById(id).isPresent()) {
-            User user = userRepository.findById(id).get();
-            user.setType(Type.valueOf(type));
-
-            userRepository.save(user);
-            return "User type changed successfully";
-        }
-        else return "User not found";
+        return userService.setUserType(id, Type.valueOf(type));
     }
 
     /**
@@ -115,6 +101,7 @@ public class UserController {
      */
     @GetMapping("/getCurrentUserType")
     public String getCurrentUserType(@RequestHeader("Authorization") String token) {
+        System.out.println("random");
         Optional<User> authenticatedUser = userDetailsService.getAuthenticatedUser(token);
 
         return authenticatedUser.map(user -> user.getType().toString()).orElse(null);
@@ -131,19 +118,5 @@ public class UserController {
         Optional<User> authenticatedUser = userDetailsService.getAuthenticatedUser(token);
 
         return authenticatedUser.map(User::getId).orElse((long) - 1);
-    }
-
-    /**
-     * Gets building opening hours.
-     *
-     * @param secretaryUserId the secretary user id
-     * @return the building opening hours
-     */
-    @GetMapping("/getTeamMemberIDs")
-    public List<Long> getBuildingOpeningHours(
-            @RequestParam(value = "secretaryUserId") Long secretaryUserId) {
-        ArrayList<Long> result = new ArrayList<>();
-        result.add((long) 1234);
-        return result;
     }
 }

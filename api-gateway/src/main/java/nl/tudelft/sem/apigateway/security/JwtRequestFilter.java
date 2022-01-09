@@ -9,7 +9,6 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -40,42 +39,27 @@ public class JwtRequestFilter implements GlobalFilter {
         ServerHttpRequest request = exchange.getRequest();
 
         if (!openEndpoints.contains(request.getPath().toString())) {
-            if (this.isAuthMissing(request)) {
-                return this.onError(
-                        exchange,
-                        "Authorization header is missing in request",
-                        HttpStatus.UNAUTHORIZED
-                );
+            // Is a secure endpoint, so we need to check for authentication.
+            if (!request.getHeaders().containsKey("Authorization")) {
+                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                return exchange.getResponse().setComplete();
             }
 
-            final String token = this.getAuthHeader(request);
+            final String token = request
+                    .getHeaders()
+                    .getOrEmpty("Authorization")
+                    .get(0)
+                    .replace("Bearer ", "");
 
             if (jwtUtil.isInvalid(token)) {
-                return this.onError(
-                        exchange,
-                        "Authorization header is invalid",
-                        HttpStatus.UNAUTHORIZED
-                );
+                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                return exchange.getResponse().setComplete();
             }
 
             this.populateRequestWithHeaders(exchange, token);
         }
 
         return chain.filter(exchange);
-    }
-
-    private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
-        ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(httpStatus);
-        return response.setComplete();
-    }
-
-    private String getAuthHeader(ServerHttpRequest request) {
-        return request.getHeaders().getOrEmpty("Authorization").get(0).replace("Bearer ", "");
-    }
-
-    private boolean isAuthMissing(ServerHttpRequest request) {
-        return !request.getHeaders().containsKey("Authorization");
     }
 
     private void populateRequestWithHeaders(ServerWebExchange exchange, String token) {

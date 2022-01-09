@@ -3,6 +3,7 @@ package nl.tudelft.sem.user.service;
 import nl.tudelft.sem.user.communication.request.RegisterRequest;
 import nl.tudelft.sem.user.entity.User;
 import nl.tudelft.sem.user.exception.NetIdAlreadyExistsException;
+import nl.tudelft.sem.user.object.Type;
 import nl.tudelft.sem.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,35 @@ public class UserService {
             );
 
             return userRepository.save(newUser);
+        }
+    }
+
+    /**
+     * Gets user type.
+     *
+     * @param userId the user id
+     * @return the user type
+     */
+    public Type getUserType(Long userId) {
+        return userRepository.findById(userId).get().getType();
+    }
+
+    /**
+     * Sets user type.
+     *
+     * @param userId  the user id
+     * @param newType the new type
+     * @return the user type
+     */
+    public String setUserType(Long userId, Type newType) {
+        if (userRepository.findById(userId).isPresent()) {
+            User user = userRepository.findById(userId).get();
+            user.setType(newType);
+
+            userRepository.save(user);
+            return "User type changed successfully";
+        } else {
+            return "User not found";
         }
     }
 }

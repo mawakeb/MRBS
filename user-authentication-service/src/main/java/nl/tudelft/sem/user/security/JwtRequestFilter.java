@@ -12,6 +12,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/**
+ * The type Jwt request filter.
+ */
 @Component
 @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -19,6 +22,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private transient JwtUtil jwtUtil;
     private transient UserDetailsServiceImpl userDetailService;
 
+    /**
+     * Instantiates a new Jwt request filter.
+     *
+     * @param userDetailService the user detail service
+     * @param jwtUtil           the jwt util
+     */
     public JwtRequestFilter(UserDetailsServiceImpl userDetailService, JwtUtil jwtUtil) {
         this.userDetailService = userDetailService;
         this.jwtUtil = jwtUtil;

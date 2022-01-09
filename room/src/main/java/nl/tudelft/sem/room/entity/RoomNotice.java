@@ -1,6 +1,12 @@
 package nl.tudelft.sem.room.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 
 @Entity
 @Table(name = "roomNotice")
@@ -20,6 +26,13 @@ public class RoomNotice {
     @Column(name = "message")
     private String message;
 
+    /**
+     * Constructor for Room Notice.
+     *
+     * @param roomId        id of the room that the note is left for
+     * @param reservationId id of the reservation that the user wanted to leave a notice for
+     * @param message       the actual message content
+     */
     public RoomNotice(Long roomId, Long reservationId, String message) {
         this.roomId = roomId;
         this.reservationId = reservationId;

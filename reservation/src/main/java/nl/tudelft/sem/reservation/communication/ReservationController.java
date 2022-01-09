@@ -66,6 +66,17 @@ public class ReservationController {
         }
     }
 
+    @GetMapping("/getRoom")
+    public long getRoom(@RequestParam long id) {
+
+        Reservation reservation = reservationRepo.findById(id).orElse(null);
+        if (reservation!=null){
+            return reservation.getRoomId();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
+        }
+    }
+
     @GetMapping("/checkTimeslot")
     public List<Long> checkTimeslot(@RequestParam List<Long> rooms,
                                     @RequestParam String startTime,
@@ -208,8 +219,6 @@ public class ReservationController {
         return "Reservation successful!";
     }
 
-
-
     /**
      * Get the type of the user with given authentication token.
      * Added to allow unit testing possible.
@@ -244,5 +253,10 @@ public class ReservationController {
     public boolean handle(Validator handler, Reservation reservation, String token)
             throws InvalidReservationException {
         return handler.handle(reservation, token);
+    }
+    
+     @GetMapping("getSchedule")
+    public List<Reservation> getSchedule(@RequestParam long userId) {
+        return reservationRepo.findAllByUserId(userId);
     }
 }

@@ -8,6 +8,8 @@ import nl.tudelft.sem.user.communication.request.RegisterRequest;
 import nl.tudelft.sem.user.communication.response.RegisterResponse;
 import nl.tudelft.sem.user.entity.User;
 import nl.tudelft.sem.user.exception.NetIdAlreadyExistsException;
+import nl.tudelft.sem.user.object.Type;
+import nl.tudelft.sem.user.repository.UserRepository;
 import nl.tudelft.sem.user.security.UserDetailsServiceImpl;
 import nl.tudelft.sem.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -27,9 +29,14 @@ public class UserController {
     private transient UserDetailsServiceImpl userDetailsService;
     private transient UserService userService;
 
-    public UserController(UserDetailsServiceImpl userDetailsService, UserService userService) {
+    private final transient UserRepository userRepository;
+
+    public UserController(UserDetailsServiceImpl userDetailsService, UserService userService
+            , UserRepository userRepository) {
         this.userDetailsService = userDetailsService;
         this.userService = userService;
+
+        this.userRepository = userRepository;
     }
 
     /**
@@ -68,6 +75,36 @@ public class UserController {
         } catch (NetIdAlreadyExistsException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    /**
+     * Gets a given user type.
+     *
+     * @param id the id of the user
+     * @return the given user type
+     */
+    @GetMapping("getUserType")
+    public String getUserType(@RequestParam Long id) {
+        return userRepository.findById(id).get().getType().toString();
+    }
+
+    /**
+     * Sets a given user type.
+     *
+     * @param id the id of the user
+     * @param type the type to set the user to
+     * @return the status of the request
+     */
+    @GetMapping("setUserType")
+    public String setUserType(@RequestParam Long id, @RequestParam String type) {
+        if (userRepository.findById(id).isPresent()) {
+            User user = userRepository.findById(id).get();
+            user.setType(Type.valueOf(type));
+
+            userRepository.save(user);
+            return "User type changed successfully";
+        }
+        else return "User not found";
     }
 
     /**

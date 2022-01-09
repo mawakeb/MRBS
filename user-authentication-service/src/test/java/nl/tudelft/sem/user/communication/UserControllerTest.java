@@ -39,7 +39,8 @@ class UserControllerTest {
     void testLogin() throws Exception {
         LoginRequest request = new LoginRequest("random@random.com", "password");
 
-        Mockito.when(userDetailsService.createJwtToken(request)).thenReturn(new LoginResponse("random.jwt"));
+        Mockito.when(userDetailsService.createJwtToken(request))
+                .thenReturn(new LoginResponse("random.jwt"));
 
         mockMvc
                 .perform(MockMvcRequestBuilders.post("/user/login")
@@ -50,7 +51,12 @@ class UserControllerTest {
 
     @Test
     void testRegister() throws Exception {
-        RegisterRequest request = new RegisterRequest("random@random.com", "Name", "password123'", Type.EMPLOYEE);
+        RegisterRequest request = new RegisterRequest(
+                "random@random.com",
+                "Name",
+                "password123'",
+                Type.EMPLOYEE
+        );
 
         User newUser = new User("random@random.com", "Name", "password123", Type.EMPLOYEE);
 
@@ -65,9 +71,15 @@ class UserControllerTest {
 
     @Test
     void testRegisterWithException() throws Exception {
-        RegisterRequest request = new RegisterRequest("random@email.com", "Name", "password", Type.EMPLOYEE);
+        RegisterRequest request = new RegisterRequest(
+                "random@email.com",
+                "Name",
+                "password",
+                Type.EMPLOYEE
+        );
 
-        Mockito.when(userService.create(Mockito.any())).thenThrow(new NetIdAlreadyExistsException("random@email.com"));
+        Mockito.when(userService.create(Mockito.any()))
+                .thenThrow(new NetIdAlreadyExistsException("random@email.com"));
 
         mockMvc
                 .perform(MockMvcRequestBuilders.post("/user/register")

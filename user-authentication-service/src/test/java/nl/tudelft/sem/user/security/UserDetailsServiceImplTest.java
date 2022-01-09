@@ -15,8 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 class UserDetailsServiceImplTest {
     private transient UserRepository userRepository = Mockito.mock(UserRepository.class);
     private transient JwtUtil jwtUtil = Mockito.mock(JwtUtil.class);
-    private transient AuthenticationManager authenticationManager = Mockito.mock(AuthenticationManager.class);
-    private transient UserDetailsServiceImpl userDetailsService = new UserDetailsServiceImpl(userRepository, jwtUtil, authenticationManager);
+    private transient AuthenticationManager authenticationManager
+            = Mockito.mock(AuthenticationManager.class);
+    private transient UserDetailsServiceImpl userDetailsService
+            = new UserDetailsServiceImpl(userRepository, jwtUtil, authenticationManager);
 
     @Test
     void testGetAuthenticatedUserNullToken() {

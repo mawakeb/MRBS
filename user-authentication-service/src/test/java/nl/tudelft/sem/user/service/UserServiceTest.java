@@ -12,16 +12,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 class UserServiceTest {
     private transient UserRepository userRepository = Mockito.mock(UserRepository.class);
-    private transient UserService userService = new UserService(new BCryptPasswordEncoder(), userRepository);
+    private transient UserService userService =
+            new UserService(new BCryptPasswordEncoder(), userRepository);
 
     @Test
     void testCreateAlreadyExists() {
         Mockito.when(userRepository.existsByNetId("random@random.com")).thenReturn(true);
 
         Assertions.assertThrows(NetIdAlreadyExistsException.class, () -> {
-           userService.create(
+            userService.create(
                    new RegisterRequest("random@random.com", "Name", "password", Type.EMPLOYEE)
-           );
+            );
         });
     }
 

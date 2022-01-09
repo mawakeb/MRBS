@@ -74,7 +74,8 @@ public class UserService {
 
             userRepository.save(user);
             return "User type changed successfully";
+        } else {
+            return "User not found";
         }
-        else return "User not found";
     }
 }

@@ -46,7 +46,11 @@ public class UserControllerCompleteTest {
     @WithMockUser(username = "random@random.com", roles = {"USER"})
     @Test
     void testAuthorized() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/getCurrentUserType").header("Authorization", "Bearer token").contentType(MediaType.APPLICATION_JSON))
+        mockMvc
+                .perform(MockMvcRequestBuilders
+                    .get("/user/getCurrentUserType")
+                    .header("Authorization", "Bearer token")
+                    .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
     }
 }

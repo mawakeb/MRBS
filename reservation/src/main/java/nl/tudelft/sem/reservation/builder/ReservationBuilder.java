@@ -1,8 +1,8 @@
 package nl.tudelft.sem.reservation.builder;
 
+import java.time.LocalDateTime;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
-import java.time.LocalDateTime;
 
 @SuppressWarnings("PMD.BeanMembersShouldSerialize")
 public class ReservationBuilder implements Builder {
@@ -30,15 +30,21 @@ public class ReservationBuilder implements Builder {
     public void type(ReservationType type) {
         this.reservationType = type;
     }
-    public void user(Long userId) { this.userId = userId; }
+
+    public void user(Long userId) {
+        this.userId = userId;
+    }
+
     public void group(Long groupId) {
         this.groupId = groupId;
     }
+
     public void purpose(String message) {
         this.purposeMessage = message;
     }
 
     public Reservation build() {
-        return new Reservation(madeBy, roomId, start, end, reservationType, userId, groupId, purposeMessage);
+        return new Reservation(madeBy, roomId, start, end,
+                reservationType, userId, groupId, purposeMessage);
     }
 }

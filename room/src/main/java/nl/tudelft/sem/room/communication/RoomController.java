@@ -16,13 +16,14 @@ import nl.tudelft.sem.room.repository.EquipmentRepository;
 import nl.tudelft.sem.room.repository.NoticeRepository;
 import nl.tudelft.sem.room.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
@@ -89,7 +90,7 @@ public class RoomController {
         boolean available = room.isUnderMaintenance();
 
         if (available) {
-            Long buildingId = room.getId();
+            Long buildingId = room.getBuildingId();
             Building building = buildingRepo.findById(buildingId).orElse(null);
 
             if (building == null) {
@@ -176,10 +177,10 @@ public class RoomController {
                               @RequestParam long reservationId,
                               @RequestParam String message) {
 
-        long userId = UserCommunication.getUserId(token);
+        long userId = getUserId(token);
         //if the user is the owner of the reservation, save a new notice in NoticeRepository
-        if (ReservationCommunication.checkUserToReservation(userId, reservationId, token)) {
-            long roomId = ReservationCommunication.getRoomWithReservation(reservationId, token);
+        if (checkUserToReservation(userId, reservationId, token)) {
+            long roomId = getRoomWithReservation(reservationId, token);
             RoomNotice notice = new RoomNotice(roomId, reservationId, message);
             noticeRepo.save(notice);
             return "Notice saved successfully";
@@ -196,14 +197,16 @@ public class RoomController {
      * @return the list of RoomNotice
      */
     @GetMapping("/getNotice")
-    public List<RoomNotice> leaveNotice(@RequestHeader(authorization) String token,
+    public List<RoomNotice> getNotice(@RequestHeader(authorization) String token,
                                         @RequestParam long roomId) {
 
-        if (UserCommunication.getUserType(token).equals(admin)) {
+        if (getRole(token).equals(admin)) {
             List<RoomNotice> notices = noticeRepo.findByRoomId(roomId);
             return notices;
+        } else {
+            throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "You do not have access to maintenance notices");
         }
-        return null;
     }
 
     /**
@@ -219,17 +222,20 @@ public class RoomController {
                                @RequestParam long roomId,
                                @RequestParam boolean status) {
 
-        if (UserCommunication.getUserType(token).equals(admin)) {
+        if (getRole(token).equals(admin)) {
             Room room = roomRepo.findById(roomId);
             if (room != null) {
                 room.setUnderMaintenance(status);
                 roomRepo.save(room);
                 return "Status changed successfully";
             } else {
-                return "Room was not found";
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Room was not found");
             }
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "You do not have access to room maintenance");
         }
-        return "You do not have the access to change the status";
     }
 
     /**
@@ -248,16 +254,19 @@ public class RoomController {
                              @RequestParam String name,
                              @RequestParam long buildingId,
                              @RequestParam int capacity) {
-        if (UserCommunication.getUserType(token).equals(admin)) {
+        if (getRole(token).equals(admin)) {
             if (roomRepo.findById(id) == null) {
                 Room room = new Room(id, name, buildingId, capacity);
                 roomRepo.save(room);
                 return "Room has been saved successfully";
             } else {
-                return "There is a room with same id";
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "There is existing room with same id");
             }
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "You do not have access to creating rooms");
         }
-        return "You do not have access to creating rooms in the database";
     }
 
     /**
@@ -276,16 +285,19 @@ public class RoomController {
                                  @RequestParam String name,
                                  @RequestParam LocalTime openTime,
                                  @RequestParam LocalTime closeTime) {
-        if (UserCommunication.getUserType(token).equals(admin)) {
+        if (getRole(token).equals(admin)) {
             if (buildingRepo.findById(id) == null) {
                 Building building = new Building(id, name, openTime, closeTime);
                 buildingRepo.save(building);
                 return "Building has been saved successfully";
             } else {
-                return "There is a building with same id";
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "There is existing building with same id");
             }
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "You do not have access to creating buildings");
         }
-        return "You do not have access to creating buildings in the database";
     }
 
     /**
@@ -300,15 +312,46 @@ public class RoomController {
     public String createEquipment(@RequestHeader(authorization) String token,
                                   @RequestParam Long roomId,
                                   @RequestParam String equipmentName) {
-        if (UserCommunication.getUserType(token).equals(admin)) {
+        if (getRole(token).equals(admin)) {
             if (roomRepo.findById(roomId) != null) {
                 EquipmentInRoom equipment = new EquipmentInRoom(roomId, equipmentName);
                 equipmentRepo.save(equipment);
                 return "Equipment has been saved successfully";
             } else {
-                return "Room was not found";
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Room was not found");
             }
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "You do not have access to creating equipments");
         }
-        return "You do not have access to creating equipments in the database";
+    }
+
+    /**
+     * Get role of user with given authentication token.
+     * Added to allow unit testing possible.
+     *
+     * @param token the authentication token of the user
+     * @return the role of the user
+     */
+    public String getRole(String token){
+        return UserCommunication.getUserType(token);
+    }
+
+    public long getUserId(String token){
+        return UserCommunication.getUserId(token);
+    }
+
+    public boolean checkUserToReservation(long userId,
+                                          long reservationId, String token){
+        return ReservationCommunication
+                .checkUserToReservation(userId, reservationId, token);
+    }
+
+    public long getRoomWithReservation(long reservationId,
+                                       String token){
+        return ReservationCommunication
+                .getRoomWithReservation(reservationId, token);
     }
 }
+

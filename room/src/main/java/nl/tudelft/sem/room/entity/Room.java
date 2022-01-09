@@ -37,7 +37,7 @@ public class Room {
      * Constructor for room entity.
      *
      * @param id         room id
-     * @param name       name of the building
+     * @param name       name of the room
      * @param buildingId id of the building that the room is in
      * @param capacity   capacity of the room
      */

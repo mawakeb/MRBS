@@ -8,6 +8,7 @@ import java.util.List;
 public class ReservationCommunication extends ServerCommunication {
 
     private static final String requestString = hostAddress + "/reservation";
+    private static final String authorization = "Authorization";
 
     /**
      * Test method.
@@ -19,7 +20,7 @@ public class ReservationCommunication extends ServerCommunication {
         HttpRequest request = HttpRequest
                 .newBuilder()
                 .GET()
-                .setHeader("Authorization", token)
+                .setHeader(authorization, token)
                 .uri(URI.create(requestString))
                 .build();
         return gson
@@ -39,7 +40,7 @@ public class ReservationCommunication extends ServerCommunication {
         HttpRequest request = HttpRequest
                 .newBuilder()
                 .GET()
-                .setHeader("Authorization", token)
+                .setHeader(authorization, token)
                 .uri(URI.create(requestString + "/checkUser" + "?userId=" + userId
                         + "&reservationId=" + reservationId)).build();
         return gson
@@ -63,7 +64,7 @@ public class ReservationCommunication extends ServerCommunication {
         HttpRequest request = HttpRequest
                 .newBuilder()
                 .GET()
-                .setHeader("Authorization", token)
+                .setHeader(authorization, token)
                 .uri(URI.create(requestString + "/checkTimeslot" + "?rooms=" + rooms
                         + "&startTime=" + startTime + "&endTime=" + endTime)).build();
         return gson
@@ -82,7 +83,7 @@ public class ReservationCommunication extends ServerCommunication {
     public static long getRoomWithReservation(long reservationId,
                                               String token) {
         HttpRequest request = HttpRequest.newBuilder()
-                .setHeader("Authorization", token)
+                .setHeader(authorization, token)
                 .GET().uri(URI.create(requestString + "/getRoom"
                         + "?id=" + reservationId)).build();
         return gson

@@ -1,12 +1,12 @@
 package nl.tudelft.sem.group.entity;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class GroupTest {
 
@@ -94,6 +94,7 @@ class GroupTest {
 
     @Test
     void testToString() {
-        assertEquals("Group{id=null, secretaryIds=[1, 23], membersIds=[3, 1, 23]}", group.toString());
+        assertEquals("Group{id=null, secretaryIds=[1, 23], membersIds=[3, 1, 23]}",
+                group.toString());
     }
 }

@@ -1,5 +1,20 @@
 package nl.tudelft.sem.group.communication;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import nl.tudelft.sem.group.entity.Group;
 import nl.tudelft.sem.group.exception.GroupNotFoundException;
 import nl.tudelft.sem.group.repository.GroupRepository;
@@ -8,27 +23,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 class GroupControllerTest {
 
     private transient Group group;
     private transient Group otherGroup;
     private transient GroupController groupController;
     private transient GroupController spyController;
-    private transient final String token = "token";
-    private transient final String adminToken = "adminToken";
+    private final transient String token = "token";
+    private final transient String adminToken = "adminToken";
 
     @BeforeEach
     void setUp() {
         //Set up of the main group used for testing.
-        Long groupId = 0L;
+        final Long groupId = 0L;
         List<Long> secretaries = new ArrayList<Long>();
         secretaries.add(1L);
         secretaries.add(23L);
@@ -37,7 +44,7 @@ class GroupControllerTest {
         group = new Group(secretaries, members);
 
         //Set up of the "other" group used for testing the overlap method.
-        Long otherGroupId = 7L;
+        final Long otherGroupId = 7L;
         List<Long> otherSecretaries = new ArrayList<Long>();
         otherSecretaries.add(25L);
         otherSecretaries.add(46L);
@@ -50,7 +57,8 @@ class GroupControllerTest {
 
         //Mocking the calls to the database.
         lenient().when(groupRepository.findById(groupId)).thenReturn(Optional.ofNullable(group));
-        lenient().when(groupRepository.findById(otherGroupId)).thenReturn(Optional.ofNullable(otherGroup));
+        lenient().when(groupRepository.findById(otherGroupId))
+                .thenReturn(Optional.ofNullable(otherGroup));
 
         //Initializing the GroupController class to test.
         MockitoAnnotations.initMocks(this);
@@ -77,7 +85,8 @@ class GroupControllerTest {
 
     @Test
     void getSecretariesIdsGroupNotFound() {
-        Exception exception = assertThrows(GroupNotFoundException.class, () -> groupController.getSecretariesIds(1L));
+        Exception exception = assertThrows(GroupNotFoundException.class,
+                () -> groupController.getSecretariesIds(1L));
 
         String expectedMessage = "The research group was not found.";
         String actualMessage = exception.getMessage();
@@ -97,7 +106,8 @@ class GroupControllerTest {
 
     @Test
     void isSecretaryOfGroupNotFound() {
-        Exception exception = assertThrows(GroupNotFoundException.class, () -> groupController.isSecretaryOfGroup(23L, 1L));
+        Exception exception = assertThrows(GroupNotFoundException.class,
+                () -> groupController.isSecretaryOfGroup(23L, 1L));
 
         String expectedMessage = "The research group was not found.";
         String actualMessage = exception.getMessage();
@@ -108,7 +118,7 @@ class GroupControllerTest {
     @Test
     void isInGroup() {
         try {
-            assertTrue(groupController.isInGroup(3L,0L));
+            assertTrue(groupController.isInGroup(3L, 0L));
             assertTrue(groupController.isInGroup(23L, 0L));
         } catch (GroupNotFoundException e) {
             e.printStackTrace();
@@ -117,7 +127,8 @@ class GroupControllerTest {
 
     @Test
     void isInGroupNotFound() {
-        Exception exception = assertThrows(GroupNotFoundException.class, () -> groupController.isInGroup(23L, 1L));
+        Exception exception = assertThrows(GroupNotFoundException.class,
+                () -> groupController.isInGroup(23L, 1L));
 
         String expectedMessage = "The research group was not found.";
         String actualMessage = exception.getMessage();
@@ -146,9 +157,12 @@ class GroupControllerTest {
 
     @Test
     void overlapOneOfTheGroupsNotFound() {
-        Exception exception = assertThrows(GroupNotFoundException.class, () -> groupController.overlap(0L, 1L));
-        Exception exception2 = assertThrows(GroupNotFoundException.class, () -> groupController.overlap(2L, 7L));
-        Exception exception3 = assertThrows(GroupNotFoundException.class, () -> groupController.overlap(2L, 3L));
+        Exception exception = assertThrows(GroupNotFoundException.class,
+                () -> groupController.overlap(0L, 1L));
+        Exception exception2 = assertThrows(GroupNotFoundException.class,
+                () -> groupController.overlap(2L, 7L));
+        Exception exception3 = assertThrows(GroupNotFoundException.class,
+                () -> groupController.overlap(2L, 3L));
 
         String expectedMessage = "The groups were not found.";
         String actualMessage = exception.getMessage();
@@ -165,7 +179,7 @@ class GroupControllerTest {
      */
     @Test
     void createGroupNoPermission() {
-        String resultString = spyController.createGroup(Arrays.asList(23L, 29L),
+        final String resultString = spyController.createGroup(Arrays.asList(23L, 29L),
                 Arrays.asList(41L, 53L, 67L, 73L, 83L, 91L, 97L), token);
 
         verify(spyController, times(1)).getCurrentUserType(token);
@@ -180,7 +194,7 @@ class GroupControllerTest {
      */
     @Test
     void createGroupWithPermission() {
-        String resultString = spyController.createGroup(Arrays.asList(23L, 29L),
+        final String resultString = spyController.createGroup(Arrays.asList(23L, 29L),
                 new ArrayList<>(Arrays.asList(41L, 53L, 67L, 73L, 83L, 91L, 97L)), adminToken);
 
         verify(spyController, times(1)).getCurrentUserType(adminToken);

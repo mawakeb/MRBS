@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GroupTest {
 
-    private Group group;
+    private transient Group group;
 
     @BeforeEach
     void setUp() {
@@ -90,11 +90,6 @@ class GroupTest {
     void testEqualsSameObject() {
         Group newGroup = this.group;
         assertEquals(newGroup, this.group);
-    }
-
-    @Test
-    void testEqualsNull() {
-        assertFalse(this.group.equals(null));
     }
 
     @Test

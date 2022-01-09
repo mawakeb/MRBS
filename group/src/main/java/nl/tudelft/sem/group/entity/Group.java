@@ -89,6 +89,11 @@ public class Group {
         this.membersIds = membersId;
     }
 
+    /**
+     * Checks if the given object is equal to this Group object.
+     * @param o - the object to compare against.
+     * @return - true if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -97,11 +102,19 @@ public class Group {
         return Objects.equals(id, group.id) && Objects.equals(membersIds, group.membersIds);
     }
 
+    /**
+     * Creates a hash of this Group object.
+     * @return - the int hash value of that object.
+     */
     @Override
     public int hashCode() {
         return super.hashCode();
     }
 
+    /**
+     * A human-friendly String representation of this Group object.
+     * @return - the human-readable String of this Group.
+     */
     @Override
     public String toString() {
         return "Group{" +

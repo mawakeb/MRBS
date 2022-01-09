@@ -37,6 +37,8 @@ public class ReservationControllerTest {
     private transient ReservationController spyController;
     private transient final String adminToken = "adminToken";
     private transient final String token = "token";
+    private transient final String editString = "Entered the wrong room";
+    private transient final String cancelString = "Got covid";
 
     @BeforeEach
     void setUp() throws InvalidReservationException {
@@ -89,8 +91,8 @@ public class ReservationControllerTest {
     @Test
     void editAndCancelInvalidReservation() {
         String editResult = spyController.editReservation(5L, 7L,
-                null, null, "Entered wrong room", token);
-        String cancelResult = spyController.cancelReservation(5L, "Got covid", token);
+                null, null, editString, token);
+        String cancelResult = spyController.cancelReservation(5L, cancelString, token);
 
         verify(reservationRepo, times(2)).findById(5L);
         assertEquals("Reservation was not found", editResult);
@@ -103,14 +105,15 @@ public class ReservationControllerTest {
     @Test
     void editAndCancelReservationNoPermission() {
         String editResult = spyController.editReservation(1L, 7L,
-                null, null, "Entered wrong room", token);
-        String cancelResult = spyController.cancelReservation(1L, "Got covid", token);
+                null, null, editString, token);
+        String cancelResult = spyController.cancelReservation(1L, cancelString, token);
 
         verify(reservationRepo, times(2)).findById(1L);
         assertEquals("You do not have access to edit this reservation", editResult);
         assertEquals("You do not have access to cancel this reservation", cancelResult);
     }
 
+    // all the editing of values is tested during these permission tests
     /**
      * Test the editing and cancelling when the user is admin.
      * And this is the only reason the user should have permissions.
@@ -118,9 +121,9 @@ public class ReservationControllerTest {
     @Test
     void editAndCancelReservationAsAdmin() throws InvalidReservationException {
         String editResult = spyController.editReservation(1L, 7L,
-                null, null, "Entered wrong room", adminToken);
-        assertEquals("Entered wrong room", reservation2.getEditPurpose());
-        String cancelResult = spyController.cancelReservation(1L, "Got covid", adminToken);
+                null, null, editString, adminToken);
+        assertEquals(editString, reservation2.getEditPurpose());
+        String cancelResult = spyController.cancelReservation(1L, cancelString, adminToken);
 
         verify(reservationRepo, times(2)).findById(1L);
         verify(spyController, times(1)).handle(any(), any(), any());
@@ -128,9 +131,13 @@ public class ReservationControllerTest {
 
         assertEquals("Reservation was edited successfully", editResult);
         assertEquals("Reservation was cancelled successfully", cancelResult);
+
         assertEquals(7L, reservation2.getRoomId());
+        assertEquals(LocalDateTime.parse("2022-01-09T13:22:23.643606500"),
+                reservation2.getStart());
+        assertEquals(LocalDateTime.parse("2022-01-09T19:22:23.643606500"), reservation2.getEnd());
         assertTrue(reservation2.isCancelled());
-        assertEquals("Got covid", reservation2.getEditPurpose());
+        assertEquals(cancelString, reservation2.getEditPurpose());
     }
 
     /**
@@ -139,10 +146,11 @@ public class ReservationControllerTest {
      */
     @Test
     void editAndCancelReservationMadeByUser() throws InvalidReservationException {
-        String editResult = spyController.editReservation(2L, 7L,
-                null, null, "Entered wrong room", token);
-        assertEquals("Entered wrong room", reservation3.getEditPurpose());
-        String cancelResult = spyController.cancelReservation(2L, "Got covid", token);
+        String editResult = spyController.editReservation(2L, -1L,
+                LocalDateTime.parse("2022-01-09T10:00:00.643606500"), null,
+                "Entered the wrong start time", token);
+        assertEquals("Entered the wrong start time", reservation3.getEditPurpose());
+        String cancelResult = spyController.cancelReservation(2L, cancelString, token);
 
         verify(reservationRepo, times(2)).findById(2L);
         verify(spyController, times(1)).handle(any(), any(), any());
@@ -150,9 +158,13 @@ public class ReservationControllerTest {
 
         assertEquals("Reservation was edited successfully", editResult);
         assertEquals("Reservation was cancelled successfully", cancelResult);
-        assertEquals(7L, reservation3.getRoomId());
+
+        assertEquals(5L, reservation3.getRoomId());
+        assertEquals(LocalDateTime.parse("2022-01-09T10:00:00.643606500"),
+                reservation3.getStart());
+        assertEquals(LocalDateTime.parse("2022-01-09T13:10:23.643606500"), reservation3.getEnd());
         assertTrue(reservation3.isCancelled());
-        assertEquals("Got covid", reservation3.getEditPurpose());
+        assertEquals(cancelString, reservation3.getEditPurpose());
     }
 
     /**
@@ -161,10 +173,10 @@ public class ReservationControllerTest {
      */
     @Test
     void editAndCancelReservationForTheUser() throws InvalidReservationException {
-        String editResult = spyController.editReservation(3L, 7L,
-                null, null, "Entered wrong room", token);
-        assertEquals("Entered wrong room", reservation4.getEditPurpose());
-        String cancelResult = spyController.cancelReservation(3L, "Got covid", token);
+        String editResult = spyController.editReservation(3L, -1L, null,
+                LocalDateTime.parse("2022-01-09T13:59:59.643606500"), "Entered the wrong end time", token);
+        assertEquals("Entered the wrong end time", reservation4.getEditPurpose());
+        String cancelResult = spyController.cancelReservation(3L, cancelString, token);
 
         verify(reservationRepo, times(2)).findById(3L);
         verify(spyController, times(1)).handle(any(), any(), any());
@@ -172,9 +184,13 @@ public class ReservationControllerTest {
 
         assertEquals("Reservation was edited successfully", editResult);
         assertEquals("Reservation was cancelled successfully", cancelResult);
-        assertEquals(7L, reservation4.getRoomId());
+
+        assertEquals(2L, reservation4.getRoomId());
+        assertEquals(LocalDateTime.parse("2022-01-09T12:22:23.643606500"),
+                reservation4.getStart());
+        assertEquals(LocalDateTime.parse("2022-01-09T13:59:59.643606500"), reservation4.getEnd());
         assertTrue(reservation4.isCancelled());
-        assertEquals("Got covid", reservation4.getEditPurpose());
+        assertEquals(cancelString, reservation4.getEditPurpose());
     }
 
     /**
@@ -191,7 +207,6 @@ public class ReservationControllerTest {
         assertEquals(LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 reservation1.getStart());
         assertEquals(LocalDateTime.parse("2022-01-09T17:22:23.643606500"), reservation1.getEnd());
-        //assertEquals("Yup", reservation1.getEditPurpose());
     }
 
     /**

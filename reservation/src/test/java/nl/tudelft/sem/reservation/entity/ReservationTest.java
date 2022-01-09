@@ -3,8 +3,6 @@ package nl.tudelft.sem.reservation.entity;
 import nl.tudelft.sem.reservation.builder.Builder;
 import nl.tudelft.sem.reservation.builder.Director;
 import nl.tudelft.sem.reservation.builder.ReservationBuilder;
-import nl.tudelft.sem.reservation.entity.Reservation;
-import nl.tudelft.sem.reservation.entity.ReservationType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

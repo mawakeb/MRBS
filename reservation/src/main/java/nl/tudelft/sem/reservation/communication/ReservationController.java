@@ -1,22 +1,35 @@
 package nl.tudelft.sem.reservation.communication;
 
-import com.google.gson.reflect.TypeToken;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import nl.tudelft.sem.reservation.builder.Builder;
 import nl.tudelft.sem.reservation.builder.Director;
 import nl.tudelft.sem.reservation.builder.ReservationBuilder;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 import nl.tudelft.sem.reservation.repository.ReservationRepository;
-import nl.tudelft.sem.reservation.validators.*;
-import org.h2.engine.User;
+import nl.tudelft.sem.reservation.validators.CheckAvailabilityValidator;
+import nl.tudelft.sem.reservation.validators.CheckIfRoomIsNotReservedAlready;
+import nl.tudelft.sem.reservation.validators.EmployeesCannotReserveMoreThanTwoWeeksInAdvance;
+import nl.tudelft.sem.reservation.validators.EmployeesMakeEditCancelReservationForThemselves;
+import nl.tudelft.sem.reservation.validators.EmployeesOneReservationDuringTimeSlot;
+import nl.tudelft.sem.reservation.validators.SecretariesCanOnlyReserveEditForTheirResearchMembers;
+import nl.tudelft.sem.reservation.validators.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reservation")
@@ -46,7 +59,7 @@ public class ReservationController {
     public boolean checkUser(@RequestParam long madeBy, @RequestParam long reservationId) {
 
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
-        if (reservation!=null){
+        if (reservation != null) {
             return reservation.getMadeBy().equals(madeBy);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
@@ -54,8 +67,9 @@ public class ReservationController {
     }
 
     @GetMapping("/checkTimeslot")
-    public List<Long> checkTimeslot(@RequestParam List<Long> rooms, @RequestParam String startTime
-            , @RequestParam String endTime) {
+    public List<Long> checkTimeslot(@RequestParam List<Long> rooms,
+                                    @RequestParam String startTime,
+                                    @RequestParam String endTime) {
         List<Long> filteredRooms = new ArrayList<>();
 
         @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
@@ -75,18 +89,29 @@ public class ReservationController {
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @GetMapping("/editReservation")
-    public String editReservation(@RequestParam long reservationId, @RequestParam long roomId
-            , @RequestParam LocalDateTime start, @RequestParam LocalDateTime end
-            , @RequestParam String editPurpose, @RequestHeader("Authorization") String token) {
+    public String editReservation(@RequestParam long reservationId,
+                                  @RequestParam long roomId,
+                                  @RequestParam LocalDateTime start,
+                                  @RequestParam LocalDateTime end,
+                                  @RequestParam String editPurpose,
+                                  @RequestHeader("Authorization") String token) {
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
-        if (reservation == null) return "Reservation was not found";
+        if (reservation == null) {
+            return "Reservation was not found";
+        }
         long isForId = reservation.getUserId();
         long madeById = reservation.getMadeBy();
 
         if (roomId != -1 || start != null || end != null) {
-            if (roomId == -1) roomId = reservation.getRoomId();
-            if (start == null) start = reservation.getStart();
-            if (end == null) end = reservation.getEnd();
+            if (roomId == -1) {
+                roomId = reservation.getRoomId();
+            }
+            if (start == null) {
+                start = reservation.getStart();
+            }
+            if (end == null) {
+                end = reservation.getEnd();
+            }
         } else {
             return "There is nothing to edit for the reservation";
         }
@@ -122,10 +147,13 @@ public class ReservationController {
     }
 
     @GetMapping("/cancelReservation")
-    public String cancelReservation(@RequestParam long reservationId, @RequestParam String cancelPurpose,
+    public String cancelReservation(@RequestParam long reservationId,
+                                    @RequestParam String cancelPurpose,
                                     @RequestHeader("Authorization") String token) {
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
-        if (reservation == null) return "Reservation was not found";
+        if (reservation == null) {
+            return "Reservation was not found";
+        }
         long isForId = reservation.getUserId();
         long madeById = reservation.getMadeBy();
 
@@ -142,8 +170,10 @@ public class ReservationController {
     }
 
     @PostMapping("/makeReservation")
-    public String makeReservation(@RequestParam Long targetUserOrGroupId, @RequestParam Long roomId,
-                                  @RequestParam LocalDateTime start, @RequestParam LocalDateTime end,
+    public String makeReservation(@RequestParam Long targetUserOrGroupId,
+                                  @RequestParam Long roomId,
+                                  @RequestParam LocalDateTime start,
+                                  @RequestParam LocalDateTime end,
                                   @RequestParam String purpose,
                                   @RequestHeader("Authorization") String token) {
         Long userId = UserCommunication.getUser(token);
@@ -152,11 +182,9 @@ public class ReservationController {
 
         if (Objects.equals(targetUserOrGroupId, userId)) {
             director.buildSelfReservation();
-        }
-        else if (UserCommunication.getUserType(token).equals("ADMIN")) {
+        } else if (UserCommunication.getUserType(token).equals("ADMIN")) {
             director.buildAdminReservation(targetUserOrGroupId);
-        }
-        else {
+        } else {
             director.buildGroupReservation(targetUserOrGroupId, purpose);
         }
 

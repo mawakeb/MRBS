@@ -14,7 +14,8 @@ public class GroupCommunication extends ServerCommunication {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .setHeader("Authorization", token)
-                .uri(URI.create(requestString + "/isSecretaryOfUser" + "?secretaryId=" + secretaryId + "&employeeId=" + employeeId))
+                .uri(URI.create(requestString + "/isSecretaryOfUser" + "?secretaryId="
+                        + secretaryId + "&employeeId=" + employeeId))
                 .build();
         return gson
                 .fromJson(requestHandler(request)
@@ -26,7 +27,8 @@ public class GroupCommunication extends ServerCommunication {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .setHeader("Authorization", token)
-                .uri(URI.create(requestString + "/isSecretaryOfGroup" + "?secretaryId=" + secretaryId + "&groupId=" + groupId))
+                .uri(URI.create(requestString + "/isSecretaryOfGroup" + "?secretaryId="
+                        + secretaryId + "&groupId=" + groupId))
                 .build();
         return gson
                 .fromJson(requestHandler(request)
@@ -38,7 +40,8 @@ public class GroupCommunication extends ServerCommunication {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .setHeader("Authorization", token)
-                .uri(URI.create(requestString + "/isInGroup" + "?userId=" + userId + "&groupId=" + groupId))
+                .uri(URI.create(requestString + "/isInGroup" + "?userId="
+                        + userId + "&groupId=" + groupId))
                 .build();
         return gson
                 .fromJson(requestHandler(request)
@@ -50,7 +53,8 @@ public class GroupCommunication extends ServerCommunication {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .setHeader("Authorization", token)
-                .uri(URI.create(requestString + "/overlap" + "?groupId1=" + groupId1 + "&groupId2=" + groupId2))
+                .uri(URI.create(requestString + "/overlap" + "?groupId1="
+                        + groupId1 + "&groupId2=" + groupId2))
                 .build();
         return gson
                 .fromJson(requestHandler(request)

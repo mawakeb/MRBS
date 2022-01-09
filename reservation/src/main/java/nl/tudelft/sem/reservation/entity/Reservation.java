@@ -1,8 +1,12 @@
 package nl.tudelft.sem.reservation.entity;
 
 import java.time.LocalDateTime;
-import javax.persistence.*;
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "room")
@@ -47,12 +51,15 @@ public class Reservation {
      * @param roomId  Location of the reservation.
      * @param start   Date and time of the start of the reservation.
      * @param end     Date and time of the end of the reservation.
-     * @param type    Whether this reservation was made for the user themselves, another user or a research group.
+     * @param type    Whether this reservation was made for the user themselves,
+     *                another user or a research group.
      * @param userId  The ID of the person the reservation was made for.
      * @param groupId The ID of the research group the reservation was made for.
      * @param purpose purpose of the reservation
      */
-    public Reservation(Long madeBy, Long roomId, LocalDateTime start, LocalDateTime end, ReservationType type, Long userId, Long groupId, String purpose) {
+    public Reservation(Long madeBy, Long roomId, LocalDateTime start,
+                       LocalDateTime end, ReservationType type,
+                       Long userId, Long groupId, String purpose) {
         this.madeBy = madeBy;
         this.roomId = roomId;
         this.start = start;
@@ -133,13 +140,17 @@ public class Reservation {
         return userId;
     }
 
-    private long setUserId() {return userId;}
+    private long setUserId() {
+        return userId;
+    }
 
     public long getGroupId() {
         return groupId;
     }
 
-    private long setGroupId() {return groupId;}
+    private long setGroupId() {
+        return groupId;
+    }
 
     public boolean isCancelled() {
         return cancelled;

@@ -17,6 +17,7 @@ public class BuilderTest {
     static Long roomId = 321L;
     static LocalDateTime start = LocalDateTime.of(1,2,3,4,5);
     static LocalDateTime end = LocalDateTime.of(5,4,3,2,1);
+    static String testPurpose = "Test";
     static Builder testBuilder;
     static Director testDirector;
 
@@ -42,6 +43,22 @@ public class BuilderTest {
     }
 
     @Test
+    public void singleReservationTest() {
+
+        testDirector.buildSingleReservation(234L, 345L, testPurpose);
+        Reservation testReservation = testBuilder.build();
+
+        assertEquals(madeBy, testReservation.getMadeBy());
+        assertEquals(roomId, testReservation.getRoomId());
+        assertEquals(start, testReservation.getStart());
+        assertEquals(end, testReservation.getEnd());
+        assertEquals(234L, testReservation.getUserId());
+        assertEquals(345L, testReservation.getGroupId());
+        assertEquals("Test", testReservation.getPurpose());
+        assertEquals(ReservationType.SINGLE, testReservation.getType());
+    }
+
+    @Test
     public void adminReservationTest() {
 
         testDirector.buildAdminReservation(234L);
@@ -58,7 +75,7 @@ public class BuilderTest {
     @Test
     public void groupReservationTest() {
 
-        testDirector.buildGroupReservation(345L, "Test purpose");
+        testDirector.buildGroupReservation(345L, testPurpose);
         Reservation testReservation = testBuilder.build();
 
         assertEquals(madeBy, testReservation.getMadeBy());
@@ -66,7 +83,7 @@ public class BuilderTest {
         assertEquals(start, testReservation.getStart());
         assertEquals(end, testReservation.getEnd());
         assertEquals(345L, testReservation.getGroupId());
-        assertEquals("Test purpose", testReservation.getPurpose());
+        assertEquals("Test", testReservation.getPurpose());
         assertEquals(ReservationType.GROUP, testReservation.getType());
     }
 }

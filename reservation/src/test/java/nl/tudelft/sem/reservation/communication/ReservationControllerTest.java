@@ -1,6 +1,18 @@
 package nl.tudelft.sem.reservation.communication;
 
 
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
@@ -13,14 +25,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ReservationControllerTest {
@@ -35,10 +40,10 @@ public class ReservationControllerTest {
 
     private transient ReservationController controller;
     private transient ReservationController spyController;
-    private transient final String adminToken = "adminToken";
-    private transient final String token = "token";
-    private transient final String editString = "Entered the wrong room";
-    private transient final String cancelString = "Got covid";
+    private final transient String adminToken = "adminToken";
+    private final transient String token = "token";
+    private final transient String editString = "Entered the wrong room";
+    private final transient String cancelString = "Got covid";
 
     @BeforeEach
     void setUp() throws InvalidReservationException {
@@ -70,8 +75,8 @@ public class ReservationControllerTest {
         lenient().when(reservationRepo.findById(3L)).thenReturn(Optional.ofNullable(reservation4));
         lenient().when(reservationRepo.findById(5L)).thenReturn(Optional.empty());
 
-        lenient().when(reservationRepo.
-                findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(
+        lenient().when(reservationRepo
+                        .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(
                         Arrays.asList(2L, 3L, 5L, 7L),
                         LocalDateTime.parse("2022-01-09T09:30:00.643606500"),
                         LocalDateTime.parse("2022-01-09T14:00:00.643606500")))
@@ -125,10 +130,6 @@ public class ReservationControllerTest {
         assertEquals(editString, reservation2.getEditPurpose());
         String cancelResult = spyController.cancelReservation(1L, cancelString, adminToken);
 
-        verify(reservationRepo, times(2)).findById(1L);
-        verify(spyController, times(1)).handle(any(), any(), any());
-        verify(reservationRepo, times(2)).save(any(Reservation.class));
-
         assertEquals("Reservation was edited successfully", editResult);
         assertEquals("Reservation was cancelled successfully", cancelResult);
 
@@ -138,6 +139,10 @@ public class ReservationControllerTest {
         assertEquals(LocalDateTime.parse("2022-01-09T19:22:23.643606500"), reservation2.getEnd());
         assertTrue(reservation2.isCancelled());
         assertEquals(cancelString, reservation2.getEditPurpose());
+
+        verify(reservationRepo, times(2)).findById(1L);
+        verify(spyController, times(1)).handle(any(), any(), any());
+        verify(reservationRepo, times(2)).save(any(Reservation.class));
     }
 
     /**
@@ -152,10 +157,6 @@ public class ReservationControllerTest {
         assertEquals("Entered the wrong start time", reservation3.getEditPurpose());
         String cancelResult = spyController.cancelReservation(2L, cancelString, token);
 
-        verify(reservationRepo, times(2)).findById(2L);
-        verify(spyController, times(1)).handle(any(), any(), any());
-        verify(reservationRepo, times(2)).save(any(Reservation.class));
-
         assertEquals("Reservation was edited successfully", editResult);
         assertEquals("Reservation was cancelled successfully", cancelResult);
 
@@ -165,6 +166,11 @@ public class ReservationControllerTest {
         assertEquals(LocalDateTime.parse("2022-01-09T13:10:23.643606500"), reservation3.getEnd());
         assertTrue(reservation3.isCancelled());
         assertEquals(cancelString, reservation3.getEditPurpose());
+
+        verify(reservationRepo, times(2)).findById(2L);
+        verify(spyController, times(1)).handle(any(), any(), any());
+        verify(reservationRepo, times(2)).save(any(Reservation.class));
+
     }
 
     /**
@@ -174,13 +180,10 @@ public class ReservationControllerTest {
     @Test
     void editAndCancelReservationForTheUser() throws InvalidReservationException {
         String editResult = spyController.editReservation(3L, -1L, null,
-                LocalDateTime.parse("2022-01-09T13:59:59.643606500"), "Entered the wrong end time", token);
+                LocalDateTime.parse("2022-01-09T13:59:59.643606500"),
+                "Entered the wrong end time", token);
         assertEquals("Entered the wrong end time", reservation4.getEditPurpose());
         String cancelResult = spyController.cancelReservation(3L, cancelString, token);
-
-        verify(reservationRepo, times(2)).findById(3L);
-        verify(spyController, times(1)).handle(any(), any(), any());
-        verify(reservationRepo, times(2)).save(any(Reservation.class));
 
         assertEquals("Reservation was edited successfully", editResult);
         assertEquals("Reservation was cancelled successfully", cancelResult);
@@ -191,6 +194,10 @@ public class ReservationControllerTest {
         assertEquals(LocalDateTime.parse("2022-01-09T13:59:59.643606500"), reservation4.getEnd());
         assertTrue(reservation4.isCancelled());
         assertEquals(cancelString, reservation4.getEditPurpose());
+
+        verify(reservationRepo, times(2)).findById(3L);
+        verify(spyController, times(1)).handle(any(), any(), any());
+        verify(reservationRepo, times(2)).save(any(Reservation.class));
     }
 
     /**

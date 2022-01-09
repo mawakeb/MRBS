@@ -1,19 +1,21 @@
 package nl.tudelft.sem.reservation.entity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDateTime;
 import nl.tudelft.sem.reservation.builder.Builder;
 import nl.tudelft.sem.reservation.builder.Director;
 import nl.tudelft.sem.reservation.builder.ReservationBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ReservationTest {
 
-    private static LocalDateTime start = LocalDateTime.of(1,2,3,4,5);
-    private static LocalDateTime end = LocalDateTime.of(5,4,3,2,1);
+    private static LocalDateTime start = LocalDateTime.of(1, 2, 3, 4, 5);
+    private static LocalDateTime end = LocalDateTime.of(5, 4, 3, 2, 1);
     private static Reservation reservation;
 
     @BeforeEach
@@ -72,8 +74,8 @@ public class ReservationTest {
 
     @Test
     public void changeTimeTest() {
-        LocalDateTime newStart = LocalDateTime.of(2,3,4,5,6);
-        LocalDateTime newEnd = LocalDateTime.of(6, 5,4,3,2);
+        LocalDateTime newStart = LocalDateTime.of(2, 3, 4, 5, 6);
+        LocalDateTime newEnd = LocalDateTime.of(6, 5, 4, 3, 2);
         reservation.changeTime(newStart, newEnd, "Time edit purpose");
 
         assertEquals(newStart, reservation.getStart());

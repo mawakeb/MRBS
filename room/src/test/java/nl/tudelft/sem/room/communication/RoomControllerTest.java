@@ -31,14 +31,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class RoomControllerTest {
     // define objects
-    Room room1;
-    Room room2;
-    Room room3;
-    Room room4;
-    EquipmentInRoom eir1;
-    EquipmentInRoom eir2;
-    EquipmentInRoom eir3;
-    EquipmentInRoom eir4;
+    private transient Room room1;
+    private transient Room room2;
+    private transient Room room3;
+    private transient Room room4;
+    private transient EquipmentInRoom eir1;
+    private transient EquipmentInRoom eir2;
+    private transient EquipmentInRoom eir3;
+    private transient EquipmentInRoom eir4;
 
     @Mock
     transient RoomRepository roomRepo;
@@ -58,7 +58,8 @@ class RoomControllerTest {
     private transient List<Room> roomList;
     private transient Building building;
     private transient List<RoomNotice> noticeList;
-    private transient String token = "token";
+    private transient final String token = "token";
+    private transient final String testingUsedEquipment = "STAGE";
 
     @BeforeEach
     void setUp() {
@@ -79,14 +80,15 @@ class RoomControllerTest {
         room3 = new Room(6L, "ENTER", 5L, 250);
         room4 = new Room(7L, "NULL", 3L, 1000);
 
-        eir1 = new EquipmentInRoom(4L, "STAGE");
+        eir1 = new EquipmentInRoom(4L, testingUsedEquipment);
         eir2 = new EquipmentInRoom(5L, "CHAIRS");
         eir3 = new EquipmentInRoom(7L, "BOARD");
-        eir4 = new EquipmentInRoom(7L, "STAGE");
+        eir4 = new EquipmentInRoom(7L, testingUsedEquipment);
 
         //mock RoomRepository
         lenient().when(roomRepo.findById(1L)).thenReturn(roomList.get(0));
-        lenient().when(roomRepo.findAllById(Arrays.asList(6L, 7L))).thenReturn(Arrays.asList(room3, room4));
+        lenient().when(roomRepo.findAllById(Arrays.asList(6L, 7L)))
+                .thenReturn(Arrays.asList(room3, room4));
         lenient().when(roomRepo.findAll()).thenReturn(Arrays.asList(room1, room2, room3, room4));
 
         //mock BuildingRepository
@@ -94,10 +96,12 @@ class RoomControllerTest {
 
         //mock EquipmentRepository
         lenient().when(equipmentRepo.findAllByEquipmentName("")).thenReturn(List.of());
-        lenient().when(equipmentRepo.findAllByEquipmentName("STAGE")).thenReturn(Arrays.asList(eir1, eir4));
+        lenient().when(equipmentRepo.findAllByEquipmentName(testingUsedEquipment))
+                .thenReturn(Arrays.asList(eir1, eir4));
 
         //mock NoticeRepository
-        lenient().when(noticeRepo.findByRoomId(1L)).thenReturn(List.of(noticeList.get(0), noticeList.get(1)));
+        lenient().when(noticeRepo.findByRoomId(1L))
+                .thenReturn(List.of(noticeList.get(0), noticeList.get(1)));
 
         //mock static communication methods
         spyController = Mockito.spy(controller);
@@ -201,7 +205,7 @@ class RoomControllerTest {
     public void queryRoomsNoParameters() {
         List<Room> roomResultList = Arrays.asList(room1, room2, room3, room4);
         List<Room> roomTestList = spyController.queryRooms(-1, -1,
-                "", "", "", "Authorization");
+                "", "", "", token);
 
         verify(roomRepo, times(1)).findAll();
         verify(equipmentRepo, times(1)).findAllByEquipmentName("");
@@ -216,7 +220,7 @@ class RoomControllerTest {
     public void queryRoomsOnlyCapacity() {
         List<Room> roomResultList = Arrays.asList(room2, room4);
         List<Room> roomTestList = spyController.queryRooms(450, -1,
-                "", "", "", "Authorization");
+                "", "", "", token);
 
         verify(roomRepo, times(1)).findAll();
         verify(equipmentRepo, times(1)).findAllByEquipmentName("");
@@ -231,7 +235,7 @@ class RoomControllerTest {
     public void queryRoomsOnlyBuilding() {
         List<Room> roomResultList = List.of(room2);
         List<Room> roomTestList = spyController.queryRooms(-1, 7,
-                "", "", "", "Authorization");
+                "", "", "", token);
 
         verify(roomRepo, times(1)).findAll();
         verify(equipmentRepo, times(1)).findAllByEquipmentName("");
@@ -246,10 +250,10 @@ class RoomControllerTest {
     public void queryRoomsOnlyEquipment() {
         List<Room> roomResultList = List.of(room1, room4);
         List<Room> roomTestList = spyController.queryRooms(-1, -1,
-                "STAGE", "", "", "Authorization");
+                testingUsedEquipment, "", "", token);
 
         verify(roomRepo, times(1)).findAll();
-        verify(equipmentRepo, times(1)).findAllByEquipmentName("STAGE");
+        verify(equipmentRepo, times(1)).findAllByEquipmentName(testingUsedEquipment);
         verifyNoInteractions(reservationCommunication);
         assertEquals(roomResultList, roomTestList);
     }
@@ -261,9 +265,9 @@ class RoomControllerTest {
     public void queryRoomsOnlyStartOrEndTime() {
         List<Room> roomResultList = Arrays.asList(room1, room2, room3, room4);
         List<Room> roomTestList1 = spyController.queryRooms(-1, -1,
-                "", LocalDateTime.now().toString(), "", "Authorization");
+                "", LocalDateTime.now().toString(), "", token);
         List<Room> roomTestList2 = spyController.queryRooms(-1, -1,
-                "", "", LocalDateTime.now().toString(), "Authorization");
+                "", "", LocalDateTime.now().toString(), token);
 
         verify(roomRepo, times(2)).findAll();
         verify(equipmentRepo, times(2)).findAllByEquipmentName("");
@@ -282,7 +286,7 @@ class RoomControllerTest {
 
         List<Room> roomResultList = List.of(room3, room4);
         List<Room> roomTestList = spyController.queryRooms(-1, -1,
-                "", start, end, "Authorization");
+                "", start, end, token);
 
         verify(roomRepo, times(1)).findAll();
         verify(roomRepo, times(1)).findAllById(Arrays.asList(6L, 7L));

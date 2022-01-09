@@ -144,9 +144,9 @@ public class RoomController {
 
         // add the rooms that fit the first 3 characteristics to a new list
         for (Room r : rooms) {
-            if ((capacity != 0 || r.getCapacity() >= capacity)
-                    && (buildingId != 0 || r.getBuildingId() == buildingId)
-                    && (!Objects.equals(equipmentName, "")
+            if ((capacity == -1 || r.getCapacity() >= capacity)
+                    && (buildingId == -1 || r.getBuildingId() == buildingId)
+                    && (Objects.equals(equipmentName, "")
                     || roomsWithEquipment.contains(r.getId()))) {
                 filteredRooms.add(r);
             }
@@ -155,7 +155,7 @@ public class RoomController {
         // do the last search characteristic timeslot availability
         if (!Objects.equals(startTime, "") && !Objects.equals(endTime, "")) {
             // get the rooms within the timeslot
-            return roomRepo.findAllById(ReservationCommunication.getRoomsInTimeslot(
+            return roomRepo.findAllById(getRoomsInTimeslot(
                     filteredRooms.stream().map(Room::getId).collect(Collectors.toList()),
                     startTime, endTime, token));
         } else {
@@ -343,13 +343,21 @@ public class RoomController {
     }
 
     public boolean checkUserToReservation(long userId,
-                                          long reservationId, String token){
+                                          long reservationId, String token) {
         return ReservationCommunication
                 .checkUserToReservation(userId, reservationId, token);
     }
 
+    public List<Long> getRoomsInTimeslot(List<Long> rooms,
+                                         String startTime,
+                                         String endTime,
+                                         String token) {
+        return ReservationCommunication
+                .getRoomsInTimeslot(rooms, startTime, endTime, token);
+    }
+
     public long getRoomWithReservation(long reservationId,
-                                       String token){
+                                       String token) {
         return ReservationCommunication
                 .getRoomWithReservation(reservationId, token);
     }

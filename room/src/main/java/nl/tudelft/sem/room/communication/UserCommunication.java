@@ -9,23 +9,6 @@ public class UserCommunication extends ServerCommunication {
     private static final String requestString = hostAddress + "/user";
 
     /**
-     * Test method.
-     *
-     * @param token the authentication token of the user
-     * @return hi is communicated successfully, status otherwise
-     */
-    public static String getHi(String token) {
-        HttpRequest request = HttpRequest
-                .newBuilder()
-                .GET()
-                .setHeader("Authorization", token)
-                .uri(URI.create(requestString)).build();
-        return gson
-                .fromJson(requestHandler(request).body(), new TypeToken<String>() {
-                }.getType());
-    }
-
-    /**
      * Gets role of user with given token.
      *
      * @param token authentication token of the user

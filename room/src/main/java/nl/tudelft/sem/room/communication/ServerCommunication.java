@@ -31,4 +31,13 @@ public class ServerCommunication {
             return null;
         }
     }
+
+    /**
+     * To supply mock client.
+     *
+     * @param client the mock http client
+     */
+    public static void setHttpClient(HttpClient client) {
+        ServerCommunication.client = client;
+    }
 }

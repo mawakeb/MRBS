@@ -329,7 +329,7 @@ public class RoomController {
 
     /**
      * Get role of user with given authentication token.
-     * Added to allow unit testing possible.
+     * Added to allow unit testing.
      *
      * @param token the authentication token of the user
      * @return the role of the user
@@ -338,16 +338,42 @@ public class RoomController {
         return UserCommunication.getUserType(token);
     }
 
+    /**
+     * Get id of user with the auth token.
+     * Added to allow unit testing.
+     *
+     * @param token the authentication token of the user
+     * @return id of the user
+     */
     public long getUserId(String token){
         return UserCommunication.getUserId(token);
     }
 
+    /**
+     * Check if given userId matches the owner of the reservation.
+     * Added to allow unit testing.
+     *
+     * @param userId id of the user
+     * @param reservationId id of the reservation
+     * @param token authentication token of the user
+     * @return true if user is the owner of the reservation
+     */
     public boolean checkUserToReservation(long userId,
                                           long reservationId, String token) {
         return ReservationCommunication
                 .checkUserToReservation(userId, reservationId, token);
     }
 
+    /**
+     * Get rooms available within the given timeslot.
+     * Added to allow unit testing.
+     *
+     * @param rooms list of rooms
+     * @param startTime start time
+     * @param endTime end time
+     * @param token authentication token of the user
+     * @return list of available rooms
+     */
     public List<Long> getRoomsInTimeslot(List<Long> rooms,
                                          String startTime,
                                          String endTime,
@@ -356,6 +382,14 @@ public class RoomController {
                 .getRoomsInTimeslot(rooms, startTime, endTime, token);
     }
 
+    /**
+     * Get room id with the reservation id.
+     * Added to allow unit testing.
+     *
+     * @param reservationId id of the reservation
+     * @param token authentication token of the user
+     * @return room id
+     */
     public long getRoomWithReservation(long reservationId,
                                        String token) {
         return ReservationCommunication

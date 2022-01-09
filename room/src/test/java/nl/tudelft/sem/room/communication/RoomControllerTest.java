@@ -217,7 +217,7 @@ class RoomControllerTest {
      * Test the querying of rooms with only capacity.
      */
     @Test
-    public void queryRoomsOnlyCapacity() {
+    void queryRoomsOnlyCapacity() {
         List<Room> roomResultList = Arrays.asList(room2, room4);
         List<Room> roomTestList = spyController.queryRooms(450, -1,
                 "", "", "", token);
@@ -232,7 +232,7 @@ class RoomControllerTest {
      * Test the querying of rooms with only building.
      */
     @Test
-    public void queryRoomsOnlyBuilding() {
+    void queryRoomsOnlyBuilding() {
         List<Room> roomResultList = List.of(room2);
         List<Room> roomTestList = spyController.queryRooms(-1, 7,
                 "", "", "", token);
@@ -247,7 +247,7 @@ class RoomControllerTest {
      * Test the querying of rooms with only equipment.
      */
     @Test
-    public void queryRoomsOnlyEquipment() {
+    void queryRoomsOnlyEquipment() {
         List<Room> roomResultList = List.of(room1, room4);
         List<Room> roomTestList = spyController.queryRooms(-1, -1,
                 testingUsedEquipment, "", "", token);
@@ -262,7 +262,7 @@ class RoomControllerTest {
      * Test the querying of rooms with only a start or (exclusive) end time.
      */
     @Test
-    public void queryRoomsOnlyStartOrEndTime() {
+    void queryRoomsOnlyStartOrEndTime() {
         List<Room> roomResultList = Arrays.asList(room1, room2, room3, room4);
         List<Room> roomTestList1 = spyController.queryRooms(-1, -1,
                 "", LocalDateTime.now().toString(), "", token);
@@ -280,7 +280,7 @@ class RoomControllerTest {
      * Test the querying of rooms with a timeslot.
      */
     @Test
-    public void queryRoomsOnlyWithTimeslot() {
+    void queryRoomsOnlyWithTimeslot() {
         String start = "2022-01-09T14:22:23.643606500";
         String end = "2022-01-09T17:22:23.643606500";
 

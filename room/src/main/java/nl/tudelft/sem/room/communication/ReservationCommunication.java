@@ -61,11 +61,17 @@ public class ReservationCommunication extends ServerCommunication {
                                                 String startTime,
                                                 String endTime,
                                                 String token) {
+        String roomList = "";
+        for (Long room : rooms){
+            roomList += room + ",";
+        }
+        roomList = roomList.substring(0,roomList.length()-1);
+
         HttpRequest request = HttpRequest
                 .newBuilder()
                 .GET()
                 .setHeader(authorization, token)
-                .uri(URI.create(requestString + "/checkTimeslot" + "?rooms=" + rooms
+                .uri(URI.create(requestString + "/checkTimeslot" + "?rooms=" + roomList
                         + "&startTime=" + startTime + "&endTime=" + endTime)).build();
         return gson
                 .fromJson(requestHandler(request).body(),

@@ -1,9 +1,13 @@
 package nl.tudelft.sem.group.entity;
 
-import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * The Research group Entity.
@@ -47,6 +51,8 @@ public class Group {
     }
 
     /**
+     * Get the id of the research group.
+     *
      * @return the id of the research group.
      */
     public Long getId() {
@@ -54,6 +60,8 @@ public class Group {
     }
 
     /**
+     * Set the id of the research group.
+     *
      * @param id the id of the research group.
      */
     public void setId(Long id) {
@@ -61,6 +69,8 @@ public class Group {
     }
 
     /**
+     * Gets the ids for the secretaries of a research group.
+     *
      * @return a list of the id-s of all the secretaries of the research group.
      */
     public List<Long> getSecretaryIds() {
@@ -68,23 +78,27 @@ public class Group {
     }
 
     /**
-     * Sets new id-s for the secretaries of a research group.
-     * @param secretaryIds the id-s of all the secretaries within that research group.
+     * Sets new ids for the secretaries of a research group.
+     *
+     * @param secretaryIds the ids of all the secretaries within that research group.
      */
     public void setSecretaryIds(List<Long> secretaryIds) {
         this.secretaryIds = secretaryIds;
     }
 
     /**
-     * @return a list of the id-s of all the members of the research group.
+     * Gets the ids for the members of a research group.
+     *
+     * @return a list of the ids of all the members of the research group.
      */
     public List<Long> getMembersIds() {
         return membersIds;
     }
 
     /**
-     * Sets new id-s for the members of a research group.
-     * @param membersId the id-s of all the members within that research group.
+     * Sets new ids for the members of a research group.
+     *
+     * @param membersId the ids of all the members within that research group.
      */
     public void setMembersIds(List<Long> membersId) {
         this.membersIds = membersId;
@@ -92,19 +106,25 @@ public class Group {
 
     /**
      * Checks if the given object is equal to this Group object.
+     *
      * @param o - the object to compare against.
      * @return - true if the objects are equal, false otherwise.
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Group group = (Group) o;
         return Objects.equals(id, group.id) && Objects.equals(membersIds, group.membersIds);
     }
 
     /**
      * Creates a hash of this Group object.
+     *
      * @return - the int hash value of that object.
      */
     @Override
@@ -114,15 +134,16 @@ public class Group {
 
     /**
      * A human-friendly String representation of this Group object.
+     *
      * @return - the human-readable String of this Group.
      */
     @Override
     public String toString() {
-        return "Group{" +
-                "id=" + id +
-                ", secretaryIds=" + secretaryIds.toString() +
-                ", membersIds=" + membersIds.toString() +
-                '}';
+        return "Group{"
+                + "id=" + id
+                + ", secretaryIds=" + secretaryIds.toString()
+                + ", membersIds=" + membersIds.toString()
+                + '}';
     }
 }
 

@@ -9,19 +9,13 @@ public class UserCommunication extends ServerCommunication {
     private static final String requestString = hostAddress + "/user";
     private static final String authorization = "Authorization";
 
-
-    public static Long getUser(String token) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .GET()
-                .setHeader(authorization, token)
-                .uri(URI.create(requestString + "/getCurrentUserID"))
-                .build();
-        return gson
-                .fromJson(requestHandler(request)
-                        .body(), new TypeToken<String>() {}
-                        .getType());
-    }
-
+    /**
+     * Get the type of user with the auth token.
+     * Added to allow unit testing.
+     *
+     * @param token the authentication token of the user
+     * @return the type of the user
+     */
     public static String getCurrentUserType(String token) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
@@ -34,6 +28,13 @@ public class UserCommunication extends ServerCommunication {
                         .getType());
     }
 
+    /**
+     * Get the type of user with the id.
+     *
+     * @param id the id of the requested user
+     * @param token the authentication token of the current user
+     * @return the type of the user
+     */
     public static String getUserType(Long id, String token) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
@@ -47,6 +48,14 @@ public class UserCommunication extends ServerCommunication {
                         .getType());
     }
 
+    /**
+     * Set the type of user with the id.
+     *
+     * @param id the id of the requested user
+     * @param type the new type for the requested user
+     * @param token the authentication token of the current user
+     * @return a status message
+     */
     public static String setUserType(Long id, String type, String token) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()

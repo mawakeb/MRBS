@@ -1,12 +1,16 @@
 package nl.tudelft.sem.group.communication;
 
+import java.util.List;
 import nl.tudelft.sem.group.entity.Group;
 import nl.tudelft.sem.group.exception.GroupNotFoundException;
 import nl.tudelft.sem.group.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/group")
@@ -21,9 +25,10 @@ public class GroupController {
 
     /**
      * Gets the id-s of all secretaries of a certain research group.
+     *
      * @param groupId - the id of the research group for which we want to find all secretary id-s.
      * @return - a list of secretary id-s.
-     * @throws GroupNotFoundException
+     * @throws GroupNotFoundException exception if the requested group wasn't found
      */
     @GetMapping("getSecretariesIdsOfAGroup")
     public List<Long> getSecretariesIds(@RequestParam Long groupId) throws GroupNotFoundException {
@@ -38,23 +43,28 @@ public class GroupController {
 
     /**
      * Check if a given secretary is a secretary of a certain research group.
+     *
      * @param secretaryId - the id of the secretary for which we want to check.
      * @param groupId - the id of the research group for which we want to check.
-     * @return - true if the given secretary is actually a secretary of the given research group, false otherwise.
-     * @throws GroupNotFoundException
+     * @return - true if the given secretary is actually a secretary
+     *      of the given research group, false otherwise.
+     * @throws GroupNotFoundException exception if the requested group wasn't found
      */
     @GetMapping("isSecretaryOfGroup")
-    public boolean isSecretaryOfGroup(Long secretaryId, Long groupId) throws GroupNotFoundException {
+    public boolean isSecretaryOfGroup(Long secretaryId, Long groupId)
+            throws GroupNotFoundException {
         List<Long> secretaries = getSecretariesIds(groupId);
         return secretaries.contains(secretaryId);
     }
 
     /**
      * Check if a user is a part of a certain research group.
+     *
      * @param userId - the id of the user for which we want to check.
      * @param groupId - the id of the research group for which we want to check.
-     * @return - true if the given user is actually a part of the given research group, false otherwise.
-     * @throws GroupNotFoundException
+     * @return - true if the given user is actually a part
+     *      of the given research group, false otherwise.
+     * @throws GroupNotFoundException exception if the requested group wasn't found
      */
     @GetMapping("isInGroup")
     public boolean isInGroup(Long userId, Long groupId) throws GroupNotFoundException {
@@ -69,10 +79,12 @@ public class GroupController {
 
     /**
      * Checks if there is at least one employee in group 1 that is also in group 2.
+     *
      * @param groupId1 - the id of the first group.
      * @param groupId2 - the id of the second group.
-     * @return - true if there is at least one employee that is both in group 1 AND in group 2, false otherwise.
-     * @throws GroupNotFoundException
+     * @return - true if there is at least one employee
+     *      that is both in group 1 AND in group 2, false otherwise.
+     * @throws GroupNotFoundException exception if the requested group wasn't found
      */
     @GetMapping("overlap")
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
@@ -87,19 +99,22 @@ public class GroupController {
         List<Long> members1 = group1.getMembersIds();
         List<Long> members2 = group2.getMembersIds();
 
-        for(Long member : members1)
-        {
-            if(members2.contains(member)) return true;
+        for (Long member : members1) {
+            if (members2.contains(member)) {
+                return true;
+            }
         }
         return false;
     }
 
     /**
      * Creates a research group.
+     *
      * @param secretaryIds - a list of all the secretary id-s that would be in that research group.
      * @param membersIds - a list of all the members id-s that would be in that research group.
-     * @return - a message to the user which either confirms the research group was saved successfully
-     * OR if the user does not have the rights to create a research group it lets them know.
+     * @return - a message to the user which either
+     *      confirms the research group was saved successfully
+     *      OR if the user does not have the rights to create a research group it lets them know.
      */
     @PostMapping("createGroup")
     public String createGroup(@RequestParam List<Long> secretaryIds,

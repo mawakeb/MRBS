@@ -20,8 +20,8 @@ public class CheckIfRoomIsNotReservedAlready extends BaseValidator {
         LocalDateTime reservationStart = reservation.getStart();
         LocalDateTime reservationEnd = reservation.getEnd();
 
-        List<Reservation> overlappingReservationsOfUser = reservationRepo
-                .findAllForSpecificRoomWithinGivenTimeRange(roomId,
+        List<Reservation> overlappingReservationsOfUser =
+                findAllForSpecificRoomWithinGivenTimeRange(roomId,
                         reservationStart, reservationEnd);
 
         if (!overlappingReservationsOfUser.isEmpty()) {
@@ -30,5 +30,12 @@ public class CheckIfRoomIsNotReservedAlready extends BaseValidator {
         }
 
         return super.checkNext(reservation, token);
+    }
+
+    public List<Reservation> findAllForSpecificRoomWithinGivenTimeRange(long roomId,
+                                                                 LocalDateTime start,
+                                                                 LocalDateTime end) {
+        return reservationRepo.findAllForSpecificRoomWithinGivenTimeRange(roomId,
+                start, end);
     }
 }

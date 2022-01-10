@@ -1,28 +1,27 @@
 package nl.tudelft.sem.reservation.validators;
 
-import nl.tudelft.sem.reservation.entity.Reservation;
-import nl.tudelft.sem.reservation.entity.ReservationType;
-import nl.tudelft.sem.reservation.exception.InvalidReservationException;
-import nl.tudelft.sem.reservation.repository.ReservationRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import nl.tudelft.sem.reservation.entity.Reservation;
+import nl.tudelft.sem.reservation.entity.ReservationType;
+import nl.tudelft.sem.reservation.exception.InvalidReservationException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
 class CheckIfRoomIsNotReservedAlreadyTest {
-    @Mock
-    private ReservationRepository reservationRepo;
 
     private transient CheckIfRoomIsNotReservedAlready spyValidator;
     private final transient String token = "token";
@@ -60,7 +59,8 @@ class CheckIfRoomIsNotReservedAlreadyTest {
         Exception e = assertThrows(InvalidReservationException.class,
                 () -> spyValidator.handle(reservation, token));
 
-        String expectedMessage = "There is another reservation overlapping with your desired time range.";
+        String expectedMessage = "There is another reservation overlapping "
+                + "with your desired time range.";
         String actualMessage = e.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));

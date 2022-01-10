@@ -32,6 +32,15 @@ public class CheckIfRoomIsNotReservedAlready extends BaseValidator {
         return super.checkNext(reservation, token);
     }
 
+
+    /**
+     * Find all the reservation for a given room in a given time frame.
+     *
+     * @param roomId the id of the room
+     * @param start the start time of the time frame
+     * @param end the end time of the time frame
+     * @return a list of the reservation in that room in the given time frame
+     */
     public List<Reservation> findAllForSpecificRoomWithinGivenTimeRange(long roomId,
                                                                  LocalDateTime start,
                                                                  LocalDateTime end) {

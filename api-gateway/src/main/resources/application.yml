@@ -17,22 +17,22 @@ spring:
             - Path=/user/**
           filters:
             - RemoveRequestHeader= Cookie,Set-Cookie
-        - id: group
-          uri: lb://group
+        - id: group-service
+          uri: lb://group-service
           predicates:
-            - Path=/group**
+            - Path=/group/**
           filters:
             - RemoveRequestHeader= Cookie,Set-Cookie
-        - id: room
-          uri: lb://room
+        - id: room-service
+          uri: lb://room-service
           predicates:
-            - Path=/room**
+            - Path=/room/**
           filters:
             - RemoveRequestHeader= Cookie,Set-Cookie
-        - id: reservation
-          uri: lb://reservation
+        - id: reservation-service
+          uri: lb://reservation-service
           predicates:
-            - Path=/reservation**
+            - Path=/reservation/**
           filters:
             - RemoveRequestHeader= Cookie,Set-Cookie
 

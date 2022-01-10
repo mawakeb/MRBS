@@ -34,19 +34,22 @@ gradle pmdTest
 - You can add issue and merge request templates in the .gitlab folder on your repo. 
 
 ### How to Use
-- To begin, run the `discovery-server` Spring Application, followed by `zuul-gateway` and then followed by the microservices.
-- Make a request to `localhost:8900/user/signup` with body:
+- To begin, run (either with IntelliJ or gradle bootRun) the `discovery-server` Spring Application, followed by `user-authentication-service`, `room`, `group` and `reservation`. Then, run `api-gateway`. 
+- Make a request to `localhost:8900/user/register` (returning 200 if accepted and 400 if netId already exists) with body:
+```
+{
+    "netId": <your net id>,
+    "name": <your name>,
+    "password": <your password>
+    "type": <type> (USER | SECRETARY | ADMIN)
+}
+```
+
+- After this, make a request to `localhost:8900/user/login` with body: 
 ```
 {
     "netId": <your net id>,
     "password": <your password>
-    "type": <type> (user | admin)
 }
 ```
-- After this, make a request to `localhost:8900/auth` with body: 
-```
-{
-    "netId": <your net id>,
-    "password": <your password>
-}
-```
+- You will receive a response body with a JWT; copy this, and then add it to the header "Authorization", with value "Bearer <your jwt>". This will be needed for all next requests.

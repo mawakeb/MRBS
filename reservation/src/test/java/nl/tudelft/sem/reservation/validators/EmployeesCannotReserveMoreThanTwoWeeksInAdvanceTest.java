@@ -1,18 +1,17 @@
 package nl.tudelft.sem.reservation.validators;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeesCannotReserveMoreThanTwoWeeksInAdvanceTest {
@@ -28,7 +27,7 @@ class EmployeesCannotReserveMoreThanTwoWeeksInAdvanceTest {
     }
 
     @Test
-    void NoMoreThanTwoWeeks() throws InvalidReservationException {
+    void noMoreThanTwoWeeks() throws InvalidReservationException {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Amsterdam"));
         reservation = new Reservation(89L, 9L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
@@ -38,7 +37,7 @@ class EmployeesCannotReserveMoreThanTwoWeeksInAdvanceTest {
     }
 
     @Test
-    void MoreThanTwoWeeks() {
+    void moreThanTwoWeeks() {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Amsterdam"));
         reservation = new Reservation(89L, 9L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),

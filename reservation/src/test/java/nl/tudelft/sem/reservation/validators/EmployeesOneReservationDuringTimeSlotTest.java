@@ -1,5 +1,13 @@
 package nl.tudelft.sem.reservation.validators;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doReturn;
+
+import java.time.LocalDateTime;
+import java.util.List;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
@@ -8,20 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doReturn;
-
 public class EmployeesOneReservationDuringTimeSlotTest {
     // define objects
-    Reservation reservation1;
-    Reservation reservation2;
-    Reservation reservation3;
+    private transient Reservation reservation1;
+    private transient Reservation reservation2;
+    private transient Reservation reservation3;
 
     private transient EmployeesOneReservationDuringTimeSlot spyValidator;
     private final transient String token = "token";
@@ -77,7 +76,7 @@ public class EmployeesOneReservationDuringTimeSlotTest {
      * reservation at the same time for a group member.
      */
     @Test
-    void aGroupMemberIsOverbookedNotDoubleGroupTest() {
+    void groupMemberIsOverbookedNotDoubleGroupTest() {
         doReturn(List.of(reservation1)).when(spyValidator).findAllOverlapping(any(), any());
         doReturn(true).when(spyValidator).isInGroup(89L, 5L, token);
 
@@ -91,7 +90,7 @@ public class EmployeesOneReservationDuringTimeSlotTest {
      * reservation at the same time with at least one overlapping member.
      */
     @Test
-    void aGroupMemberIsOverbookedDoubleGroupTest() {
+    void groupMemberIsOverbookedDoubleGroupTest() {
         doReturn(List.of(reservation3)).when(spyValidator).findAllOverlapping(any(), any());
         doReturn(true).when(spyValidator).overlap(5L, 7L, token);
 

@@ -1,5 +1,10 @@
 package nl.tudelft.sem.reservation.validators;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doReturn;
+
+import java.time.LocalDateTime;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
@@ -10,17 +15,11 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doReturn;
-
 @ExtendWith(MockitoExtension.class)
 public class SecretariesCanOnlyReserveEditForTheirResearchMembersTest {
     // define objects
-    Reservation reservation1;
-    Reservation reservation2;
+    private transient Reservation reservation1;
+    private transient Reservation reservation2;
 
     private transient SecretariesCanOnlyReserveEditForTheirResearchMembers spyValidator;
     private final transient String token = "token";
@@ -72,7 +71,8 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembersTest {
     }
 
     /**
-     * Test the validator when it is for a reservation made by a secretary not for its group member.
+     * Test the validator when it is for a reservation made by a secretary
+     * not for its group member.
      */
     @Test
     void madeBySecretaryNotForGroupMemberTest() {
@@ -85,7 +85,8 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembersTest {
     }
 
     /**
-     * Test the validator when it is for a reservation made by a secretary not in the group for a group member.
+     * Test the validator when it is for a reservation made by a secretary
+     * not in the group for a group member.
      */
     @Test
     void madeBySecretaryNotInGroupForGroupMemberTest() {

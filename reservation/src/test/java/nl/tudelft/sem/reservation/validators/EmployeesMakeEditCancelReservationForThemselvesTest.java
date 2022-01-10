@@ -1,14 +1,13 @@
 package nl.tudelft.sem.reservation.validators;
 
-import nl.tudelft.sem.reservation.communication.UserCommunication;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EmployeesMakeEditCancelReservationForThemselvesTest {
 
@@ -24,7 +23,7 @@ class EmployeesMakeEditCancelReservationForThemselvesTest {
     }
 
     @Test
-    void NotEmployee() throws InvalidReservationException {
+    void notEmployee() throws InvalidReservationException {
         Mockito.doReturn("ADMIN").when(validator).getUserType(token);
         assertTrue(validator.handle(reservation, token));
 
@@ -33,7 +32,7 @@ class EmployeesMakeEditCancelReservationForThemselvesTest {
     }
 
     @Test
-    void ForThemself() throws InvalidReservationException {
+    void forThemself() throws InvalidReservationException {
         Mockito.doReturn("EMPLOYEE").when(validator).getUserType(token);
         Mockito.when(reservation.getMadeBy()).thenReturn(1L);
         Mockito.when(reservation.getUserId()).thenReturn(1L);
@@ -41,7 +40,7 @@ class EmployeesMakeEditCancelReservationForThemselvesTest {
     }
 
     @Test
-    void NotForThemself() {
+    void notForThemself() {
         Mockito.doReturn("EMPLOYEE").when(validator).getUserType(token);
         Mockito.when(reservation.getMadeBy()).thenReturn(1L);
         Mockito.when(reservation.getUserId()).thenReturn(2L);

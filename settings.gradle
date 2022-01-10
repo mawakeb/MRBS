@@ -1,9 +1,9 @@
 rootProject.name = 'project10b'
 
-include 'group'
-include 'reservation'
-include 'room'
-include 'user'
+include 'group-service'
+include 'reservation-service'
+include 'room-service'
+include 'user-authentication-service'
 include 'discovery-server'
-include 'zuul-gateway'
+include 'api-gateway'
 

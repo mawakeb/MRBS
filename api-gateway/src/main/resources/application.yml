@@ -1,0 +1,56 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-authentication-service
+          uri: lb://user-authentication-service
+          predicates:
+            - Path=/user/**
+          filters:
+            - RemoveRequestHeader= Cookie,Set-Cookie
+        - id: group-service
+          uri: lb://group-service
+          predicates:
+            - Path=/group/**
+          filters:
+            - RemoveRequestHeader= Cookie,Set-Cookie
+        - id: room-service
+          uri: lb://room-service
+          predicates:
+            - Path=/room/**
+          filters:
+            - RemoveRequestHeader= Cookie,Set-Cookie
+        - id: reservation-service
+          uri: lb://reservation-service
+          predicates:
+            - Path=/reservation/**
+          filters:
+            - RemoveRequestHeader= Cookie,Set-Cookie
+
+ribbon:
+  ReadTimeout: 60000
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+
+eureka:
+  instance:
+    hostname: localhost
+    port: 8761
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka/

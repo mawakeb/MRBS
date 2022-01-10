@@ -234,12 +234,12 @@ public class ReservationController {
     @PostMapping("/makeReservation")
     public String makeReservation(@RequestParam Long targetUserOrGroupId,
                                   @RequestParam Long roomId,
-                                  @RequestParam LocalDateTime start,
-                                  @RequestParam LocalDateTime end,
+                                  @RequestParam String start,
+                                  @RequestParam String end,
                                   @RequestParam String purpose,
                                   @RequestHeader("Authorization") String token) {
         Long userId = UserCommunication.getUser(token);
-        Builder builder = new ReservationBuilder(userId, roomId, start, end);
+        Builder builder = new ReservationBuilder(userId, roomId, LocalDateTime.parse(start), LocalDateTime.parse(end)));
         Director director = new Director(builder);
 
         if (Objects.equals(targetUserOrGroupId, userId)) {

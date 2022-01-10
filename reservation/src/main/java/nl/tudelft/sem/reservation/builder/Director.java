@@ -7,16 +7,17 @@ public class Director {
     private Builder builder;
 
     /**
-     * Constructor for the Director class
+     * Constructor for the Director class.
      *
-     * @param builder   A builder object, which is used to keep track of the attributes the Reservation should have
+     * @param builder   A builder object, which is used to keep track of the
+     *                  attributes the Reservation should have
      */
     public Director(Builder builder) {
         this.builder = builder;
     }
 
     /**
-     * Build a reservation of type SELF
+     * Build a reservation of type SELF.
      */
     public void buildSelfReservation() {
         builder.type(ReservationType.SELF);
@@ -24,11 +25,12 @@ public class Director {
     }
 
     /**
-     * Build a reservation of type SINGLE
+     * Build a reservation of type SINGLE.
      *
      * @param forUser   A Long representing the user the reservation is for
-     * @param ofGroup   This kind of reservation must be made by a secretary of one of the given user's
-     *                  research groups. This field indicates for which research group that holds
+     * @param ofGroup   This kind of reservation must be made by a secretary of one of the
+     *                  given user's research groups.
+     *                  This field indicates for which research group that holds
      * @param purpose   A string explaining why the reservation was made
      */
     public void buildSingleReservation(Long forUser, Long ofGroup, String purpose) {
@@ -39,7 +41,7 @@ public class Director {
     }
 
     /**
-     * Build a reservation of type ADMIN
+     * Build a reservation of type ADMIN.
      *
      * @param forUser   A Long representing the user the reservation is for
      */
@@ -49,7 +51,7 @@ public class Director {
     }
 
     /**
-     * Build a reservation of type GROUP
+     * Build a reservation of type GROUP.
      *
      * @param forGroup  A Long representing the research group the reservation is for
      * @param purpose   A string explaining why the reservation was made

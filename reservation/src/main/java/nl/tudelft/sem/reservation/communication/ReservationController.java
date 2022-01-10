@@ -74,7 +74,7 @@ public class ReservationController {
     }
 
     /**
-     * Get a room by id
+     * Get a room by id.
      *
      * @param id the id of the room
      * @return the room
@@ -83,7 +83,7 @@ public class ReservationController {
     public long getRoom(@RequestParam long id) {
 
         Reservation reservation = reservationRepo.findById(id).orElse(null);
-        if (reservation!=null){
+        if (reservation != null) {
             return reservation.getRoomId();
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
@@ -91,7 +91,7 @@ public class ReservationController {
     }
 
     /**
-     * Check what rooms are free in a given timeslot
+     * Check what rooms are free in a given timeslot.
      *
      * @param rooms the rooms to check
      * @param startTime the start of the timeslot
@@ -120,7 +120,7 @@ public class ReservationController {
     }
 
     /**
-     * Edit a reservation
+     * Edit a reservation.
      *
      * @param reservationId the reservation id
      * @param roomId a potential new roomId
@@ -190,7 +190,7 @@ public class ReservationController {
     }
 
     /**
-     * Cancel a reservation
+     * Cancel a reservation.
      *
      * @param reservationId the id of the reservation
      * @param cancelPurpose the purpose of cancelling the reservation
@@ -221,7 +221,7 @@ public class ReservationController {
     }
 
     /**
-     * Make a new reservation
+     * Make a new reservation.
      *
      * @param targetUserOrGroupId who the reservation is for
      * @param roomId the room id for the reservation
@@ -306,7 +306,7 @@ public class ReservationController {
         return handler.handle(reservation, token);
     }
     
-     @GetMapping("getSchedule")
+    @GetMapping("getSchedule")
     public List<Reservation> getSchedule(@RequestParam long userId) {
         return reservationRepo.findAllByUserId(userId);
     }

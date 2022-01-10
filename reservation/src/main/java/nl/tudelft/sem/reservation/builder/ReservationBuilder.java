@@ -19,7 +19,8 @@ public class ReservationBuilder implements Builder {
     /**
      * Constructor for the Reservation class. Contains some mandatory values
      *
-     * @param madeBy    a Long representing the user trying to make the reservation the builder is for
+     * @param madeBy    a Long representing the user trying to make the
+     *                  reservation the builder is for
      * @param roomId    a Long representing the room the reservation should be in
      * @param start     a LocalDateTime representing when the reservation should start
      * @param end       a LocalDateTime representing when the reservation should end
@@ -32,7 +33,7 @@ public class ReservationBuilder implements Builder {
     }
 
     /**
-     * Adds a given type to the builder, to be used when building the reservation
+     * Adds a given type to the builder, to be used when building the reservation.
      *
      * @param type  The type of reservation to be added (SELF, SINGLE, ADMIN, or GROUP)
      */
@@ -41,7 +42,8 @@ public class ReservationBuilder implements Builder {
     }
 
     /**
-     * Adds a given user the reservation is for to the builder, to be used when building the reservation
+     * Adds a given user the reservation is for to the builder,
+     * to be used when building the reservation.
      *
      * @param userId   A Long representing the user
      */
@@ -50,7 +52,8 @@ public class ReservationBuilder implements Builder {
     }
 
     /**
-     * Adds a given group the reservation is for to the builder, to be used when building the reservation
+     * Adds a given group the reservation is for to the builder,
+     * to be used when building the reservation.
      *
      * @param groupId   A Long representing the group
      */
@@ -59,7 +62,7 @@ public class ReservationBuilder implements Builder {
     }
 
     /**
-     * Adds a given purpose message to the builder, to be used when building the reservation
+     * Adds a given purpose message to the builder, to be used when building the reservation.
      *
      * @param message   A string containing the purpose of the reservation
      */
@@ -68,6 +71,8 @@ public class ReservationBuilder implements Builder {
     }
 
     /**
+     * Get madeBy.
+     *
      * @return  a Long representing the user trying to make the reservation the builder is for
      */
     public Long getMadeBy() {
@@ -75,7 +80,7 @@ public class ReservationBuilder implements Builder {
     }
 
     /**
-     * Builds the reservation with the given values
+     * Builds the reservation with the given values.
      *
      * @return  A Reservation object with the attributes specified with above methods
      */

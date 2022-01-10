@@ -12,7 +12,7 @@ public class EmployeesMakeEditCancelReservationForThemselves
     public boolean handle(Reservation reservation, String token)
             throws InvalidReservationException {
 
-        if (!UserCommunication.getUserType(token).equals("EMPLOYEE")) {
+        if (!getUserType(token).equals("EMPLOYEE")) {
             return super.checkNext(reservation, token);
         }
 
@@ -21,5 +21,16 @@ public class EmployeesMakeEditCancelReservationForThemselves
         }
         throw new InvalidReservationException("Employees cannot manage reservations "
                 + "for someone else.");
+    }
+
+    /**
+     * Get the type of user .
+     * Added to allow unit testing.
+     *
+     * @param token the authentication token of the current user
+     * @return the type of the user
+     */
+    public String getUserType(String token) {
+        return UserCommunication.getUserType(token);
     }
 }

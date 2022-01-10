@@ -6,9 +6,11 @@ import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 import nl.tudelft.sem.reservation.repository.ReservationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,9 +22,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 
+@ExtendWith(MockitoExtension.class)
 class CheckIfRoomIsNotReservedAlreadyTest {
-    @Mock
-    private ReservationRepository reservationRepo;
 
     private transient CheckIfRoomIsNotReservedAlready spyValidator;
     private final transient String token = "token";

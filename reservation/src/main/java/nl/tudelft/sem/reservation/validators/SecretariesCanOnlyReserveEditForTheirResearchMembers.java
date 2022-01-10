@@ -42,7 +42,7 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseVa
 
 
     /**
-     * Check if the person making the reservation is the secretary of a group
+     * Check if the person making the reservation is the secretary of a group.
      *
      * @param madeBy  the id of the person who made the reservation
      * @param groupId the group given with the reservation
@@ -54,7 +54,7 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseVa
     }
 
     /**
-     * Check if the person who the reservation is for is in the group
+     * Check if the person who the reservation is for is in the group.
      *
      * @param userId  the id of the person who made the reservation
      * @param groupId the group given with the reservation

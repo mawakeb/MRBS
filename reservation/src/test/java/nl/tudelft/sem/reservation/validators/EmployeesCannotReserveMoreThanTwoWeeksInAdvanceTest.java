@@ -5,13 +5,16 @@ import nl.tudelft.sem.reservation.entity.ReservationType;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class EmployeesCannotReserveMoreThanTwoWeeksInAdvanceTest {
 
     private transient Reservation reservation;

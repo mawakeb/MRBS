@@ -3,6 +3,7 @@ package nl.tudelft.sem.reservation.validators;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 
 import java.time.LocalDateTime;
 import nl.tudelft.sem.reservation.entity.Reservation;
@@ -90,8 +91,8 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembersTest {
      */
     @Test
     void madeBySecretaryNotInGroupForGroupMemberTest() {
-        doReturn(false).when(spyValidator).isSecretaryOfGroup(13L, 5L, token);
-        doReturn(true).when(spyValidator).isInGroup(89L, 5L, token);
+        lenient().doReturn(false).when(spyValidator).isSecretaryOfGroup(13L, 5L, token);
+        lenient().doReturn(true).when(spyValidator).isInGroup(89L, 5L, token);
 
         assertThrows(InvalidReservationException.class, () ->
                         spyValidator.handle(reservation1, token),

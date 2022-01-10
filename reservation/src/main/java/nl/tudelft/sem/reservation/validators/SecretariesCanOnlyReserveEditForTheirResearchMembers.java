@@ -18,9 +18,9 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseVa
         }
 
         if (type.equals(ReservationType.SINGLE)) {
-            if (GroupCommunication.isSecretaryOfGroup(reservation.getMadeBy(),
+            if (isSecretaryOfGroup(reservation.getMadeBy(),
                     reservation.getGroupId(), token)
-                    && GroupCommunication.isInGroup(reservation.getUserId(),
+                    && isInGroup(reservation.getUserId(),
                     reservation.getGroupId(), token)) {
                 return super.checkNext(reservation, token);
             } else {
@@ -30,7 +30,7 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseVa
         }
 
         if (type.equals(ReservationType.GROUP)) {
-            if (GroupCommunication.isSecretaryOfGroup(reservation.getMadeBy(),
+            if (isSecretaryOfGroup(reservation.getMadeBy(),
                     reservation.getGroupId(), token)) {
                 return super.checkNext(reservation, token);
             }
@@ -38,5 +38,30 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseVa
         }
 
         throw new InvalidReservationException("No valid reservation type set.");
+    }
+
+
+    /**
+     * Check if the person making the reservation is the secretary of a group
+     *
+     * @param madeBy  the id of the person who made the reservation
+     * @param groupId the group given with the reservation
+     * @param token   the authentication token of the current user
+     * @return if the person making the reservation is the secretary of the group
+     */
+    public boolean isSecretaryOfGroup(long madeBy, long groupId, String token) {
+        return GroupCommunication.isSecretaryOfGroup(madeBy, groupId, token);
+    }
+
+    /**
+     * Check if the person who the reservation is for is in the group
+     *
+     * @param userId  the id of the person who made the reservation
+     * @param groupId the group given with the reservation
+     * @param token   the authentication token of the current user
+     * @return if the person who the reservation is for is in the group
+     */
+    public boolean isInGroup(long userId, long groupId, String token) {
+        return GroupCommunication.isInGroup(userId, groupId, token);
     }
 }

@@ -73,6 +73,8 @@ public class Reservation {
     }
 
     /**
+     * Get the id.
+     *
      * @return  The ID of this reservation
      */
     public Long getId() {
@@ -80,6 +82,8 @@ public class Reservation {
     }
 
     /**
+     * Set the id.
+     *
      * @param id    The new ID of this reservation
      */
     private void setId(Long id) {
@@ -87,6 +91,8 @@ public class Reservation {
     }
 
     /**
+     * Get the roomId.
+     *
      * @return  A Long representing the room this reservation is in
      */
     public Long getRoomId() {
@@ -94,6 +100,8 @@ public class Reservation {
     }
 
     /**
+     * Set the roomId.
+     *
      * @param roomId    A Long representing the new room this reservation should be in
      */
     private void setRoomId(Long roomId) {
@@ -101,6 +109,8 @@ public class Reservation {
     }
 
     /**
+     * Get madeBy.
+     *
      * @return  A Long representing the user who made this reservation
      */
     public Long getMadeBy() {
@@ -108,6 +118,8 @@ public class Reservation {
     }
 
     /**
+     * Set madeBy.
+     *
      * @param madeBy    A Long representing the user who made this reservation
      */
     private void setMadeBy(Long madeBy) {
@@ -116,6 +128,8 @@ public class Reservation {
 
 
     /**
+     * Get the start time.
+     *
      * @return  A LocalDateTime representing the time this reservation starts or has started
      */
     public LocalDateTime getStart() {
@@ -123,6 +137,8 @@ public class Reservation {
     }
 
     /**
+     * Set the start time.
+     *
      * @param start A LocalDateTime representing the time this reservation should start
      */
     private void setStart(LocalDateTime start) {
@@ -130,6 +146,8 @@ public class Reservation {
     }
 
     /**
+     * Get the end time.
+     *
      * @return  A LocalDateTime representing the time this reservation ends or has ended
      */
     public LocalDateTime getEnd() {
@@ -137,6 +155,8 @@ public class Reservation {
     }
 
     /**
+     * Set the end time.
+     *
      * @param end   A LocalDateTime representing the time this reservation should end
      */
     private void setEnd(LocalDateTime end) {
@@ -145,6 +165,8 @@ public class Reservation {
 
 
     /**
+     * Get the reservationPurpose.
+     *
      * @return  A String describing why this reservation was made
      */
     public String getPurpose() {
@@ -152,13 +174,17 @@ public class Reservation {
     }
 
     /**
-     * @param purpose   A String describing why this reservation was made
+     * Set the reservationPurpose.
+     *
+     * @param purpose a string containing the purpose of this reservation
      */
     private void setPurpose(String purpose) {
         this.purpose = purpose;
     }
 
     /**
+     * Get the edit purpose.
+     *
      * @return  A String describing why this reservation was changed
      */
     public String getEditPurpose() {
@@ -166,13 +192,17 @@ public class Reservation {
     }
 
     /**
-     * @param editPurpose   A String describing why this reservation was changed
+     * Set the edit purpose.
+     *
+     * @param editPurpose a string containing the purpose for editing this reservation
      */
     public void setEditPurpose(String editPurpose) {
         this.editPurpose = editPurpose;
     }
 
     /**
+     * Get the reservation type.
+     *
      * @return  A ReservationType representing what kind of reservation this is
      */
     public ReservationType getType() {
@@ -180,7 +210,9 @@ public class Reservation {
     }
 
     /**
-     * @param type  A ReservationType representing what kind of reservation this should be
+     * Set the reservation type.
+     *
+     * @param type the new type to set the reservation to
      */
     private void setType(ReservationType type) {
         this.type = type;
@@ -188,6 +220,8 @@ public class Reservation {
 
 
     /**
+     * Get the userId.
+     *
      * @return  A Long representing the user this reservation was made for
      */
     public long getUserId() {
@@ -195,21 +229,27 @@ public class Reservation {
     }
 
     /**
-     * @  A Long representing the user this reservation should have been made for
+     * Set the userId.
+     *
+     * @param userId the new userId
      */
-    private void setUserId(long UserId) {
+    private void setUserId(long userId) {
         this.userId = userId;
     }
 
     /**
-     * @  A Long representing the group this reservation was made for
+     * Get the groupId.
+     *
+     * @return  A Long representing the group this reservation was made for
      */
     public long getGroupId() {
         return groupId;
     }
 
     /**
-     * @  A Long representing the group this reservation should have been made for
+     * Set the groupId.
+     *
+     * @param groupId the new groupId
      */
     private void setGroupId(long groupId) {
         this.groupId = groupId;
@@ -217,14 +257,18 @@ public class Reservation {
 
 
     /**
-     * @return  A boolean representing if this reservation has been cancelled
+     * Get the cancelled.
+     *
+     * @return A boolean representing if this reservation has been cancelled
      */
     public boolean isCancelled() {
         return cancelled;
     }
 
     /**
-     * @return  A boolean representing if this reservation should be cancelled
+     * Set cancelled.
+     *
+     * @param cancelled the new cancelled
      */
     private void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
@@ -232,7 +276,7 @@ public class Reservation {
 
 
     /**
-     * Changes the location of the reservation
+     * Changes the location of the reservation.
      *
      * @param newRoomId     A Long representing the new room the reservation should be set in
      * @param editPurpose   A String explaining why this reservation was moved
@@ -243,7 +287,7 @@ public class Reservation {
     }
 
     /**
-     * Changes the date and/or time of the reservation
+     * Changes the date and/or time of the reservation.
      *
      * @param newStart      A LocalDateTime representing when the reservation should start
      * @param newEnd        A LocalDateTime representing when the reservation should end
@@ -256,7 +300,7 @@ public class Reservation {
     }
 
     /**
-     * Cancels the reservation
+     * Cancels the reservation.
      *
      * @param editPurpose   A String explaining why this reservation was cancelled
      */

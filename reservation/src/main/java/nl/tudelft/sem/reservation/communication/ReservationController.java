@@ -55,6 +55,13 @@ public class ReservationController {
         return "hello_from_reservation";
     }
 
+    /**
+     * Check if a given user made a certain reservation.
+     *
+     * @param madeBy the id of the user
+     * @param reservationId the id of the reservation
+     * @return if the user made the reservation
+     */
     @GetMapping("/checkUser")
     public boolean checkUser(@RequestParam long madeBy, @RequestParam long reservationId) {
 
@@ -66,6 +73,12 @@ public class ReservationController {
         }
     }
 
+    /**
+     * Get a room by id
+     *
+     * @param id the id of the room
+     * @return the room
+     */
     @GetMapping("/getRoom")
     public long getRoom(@RequestParam long id) {
 
@@ -77,6 +90,14 @@ public class ReservationController {
         }
     }
 
+    /**
+     * Check what rooms are free in a given timeslot
+     *
+     * @param rooms the rooms to check
+     * @param startTime the start of the timeslot
+     * @param endTime the end of the timeslot
+     * @return the rooms that are free in the timeslot
+     */
     @GetMapping("/checkTimeslot")
     public List<Long> checkTimeslot(@RequestParam List<Long> rooms,
                                     @RequestParam String startTime,
@@ -98,6 +119,17 @@ public class ReservationController {
         return filteredRooms;
     }
 
+    /**
+     * Edit a reservation
+     *
+     * @param reservationId the reservation id
+     * @param roomId a potential new roomId
+     * @param start a potential new start time
+     * @param end a potential new end time
+     * @param editPurpose the purpose of this edit
+     * @param token an authorization token
+     * @return a status message regarding the success
+     */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @GetMapping("/editReservation")
     public String editReservation(@RequestParam long reservationId,
@@ -157,6 +189,14 @@ public class ReservationController {
         return "Reservation was edited successfully";
     }
 
+    /**
+     * Cancel a reservation
+     *
+     * @param reservationId the id of the reservation
+     * @param cancelPurpose the purpose of cancelling the reservation
+     * @param token an authorization token
+     * @return a status message regarding the success
+     */
     @GetMapping("/cancelReservation")
     public String cancelReservation(@RequestParam long reservationId,
                                     @RequestParam String cancelPurpose,
@@ -180,6 +220,17 @@ public class ReservationController {
         }
     }
 
+    /**
+     * Make a new reservation
+     *
+     * @param targetUserOrGroupId who the reservation is for
+     * @param roomId the room id for the reservation
+     * @param start the start time of the reservation
+     * @param end the end time of the reservation
+     * @param purpose the purpose of the reservation
+     * @param token an authorization token
+     * @return a status message regarding the success
+     */
     @PostMapping("/makeReservation")
     public String makeReservation(@RequestParam Long targetUserOrGroupId,
                                   @RequestParam Long roomId,

@@ -9,6 +9,14 @@ public class UserCommunication extends ServerCommunication {
 
     private static final String requestString = hostAddress + "/user";
 
+    /**
+     * Get the id of user with the auth token.
+     * Added to allow unit testing.
+     *
+     * @param token the authentication token of the user
+     * @return the id of the user
+     */
+
     public static Long getUser(String token) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
@@ -20,6 +28,14 @@ public class UserCommunication extends ServerCommunication {
                         .body(), new TypeToken<String>() {}
                         .getType());
     }
+
+    /**
+     * Get the type of user with the auth token.
+     * Added to allow unit testing.
+     *
+     * @param token the authentication token of the user
+     * @return the type of the user
+     */
 
     public static String getUserType(String token) {
         HttpRequest request = HttpRequest.newBuilder()

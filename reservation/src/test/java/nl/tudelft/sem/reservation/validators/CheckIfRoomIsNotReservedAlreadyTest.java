@@ -26,7 +26,7 @@ class CheckIfRoomIsNotReservedAlreadyTest {
 
     private transient CheckIfRoomIsNotReservedAlready spyValidator;
     private final transient String token = "token";
-    private Reservation reservation;
+    private transient Reservation reservation;
 
 
 
@@ -59,5 +59,10 @@ class CheckIfRoomIsNotReservedAlreadyTest {
 
         Exception e = assertThrows(InvalidReservationException.class,
                 () -> spyValidator.handle(reservation, token));
+
+        String expectedMessage = "There is another reservation overlapping with your desired time range.";
+        String actualMessage = e.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 }

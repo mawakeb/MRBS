@@ -1,8 +1,6 @@
 package nl.tudelft.sem.room.communication;
 
 import com.google.gson.Gson;
-
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -286,11 +284,11 @@ public class RoomController {
     public String createBuilding(@RequestHeader(authorization) String token,
                                  @RequestParam long id,
                                  @RequestParam String name,
-                                 @RequestParam String openTime,
-                                 @RequestParam String closeTime) {
+                                 @RequestParam LocalTime openTime,
+                                 @RequestParam LocalTime closeTime) {
         if (getRole(token).equals(admin)) {
             if (buildingRepo.findById(id) == null) {
-                Building building = new Building(id, name, LocalTime.parse(openTime), LocalTime.parse(closeTime));
+                Building building = new Building(id, name, openTime, closeTime);
                 buildingRepo.save(building);
                 return "Building has been saved successfully";
             } else {

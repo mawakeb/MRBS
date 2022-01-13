@@ -132,22 +132,22 @@ public class ReservationController {
      */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @GetMapping("/editReservation")
-    public String editReservation(@RequestParam long reservationId,
-                                  @RequestParam long roomId,
+    public String editReservation(@RequestParam long reservationId, @RequestParam long roomId,
                                   @RequestParam LocalDateTime start,
                                   @RequestParam LocalDateTime end,
                                   @RequestParam String editPurpose,
                                   @RequestHeader("Authorization") String token) {
+
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
         if (reservation == null) {
             return "Reservation was not found";
         }
 
         //refactoring to reduce cyclomatic complexity
-        List<Object> changes = List.of(roomId, start, end);
-        changes = checkChanges(reservation, changes);
+        List<Object> changes = checkChanges(reservation, roomId, start, end);
 
-        if (!(boolean) changes.get(3)) {
+        int size = 4;
+        if (changes.size() == size) {
             return "There is nothing to edit for the reservation";
         }
 
@@ -155,23 +155,38 @@ public class ReservationController {
                 || getUser(token).equals(reservation.getUserId())
                 || getUser(token).equals(reservation.getMadeBy())) {
 
-            //refactored to reduce LOC
-            Validator handler = setUpChainOfResponsibility(token);
+            //refactoring to reduce LOC
+            return editActualReservation(reservation, token, changes, editPurpose);
+        }
 
-            // edit the reservation
-            reservation.changeLocation((long) changes.get(0), editPurpose);
-            reservation.changeTime((LocalDateTime) changes.get(1), (LocalDateTime) changes.get(2), editPurpose);
+        return "You do not have access to edit this reservation";
+    }
 
-            // perform the checks and save the reservation if valid
-            try {
-                boolean isValid = handle(handler, reservation, token);
-                System.out.print("Reservation status = " + isValid);
-                reservationRepo.save(reservation);
-            } catch (InvalidReservationException e) {
-                e.printStackTrace();
-            }
-        } else {
-            return "You do not have access to edit this reservation";
+    /**
+     * Edit the actual reservation in the database.
+     *
+     * @param reservation reservation to be changed
+     * @param token authentication token of the user
+     * @param changes the changes to be made
+     * @param editPurpose the reason why user is making the edit
+     */
+    public String editActualReservation(Reservation reservation, String token,
+                                      List<Object> changes, String editPurpose) {
+        //refactored to reduce LOC
+        Validator handler = setUpChainOfResponsibility(token);
+
+        // edit the reservation
+        reservation.changeLocation((long) changes.get(0), editPurpose);
+        reservation.changeTime((LocalDateTime) changes.get(1),
+                (LocalDateTime) changes.get(2), editPurpose);
+
+        // perform the checks and save the reservation if valid
+        try {
+            boolean isValid = handle(handler, reservation, token);
+            System.out.print("Reservation status = " + isValid);
+            reservationRepo.save(reservation);
+        } catch (InvalidReservationException e) {
+            e.printStackTrace();
         }
 
         return "Reservation was edited successfully";
@@ -181,25 +196,32 @@ public class ReservationController {
      * Check if there are meaningful changes when editing a reservation.
      *
      * @param reservation the reservation to edit
-     * @param changes list of changes to be made
-     * @return the final fields of the reservation
-     *         with boolean of whether any of the fields were changed
+     * @param roomId new roomId
+     * @param start new start time
+     * @param end new end time
+     * @return list of the final fields of the reservation with an
+     *          extra integer at the end if none of the fields were changed
      */
-    public List<Object> checkChanges(Reservation reservation, List<Object> changes) {
-        boolean changed = true;
+    public List<Object> checkChanges(Reservation reservation, long roomId,
+                                     LocalDateTime start, LocalDateTime end) {
+        List<Object> changes = new ArrayList<>();
+        changes.add(roomId);
+        changes.add(start);
+        changes.add(end);
+
+        if ((long) changes.get(0) == -1 && changes.get(1) == null && changes.get(2) == null) {
+            changes.add(-1);
+        }
         if ((long) changes.get(0) == -1) {
-            changes.add(0, reservation.getRoomId());
-            changed |= false;
+            changes.set(0, reservation.getRoomId());
         }
         if (changes.get(1) == null) {
-            changes.add(1, reservation.getStart());
-            changed |= false;
+            changes.set(1, reservation.getStart());
         }
         if (changes.get(2) == null) {
-            changes.add(2, reservation.getEnd());
-            changed |= false;
+            changes.set(2, reservation.getEnd());
         }
-        changes.add(changed);
+
         return changes;
     }
 

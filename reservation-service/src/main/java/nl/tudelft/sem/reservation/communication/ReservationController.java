@@ -150,22 +150,17 @@ public class ReservationController {
         if (!(boolean) changes.get(3)) {
             return "There is nothing to edit for the reservation";
         }
-        roomId = (long) changes.get(0);
-        start = (LocalDateTime) changes.get(1);
-        end = (LocalDateTime) changes.get(2);
 
-        long isForId = reservation.getUserId();
-        long madeById = reservation.getMadeBy();
         if (getUserType(token).equals("ADMIN")
-                || getUser(token).equals(isForId)
-                || getUser(token).equals(madeById)) {
+                || getUser(token).equals(reservation.getUserId())
+                || getUser(token).equals(reservation.getMadeBy())) {
 
             //refactored to reduce LOC
             Validator handler = setUpChainOfResponsibility(token);
 
             // edit the reservation
-            reservation.changeLocation(roomId, editPurpose);
-            reservation.changeTime(start, end, editPurpose);
+            reservation.changeLocation((long) changes.get(0), editPurpose);
+            reservation.changeTime((LocalDateTime) changes.get(1), (LocalDateTime) changes.get(2), editPurpose);
 
             // perform the checks and save the reservation if valid
             try {

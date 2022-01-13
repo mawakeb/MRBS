@@ -142,33 +142,26 @@ public class ReservationController {
         if (reservation == null) {
             return "Reservation was not found";
         }
-        long isForId = reservation.getUserId();
-        long madeById = reservation.getMadeBy();
 
-        if (roomId != -1 || start != null || end != null) {
-            if (roomId == -1) {
-                roomId = reservation.getRoomId();
-            }
-            if (start == null) {
-                start = reservation.getStart();
-            }
-            if (end == null) {
-                end = reservation.getEnd();
-            }
-        } else {
+        //refactoring to reduce cyclomatic complexity
+        List<Object> changes = List.of(roomId, start, end);
+        changes = checkChanges(reservation, changes);
+
+        if (!(boolean) changes.get(3)) {
             return "There is nothing to edit for the reservation";
         }
+        roomId = (long) changes.get(0);
+        start = (LocalDateTime) changes.get(1);
+        end = (LocalDateTime) changes.get(2);
 
+        long isForId = reservation.getUserId();
+        long madeById = reservation.getMadeBy();
         if (getUserType(token).equals("ADMIN")
                 || getUser(token).equals(isForId)
                 || getUser(token).equals(madeById)) {
-            // set up validators
-            Validator handler = new CheckAvailabilityValidator();
-            handler.setNext(new CheckIfRoomIsNotReservedAlready(), token);
-            handler.setNext(new EmployeesCannotReserveMoreThanTwoWeeksInAdvance(), token);
-            handler.setNext(new EmployeesMakeEditCancelReservationForThemselves(), token);
-            handler.setNext(new EmployeesOneReservationDuringTimeSlot(), token);
-            handler.setNext(new SecretariesCanOnlyReserveEditForTheirResearchMembers(), token);
+
+            //refactored to reduce LOC
+            Validator handler = setUpChainOfResponsibility(token);
 
             // edit the reservation
             reservation.changeLocation(roomId, editPurpose);
@@ -187,6 +180,32 @@ public class ReservationController {
         }
 
         return "Reservation was edited successfully";
+    }
+
+    /**
+     * Check if there are meaningful changes when editing a reservation.
+     *
+     * @param reservation the reservation to edit
+     * @param changes list of changes to be made
+     * @return the final fields of the reservation
+     *         with boolean of whether any of the fields were changed
+     */
+    public List<Object> checkChanges(Reservation reservation, List<Object> changes) {
+        boolean changed = true;
+        if ((long) changes.get(0) == -1) {
+            changes.add(0, reservation.getRoomId());
+            changed |= false;
+        }
+        if (changes.get(1) == null) {
+            changes.add(1, reservation.getStart());
+            changed |= false;
+        }
+        if (changes.get(2) == null) {
+            changes.add(2, reservation.getEnd());
+            changed |= false;
+        }
+        changes.add(changed);
+        return changes;
     }
 
     /**
@@ -252,12 +271,7 @@ public class ReservationController {
 
         Reservation reservation = builder.build();
 
-        Validator handler = new CheckAvailabilityValidator();
-        handler.setNext(new CheckIfRoomIsNotReservedAlready(), token);
-        handler.setNext(new EmployeesCannotReserveMoreThanTwoWeeksInAdvance(), token);
-        handler.setNext(new EmployeesMakeEditCancelReservationForThemselves(), token);
-        handler.setNext(new EmployeesOneReservationDuringTimeSlot(), token);
-        handler.setNext(new SecretariesCanOnlyReserveEditForTheirResearchMembers(), token);
+        Validator handler = setUpChainOfResponsibility(token);
 
         try {
             boolean isValid = handler.handle(reservation, token);
@@ -309,5 +323,22 @@ public class ReservationController {
     @GetMapping("getSchedule")
     public List<Reservation> getSchedule(@RequestParam long userId) {
         return reservationRepo.findAllByUserId(userId);
+    }
+
+    /**
+     * Sets up the chain of validators in order.
+     *
+     * @param token authentication token of the user
+     * @return the Validator with all the chain set up
+     */
+    public Validator setUpChainOfResponsibility(String token) {
+        Validator handler = new CheckAvailabilityValidator();
+        handler.setNext(new CheckIfRoomIsNotReservedAlready(), token);
+        handler.setNext(new EmployeesCannotReserveMoreThanTwoWeeksInAdvance(), token);
+        handler.setNext(new EmployeesMakeEditCancelReservationForThemselves(), token);
+        handler.setNext(new EmployeesOneReservationDuringTimeSlot(), token);
+        handler.setNext(new SecretariesCanOnlyReserveEditForTheirResearchMembers(), token);
+
+        return handler;
     }
 }

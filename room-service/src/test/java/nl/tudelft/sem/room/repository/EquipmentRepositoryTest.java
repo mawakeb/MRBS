@@ -56,7 +56,7 @@ class EquipmentRepositoryTest {
         entityManager.persist(equipment3);
         entityManager.flush();
 
-        List<EquipmentInRoom> expected = List.of(equipment2);
+        List<Long> expected = List.of(2L);
         assertEquals(expected, repo.findAllByEquipmentName("table"));
     }
 }

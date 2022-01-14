@@ -40,14 +40,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        Optional<String> jwt = this.getJwtFromAuthorizationHeader(request.getHeader("Authorization"));
-        Optional<String> netId = Optional.empty();
+        Optional<String> jwt = this.getJwtFromAuthorizationHeader(
+                request.getHeader("Authorization")
+        );
 
         if (jwt.isPresent()) {
-            netId = Optional.of(jwtUtil.extractUsername(jwt.get()));
+            String netId = jwtUtil.extractUsername(jwt.get());
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailService.loadUserByUsername(netId.get());
+                UserDetails userDetails = this.userDetailService.loadUserByUsername(netId);
 
                 if (jwtUtil.validateToken(jwt.get(), userDetails)) {
                     this.setAuthorization(userDetails, request);

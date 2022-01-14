@@ -5,7 +5,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import nl.tudelft.sem.room.entity.Building;
 import nl.tudelft.sem.room.entity.EquipmentInRoom;
@@ -137,24 +136,24 @@ public class RoomController {
                                  @RequestParam String endTime,
                                  @RequestHeader(authorization) String token) {
         // lists to be used
-        List<Room> rooms = roomRepo.findAll();
         List<Room> filteredRooms = new ArrayList<>();
-        @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-        Set<Long> roomsWithEquipment = equipmentRepo.findAllByEquipmentName(equipmentName)
-                .stream().map(EquipmentInRoom::getRoomId).collect(Collectors.toSet());
+        List<Room> rooms;
+        if (equipmentName.isEmpty()) {
+            rooms = roomRepo.findAll();
+        } else {
+            rooms = roomRepo.findAllById(equipmentRepo.findAllByEquipmentName(equipmentName));
+        }
 
-        // add the rooms that fit the first 3 characteristics to a new list
+        // now filter for the capacity and the building
         for (Room r : rooms) {
-            if ((capacity == -1 || r.getCapacity() >= capacity)
-                    && (buildingId == -1 || r.getBuildingId() == buildingId)
-                    && (Objects.equals(equipmentName, "")
-                    || roomsWithEquipment.contains(r.getId()))) {
+            if ((r.getCapacity() >= capacity)
+                    && (buildingId == -1 || r.getBuildingId() == buildingId)) {
                 filteredRooms.add(r);
             }
         }
 
         // do the last search characteristic timeslot availability
-        if (!Objects.equals(startTime, "") && !Objects.equals(endTime, "")) {
+        if (!startTime.isEmpty() && !endTime.isEmpty()) {
             // get the rooms within the timeslot
             return roomRepo.findAllById(getRoomsInTimeslot(
                     filteredRooms.stream().map(Room::getId).collect(Collectors.toList()),
@@ -162,7 +161,6 @@ public class RoomController {
         } else {
             return filteredRooms;
         }
-
     }
 
     /**

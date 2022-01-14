@@ -58,10 +58,11 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
         for (Reservation conflict : reservationsAtThisTime) {
             //For each reservation in the list, check if another group already
             // has a reservation within the desired time to book.
-            if (conflict.getType().equals(ReservationType.GROUP)
-                && overlap(reservation.getGroupId(), conflict.getGroupId(), token)) {
-                throw new InvalidReservationException("Group reservation "
-                        + "conflicts with another group.");
+            if (conflict.getType().equals(ReservationType.GROUP)) {
+                if (overlap(reservation.getGroupId(), conflict.getGroupId(), token)){
+                    throw new InvalidReservationException("Group reservation "
+                            + "conflicts with another group.");
+                }
             } else {
                 // If not, check if a member of your research group doesn't already
                 // have a reservation within the desired time to book.

@@ -21,25 +21,7 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
             throws InvalidReservationException {
 
         if (reservation.getType().equals(ReservationType.GROUP)) {
-            List<Reservation> reservationsAtThisTime = findAllOverlapping(reservation.getStart(),
-                    reservation.getEnd());
-
-            //For each reservation in the list, check if the associated user is in the group
-            for (Reservation conflict : reservationsAtThisTime) {
-                if (conflict.getType().equals(ReservationType.GROUP)) {
-                    if (overlap(reservation.getGroupId(),
-                            conflict.getGroupId(), token)) {
-                        throw new InvalidReservationException("Group reservation "
-                                + "conflicts with another group.");
-                    }
-                } else {
-                    Long userId = conflict.getUserId();
-                    if (isInGroup(userId, reservation.getGroupId(), token)) {
-                        throw new InvalidReservationException("Not all group members are "
-                                + "available at the given time.");
-                    }
-                }
-            }
+            checkForOverlapsInCaseOfGroupReservation(reservation, token);
         } else {
             Long userId = reservation.getUserId();
             LocalDateTime reservationStart = reservation.getStart();
@@ -50,12 +32,45 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
                             reservationStart, reservationEnd);
 
             if (!overlappingReservationsOfUser.isEmpty()) {
-                throw new InvalidReservationException("Users can only have one "
+                throw new InvalidReservationException("Users can only have one reservation"
                         + " within a given time range.");
             }
         }
 
         return super.checkNext(reservation, token);
+    }
+
+    /**
+     * Checks if there are any overlapping existing reservations with your GROUP reservation.
+     * If there are, it returns the corresponding error message -
+     * if there is another group reservation with which it overlaps
+     * or if someone from your group has another reservation during that time slot.
+     *
+     * @param reservation - reservation that you want to make.
+     * @param token - the authentication token of the current user.
+     * @throws InvalidReservationException - indicating that the reservation cannot be made.
+     */
+    private void checkForOverlapsInCaseOfGroupReservation(Reservation reservation, String token)
+            throws InvalidReservationException {
+        List<Reservation> reservationsAtThisTime = findAllOverlapping(reservation.getStart(),
+                reservation.getEnd());
+
+        for (Reservation conflict : reservationsAtThisTime) {
+            //For each reservation in the list, check if another group already
+            // has a reservation within the desired time to book.
+            if (conflict.getType().equals(ReservationType.GROUP)
+                && overlap(reservation.getGroupId(), conflict.getGroupId(), token)) {
+                throw new InvalidReservationException("Group reservation "
+                        + "conflicts with another group.");
+            } else {
+                // If not, check if a member of your research group doesn't already
+                // have a reservation within the desired time to book.
+                if (isInGroup(conflict.getUserId(), reservation.getGroupId(), token)) {
+                    throw new InvalidReservationException("Not all group members are "
+                            + "available at the given time.");
+                }
+            }
+        }
     }
 
 

@@ -44,7 +44,8 @@ public class RoomCommunication extends ServerCommunication {
         HttpRequest requestBuilding = HttpRequest.newBuilder()
                 .GET()
                 .setHeader("Authorization", token)
-                .uri(URI.create(requestString + "/building/checkAvailable" + "?buildingId=" + buildingId
+                .uri(URI.create(requestString + "/building/checkAvailable"
+                        + "?buildingId=" + buildingId
                         + "&start=" + start + "&end=" + end)).build();
 
         boolean buildingAvailability = gson

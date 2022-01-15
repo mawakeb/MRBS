@@ -43,82 +43,6 @@ public class ReservationController {
         this.reservationRepo = reservationRepo;
     }
 
-
-    /**
-     * Gets all lectures.
-     *
-     * @return all lectures
-     */
-    @GetMapping("")
-    public String returnHi() {
-        //return lectureRepository.findAll();
-        return "hello_from_reservation";
-    }
-
-    /**
-     * Check if a given user made a certain reservation.
-     *
-     * @param madeBy the id of the user
-     * @param reservationId the id of the reservation
-     * @return if the user made the reservation
-     */
-    @GetMapping("/checkUser")
-    public boolean checkUser(@RequestParam long madeBy, @RequestParam long reservationId) {
-
-        Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
-        if (reservation != null) {
-            return reservation.getMadeBy().equals(madeBy);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
-        }
-    }
-
-    /**
-     * Get a room by id.
-     *
-     * @param id the id of the room
-     * @return the room
-     */
-    @GetMapping("/getRoom")
-    public long getRoom(@RequestParam long id) {
-
-        Reservation reservation = reservationRepo.findById(id).orElse(null);
-        if (reservation != null) {
-            return reservation.getRoomId();
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
-        }
-    }
-
-    /**
-     * Check what rooms are free in a given timeslot.
-     *
-     * @param rooms the rooms to check
-     * @param startTime the start of the timeslot
-     * @param endTime the end of the timeslot
-     * @return the rooms that are free in the timeslot
-     */
-    @GetMapping("/checkTimeslot")
-    public List<Long> checkTimeslot(@RequestParam List<Long> rooms,
-                                    @RequestParam String startTime,
-                                    @RequestParam String endTime) {
-        List<Long> filteredRooms = new ArrayList<>();
-
-        @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-        Set<Long> takenRooms = reservationRepo
-                .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(rooms,
-                LocalDateTime.parse(startTime), LocalDateTime.parse(endTime))
-                .stream().map(Reservation::getRoomId).collect(Collectors.toSet());
-
-        for (Long l : rooms) {
-            if (!takenRooms.contains(l)) {
-                filteredRooms.add(l);
-            }
-        }
-
-        return filteredRooms;
-    }
-
     /**
      * Edit a reservation.
      *
@@ -335,11 +259,6 @@ public class ReservationController {
     public boolean handle(Validator handler, Reservation reservation, String token)
             throws InvalidReservationException {
         return handler.handle(reservation, token);
-    }
-    
-    @GetMapping("getSchedule")
-    public List<Reservation> getSchedule(@RequestParam long userId) {
-        return reservationRepo.findAllByUserId(userId);
     }
 
     /**

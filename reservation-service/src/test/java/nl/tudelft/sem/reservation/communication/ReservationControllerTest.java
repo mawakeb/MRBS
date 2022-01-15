@@ -215,23 +215,4 @@ public class ReservationControllerTest {
                 reservation1.getStart());
         assertEquals(LocalDateTime.parse("2022-01-09T17:22:23.643606500"), reservation1.getEnd());
     }
-
-    /**
-     * Test the checking of a timeslot.
-     */
-    @Test
-    void checkTimeSlotTest() {
-        // variables for the method call and verify
-        List<Long> rooms = Arrays.asList(2L, 3L, 5L, 7L);
-        String start = "2022-01-09T09:30:00.643606500";
-        String end = "2022-01-09T14:00:00.643606500";
-
-        List<Long> roomResultList = Arrays.asList(3L, 7L);
-        List<Long> roomTestList = spyController.checkTimeslot(rooms, start, end);
-
-        verify(reservationRepo, times(1))
-                .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(rooms,
-                        LocalDateTime.parse(start), LocalDateTime.parse(end));
-        assertEquals(roomResultList, roomTestList);
-    }
 }

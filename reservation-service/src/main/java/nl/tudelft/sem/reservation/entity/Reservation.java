@@ -215,24 +215,29 @@ public class Reservation {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Reservation that = (Reservation) o;
-        return cancelled == that.cancelled &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(madeBy, that.madeBy) &&
-                Objects.equals(roomId, that.roomId) &&
-                Objects.equals(start, that.start) &&
-                Objects.equals(end, that.end) &&
-                type == that.type &&
-                Objects.equals(userId, that.userId) &&
-                Objects.equals(groupId, that.groupId) &&
-                Objects.equals(purpose, that.purpose) &&
-                Objects.equals(editPurpose, that.editPurpose);
+        return cancelled == that.cancelled
+                && Objects.equals(id, that.id)
+                && Objects.equals(madeBy, that.madeBy)
+                && Objects.equals(roomId, that.roomId)
+                && Objects.equals(start, that.start)
+                && Objects.equals(end, that.end)
+                && type == that.type
+                && Objects.equals(userId, that.userId)
+                && Objects.equals(groupId, that.groupId)
+                && Objects.equals(purpose, that.purpose)
+                && Objects.equals(editPurpose, that.editPurpose);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, madeBy, roomId, start, end, type, userId, groupId, purpose, editPurpose, cancelled);
+        return Objects.hash(id, madeBy, roomId, start, end, type, userId, groupId,
+                purpose, editPurpose, cancelled);
     }
 }

@@ -24,6 +24,14 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseVa
         return super.checkNext(reservation, token);
     }
 
+    /**
+     * Validates that the given secretary is a secretary of one of the given user's research groups
+     *
+     * @param reservation                   The reservation to be validated
+     * @param token                         The authentication token of the current user
+     * @return                              Continues to the next validator if this reservation is valid
+     * @throws InvalidReservationException  Throws an exception if the reservation is invalid
+     */
     private boolean handleSingleReservation(Reservation reservation, String token)
             throws InvalidReservationException {
 
@@ -38,6 +46,14 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseVa
                     + "is not part of this secretary's research group.");
     }
 
+    /**
+     * Validates that the given secretary is a secretary of the given group
+     *
+     * @param reservation                   The reservation to be validated
+     * @param token                         The authentication token of the current user
+     * @return                              Continues to the next validator if this reservation is valid
+     * @throws InvalidReservationException  Throws an exception if the reservation is invalid
+     */
     private boolean handleGroupReservation(Reservation reservation, String token)
             throws InvalidReservationException {
 

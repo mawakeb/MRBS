@@ -62,7 +62,7 @@ class RoomControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        controller = new RoomController(roomRepo, buildingRepo, equipmentRepo, noticeRepo);
+        controller = new RoomController(roomRepo, equipmentRepo);
         roomList = List.of(new Room(1L, "meeting room1", 10L, 20),
                 new Room(2L, "meeting room2", 10L, 20),
                 new Room(3L, "meeting room3", 10L, 20));
@@ -99,20 +99,15 @@ class RoomControllerTest {
 
         //mock static communication methods
         spyController = Mockito.spy(controller);
-        lenient().doReturn("ADMIN").when(spyController).getRole(token);
-        lenient().doReturn(200L).when(spyController).getUserId(token);
+        lenient().doReturn(true).when(spyController).checkAdmin(token);
+        /*lenient().doReturn(200L).when(spyController).getUserId(token);
         lenient().doReturn(true).when(spyController)
                 .checkUserToReservation(200L, 105L, token);
         lenient().doReturn(1L).when(spyController)
-                .getRoomWithReservation(105L, token);
+                .getRoomWithReservation(105L, token);*/
         lenient().doReturn(Arrays.asList(6L, 7L)).when(spyController).getRoomsInTimeslot(
                 any(), any(), any(), any());
 
-    }
-
-    @Test
-    void testMethod() {
-        assertEquals("Hello_Room!", controller.testMethod());
     }
 
     @Test
@@ -126,15 +121,12 @@ class RoomControllerTest {
 
     @Test
     void checkNotAvailable() {
+        roomList.get(0).setUnderMaintenance(true);
         when(roomRepo.findById(1L)).thenReturn(roomList.get(0));
-        boolean actual1 = controller.checkAvailable(1L,
+        boolean actual = controller.checkAvailable(1L,
                 LocalTime.of(15, 0),
-                LocalTime.of(19, 0));
-        boolean actual2 = controller.checkAvailable(1L,
-                LocalTime.of(19, 0),
-                LocalTime.of(23, 0));
-        assertFalse(actual1);
-        assertFalse(actual2);
+                LocalTime.of(16, 0));
+        assertFalse(actual);
     }
 
 
@@ -143,7 +135,7 @@ class RoomControllerTest {
         when(roomRepo.findById(any())).thenReturn(Optional.ofNullable(roomList.get(0)));
         assertEquals(roomList.get(0), controller.getById(1L));
     }
-
+/*
     @Test
     void leaveNotice() {
         String success = spyController.leaveNotice("token", 105L, "projector not working");
@@ -156,7 +148,7 @@ class RoomControllerTest {
         List<RoomNotice> actual = spyController.getNotice(token, 1L);
         List<RoomNotice> expected = List.of(noticeList.get(0), noticeList.get(1));
         assertEquals(expected, actual);
-    }
+    }*/
 
     @Test
     void changeStatus() {
@@ -174,6 +166,7 @@ class RoomControllerTest {
         verify(roomRepo, times(1)).save(any(Room.class));
     }
 
+    /*
     @Test
     void createBuilding() {
         when(buildingRepo.findById(11L)).thenReturn(null);
@@ -181,14 +174,15 @@ class RoomControllerTest {
                 LocalTime.of(8, 0), LocalTime.of(18, 0));
         assertEquals("Building has been saved successfully", success);
         verify(buildingRepo, times(1)).save(any(Building.class));
-    }
+    }*/
 
+    /*
     @Test
     void createEquipment() {
         String success = spyController.createEquipment(token, 1L, "chair");
         assertEquals("Equipment has been saved successfully", success);
         verify(equipmentRepo, times(1)).save(any(EquipmentInRoom.class));
-    }
+    }*/
 
 
     // I used MC/DC to determine my test cases

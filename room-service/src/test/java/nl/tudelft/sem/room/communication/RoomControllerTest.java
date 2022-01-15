@@ -135,7 +135,7 @@ class RoomControllerTest {
         when(roomRepo.findById(any())).thenReturn(Optional.ofNullable(roomList.get(0)));
         assertEquals(roomList.get(0), controller.getById(1L));
     }
-/*
+    /*
     @Test
     void leaveNotice() {
         String success = spyController.leaveNotice("token", 105L, "projector not working");

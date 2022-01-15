@@ -1,5 +1,6 @@
 package nl.tudelft.sem.room.communication;
 
+import java.util.List;
 import nl.tudelft.sem.room.entity.RoomNotice;
 import nl.tudelft.sem.room.repository.NoticeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/room/notice")
@@ -21,7 +21,7 @@ public class NoticeController {
     private final transient NoticeRepository noticeRepo;
 
     @Autowired
-    public NoticeController(NoticeRepository repo){
+    public NoticeController(NoticeRepository repo) {
         this.noticeRepo = repo;
     }
 

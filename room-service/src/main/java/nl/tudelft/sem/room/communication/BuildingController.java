@@ -20,7 +20,7 @@ public class BuildingController {
     private final transient BuildingRepository buildingRepo;
 
     @Autowired
-    public BuildingController(BuildingRepository repo){
+    public BuildingController(BuildingRepository repo) {
         this.buildingRepo = repo;
     }
 

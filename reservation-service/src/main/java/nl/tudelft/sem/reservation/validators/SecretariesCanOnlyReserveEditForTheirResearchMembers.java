@@ -12,34 +12,57 @@ public class SecretariesCanOnlyReserveEditForTheirResearchMembers extends BaseVa
             throws InvalidReservationException {
 
         ReservationType type = reservation.getType();
-        if (type.equals(ReservationType.SELF)
-                || type.equals(ReservationType.ADMIN)) {
-            return super.checkNext(reservation, token);
-        }
 
         if (type.equals(ReservationType.SINGLE)) {
-            if (isSecretaryOfGroup(reservation.getMadeBy(),
-                    reservation.getGroupId(), token)
-                    && isInGroup(reservation.getUserId(),
-                    reservation.getGroupId(), token)) {
-                return super.checkNext(reservation, token);
-            } else {
-                throw new InvalidReservationException("Employee "
-                        + "is not part of this secretary's research group.");
-            }
+            return handleSingleReservation(reservation, token);
         }
 
         if (type.equals(ReservationType.GROUP)) {
-            if (isSecretaryOfGroup(reservation.getMadeBy(),
-                    reservation.getGroupId(), token)) {
-                return super.checkNext(reservation, token);
-            }
-            throw new InvalidReservationException("User is not secretary of this group.");
+            return handleGroupReservation(reservation, token);
         }
 
-        throw new InvalidReservationException("No valid reservation type set.");
+        return super.checkNext(reservation, token);
     }
 
+    /**
+     * Validates that the given secretary is a secretary of one of the given user's research groups
+     *
+     * @param reservation                   The reservation to be validated
+     * @param token                         The authentication token of the current user
+     * @return                              Continues to the next validator if this reservation is valid
+     * @throws InvalidReservationException  Throws an exception if the reservation is invalid
+     */
+    private boolean handleSingleReservation(Reservation reservation, String token)
+            throws InvalidReservationException {
+
+        Long groupId = reservation.getGroupId();
+        if (isSecretaryOfGroup(reservation.getMadeBy(),
+                groupId, token)
+                && isInGroup(reservation.getUserId(),
+                groupId, token)) {
+            return super.checkNext(reservation, token);
+        }
+        throw new InvalidReservationException("Employee "
+                    + "is not part of this secretary's research group.");
+    }
+
+    /**
+     * Validates that the given secretary is a secretary of the given group
+     *
+     * @param reservation                   The reservation to be validated
+     * @param token                         The authentication token of the current user
+     * @return                              Continues to the next validator if this reservation is valid
+     * @throws InvalidReservationException  Throws an exception if the reservation is invalid
+     */
+    private boolean handleGroupReservation(Reservation reservation, String token)
+            throws InvalidReservationException {
+
+        if (isSecretaryOfGroup(reservation.getMadeBy(),
+                reservation.getGroupId(), token)) {
+            return super.checkNext(reservation, token);
+        }
+        throw new InvalidReservationException("User is not secretary of this group.");
+    }
 
     /**
      * Check if the person making the reservation is the secretary of a group.

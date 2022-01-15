@@ -18,31 +18,31 @@ public class Reservation {
     @Column(name = "id")
     private Long id;
 
-    private Long madeBy;
+    private transient Long madeBy;
 
     @Column(name = "roomId")
-    private Long roomId;
+    private transient Long roomId;
 
     @Column(name = "start")
-    private LocalDateTime start;
+    private transient LocalDateTime start;
 
     @Column(name = "end")
-    private LocalDateTime end;
+    private transient LocalDateTime end;
 
-    private ReservationType type;
+    private transient ReservationType type;
 
-    private Long userId;
+    private transient Long userId;
 
-    private Long groupId;
+    private transient Long groupId;
 
     @Column(name = "purpose")
-    private String purpose;
+    private transient String purpose;
 
     @Column(name = "editPurpose")
-    private String editPurpose;
+    private transient String editPurpose;
 
     @Column(name = "cancelled")
-    private boolean cancelled;
+    private transient boolean cancelled;
 
     /**
      * Constructor for the Reservation class.

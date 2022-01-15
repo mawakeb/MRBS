@@ -1,6 +1,7 @@
 package nl.tudelft.sem.reservation.entity;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +11,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "room")
-
 public class Reservation {
 
     @Id
@@ -18,31 +18,31 @@ public class Reservation {
     @Column(name = "id")
     private Long id;
 
-    private Long madeBy;
+    private transient Long madeBy;
 
     @Column(name = "roomId")
-    private Long roomId;
+    private transient Long roomId;
 
     @Column(name = "start")
-    private LocalDateTime start;
+    private transient LocalDateTime start;
 
     @Column(name = "end")
-    private LocalDateTime end;
+    private transient LocalDateTime end;
 
-    private ReservationType type;
+    private transient ReservationType type;
 
-    private Long userId;
+    private transient Long userId;
 
-    private Long groupId;
+    private transient Long groupId;
 
     @Column(name = "purpose")
-    private String purpose;
+    private transient String purpose;
 
     @Column(name = "editPurpose")
-    private String editPurpose;
+    private transient String editPurpose;
 
     @Column(name = "cancelled")
-    private boolean cancelled;
+    private transient boolean cancelled;
 
     /**
      * Constructor for the Reservation class.
@@ -68,7 +68,6 @@ public class Reservation {
         this.userId = userId;
         this.groupId = groupId;
         this.purpose = purpose;
-
         this.cancelled = false;
     }
 
@@ -100,15 +99,6 @@ public class Reservation {
     }
 
     /**
-     * Set the roomId.
-     *
-     * @param roomId    A Long representing the new room this reservation should be in
-     */
-    private void setRoomId(Long roomId) {
-        this.roomId = roomId;
-    }
-
-    /**
      * Get madeBy.
      *
      * @return  A Long representing the user who made this reservation
@@ -118,31 +108,12 @@ public class Reservation {
     }
 
     /**
-     * Set madeBy.
-     *
-     * @param madeBy    A Long representing the user who made this reservation
-     */
-    private void setMadeBy(Long madeBy) {
-        this.madeBy = madeBy;
-    }
-
-
-    /**
      * Get the start time.
      *
      * @return  A LocalDateTime representing the time this reservation starts or has started
      */
     public LocalDateTime getStart() {
         return start;
-    }
-
-    /**
-     * Set the start time.
-     *
-     * @param start A LocalDateTime representing the time this reservation should start
-     */
-    private void setStart(LocalDateTime start) {
-        this.start = start;
     }
 
     /**
@@ -155,31 +126,12 @@ public class Reservation {
     }
 
     /**
-     * Set the end time.
-     *
-     * @param end   A LocalDateTime representing the time this reservation should end
-     */
-    private void setEnd(LocalDateTime end) {
-        this.end = end;
-    }
-
-
-    /**
      * Get the reservationPurpose.
      *
      * @return  A String describing why this reservation was made
      */
     public String getPurpose() {
         return purpose;
-    }
-
-    /**
-     * Set the reservationPurpose.
-     *
-     * @param purpose a string containing the purpose of this reservation
-     */
-    private void setPurpose(String purpose) {
-        this.purpose = purpose;
     }
 
     /**
@@ -192,15 +144,6 @@ public class Reservation {
     }
 
     /**
-     * Set the edit purpose.
-     *
-     * @param editPurpose a string containing the purpose for editing this reservation
-     */
-    public void setEditPurpose(String editPurpose) {
-        this.editPurpose = editPurpose;
-    }
-
-    /**
      * Get the reservation type.
      *
      * @return  A ReservationType representing what kind of reservation this is
@@ -210,31 +153,12 @@ public class Reservation {
     }
 
     /**
-     * Set the reservation type.
-     *
-     * @param type the new type to set the reservation to
-     */
-    private void setType(ReservationType type) {
-        this.type = type;
-    }
-
-
-    /**
      * Get the userId.
      *
      * @return  A Long representing the user this reservation was made for
      */
     public long getUserId() {
         return userId;
-    }
-
-    /**
-     * Set the userId.
-     *
-     * @param userId the new userId
-     */
-    private void setUserId(long userId) {
-        this.userId = userId;
     }
 
     /**
@@ -247,16 +171,6 @@ public class Reservation {
     }
 
     /**
-     * Set the groupId.
-     *
-     * @param groupId the new groupId
-     */
-    private void setGroupId(long groupId) {
-        this.groupId = groupId;
-    }
-
-
-    /**
      * Get the cancelled.
      *
      * @return A boolean representing if this reservation has been cancelled
@@ -266,24 +180,14 @@ public class Reservation {
     }
 
     /**
-     * Set cancelled.
-     *
-     * @param cancelled the new cancelled
-     */
-    private void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
-
-
-    /**
      * Changes the location of the reservation.
      *
      * @param newRoomId     A Long representing the new room the reservation should be set in
      * @param editPurpose   A String explaining why this reservation was moved
      */
     public void changeLocation(Long newRoomId, String editPurpose) {
-        this.setRoomId(newRoomId);
-        this.setEditPurpose(editPurpose);
+        this.roomId = newRoomId;
+        this.editPurpose = editPurpose;
     }
 
     /**
@@ -294,9 +198,9 @@ public class Reservation {
      * @param editPurpose   A String explaining why this reservation was rescheduled
      */
     public void changeTime(LocalDateTime newStart, LocalDateTime newEnd, String editPurpose) {
-        this.setStart(newStart);
-        this.setEnd(newEnd);
-        this.setEditPurpose(editPurpose);
+        this.start = newStart;
+        this.end = newEnd;
+        this.editPurpose = editPurpose;
     }
 
     /**
@@ -305,17 +209,35 @@ public class Reservation {
      * @param editPurpose   A String explaining why this reservation was cancelled
      */
     public void cancelReservation(String editPurpose) {
-        this.setCancelled(true);
-        this.setEditPurpose(editPurpose);
+        this.cancelled = true;
+        this.editPurpose = editPurpose;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Reservation that = (Reservation) o;
+        return cancelled == that.cancelled
+                && Objects.equals(id, that.id)
+                && Objects.equals(madeBy, that.madeBy)
+                && Objects.equals(roomId, that.roomId)
+                && Objects.equals(start, that.start)
+                && Objects.equals(end, that.end)
+                && type == that.type
+                && Objects.equals(userId, that.userId)
+                && Objects.equals(groupId, that.groupId)
+                && Objects.equals(purpose, that.purpose)
+                && Objects.equals(editPurpose, that.editPurpose);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
+        return Objects.hash(id, madeBy, roomId, start, end, type, userId, groupId,
+                purpose, editPurpose, cancelled);
     }
 }

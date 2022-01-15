@@ -20,14 +20,39 @@ public class RoomCommunication extends ServerCommunication {
      */
     public static boolean getRoomAvailability(long roomId, LocalTime start,
                                               LocalTime end, String token) {
-        HttpRequest request = HttpRequest.newBuilder()
+        HttpRequest requestRoom = HttpRequest.newBuilder()
                 .GET()
                 .setHeader("Authorization", token)
-                .uri(URI.create(requestString + "/checkAvailable" + "?roomId=" + roomId
-                        + "&start=" + start + "&end=" + end)).build();
-        return gson
-                .fromJson(requestHandler(request)
+                .uri(URI.create(requestString + "/checkAvailable" + "?roomId=" + roomId))
+                        .build();
+
+        boolean roomAvailability = gson
+                .fromJson(requestHandler(requestRoom)
                         .body(), new TypeToken<Boolean>() {}
                         .getType());
+
+        if (!roomAvailability) {
+            return false;
+        }
+
+        HttpRequest buildingId = HttpRequest.newBuilder()
+                .GET()
+                .setHeader("Authorization", token)
+                .uri(URI.create(requestString + "/getBuildingId" + "?roomId=" + roomId))
+                .build();
+
+        HttpRequest requestBuilding = HttpRequest.newBuilder()
+                .GET()
+                .setHeader("Authorization", token)
+                .uri(URI.create(requestString + "/building/checkAvailable"
+                        + "?buildingId=" + buildingId
+                        + "&start=" + start + "&end=" + end)).build();
+
+        boolean buildingAvailability = gson
+                .fromJson(requestHandler(requestBuilding)
+                        .body(), new TypeToken<Boolean>() {}
+                        .getType());
+
+        return buildingAvailability;
     }
 }

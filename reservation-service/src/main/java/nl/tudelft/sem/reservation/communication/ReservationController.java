@@ -43,82 +43,6 @@ public class ReservationController {
         this.reservationRepo = reservationRepo;
     }
 
-
-    /**
-     * Gets all lectures.
-     *
-     * @return all lectures
-     */
-    @GetMapping("")
-    public String returnHi() {
-        //return lectureRepository.findAll();
-        return "hello_from_reservation";
-    }
-
-    /**
-     * Check if a given user made a certain reservation.
-     *
-     * @param madeBy the id of the user
-     * @param reservationId the id of the reservation
-     * @return if the user made the reservation
-     */
-    @GetMapping("/checkUser")
-    public boolean checkUser(@RequestParam long madeBy, @RequestParam long reservationId) {
-
-        Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
-        if (reservation != null) {
-            return reservation.getMadeBy().equals(madeBy);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
-        }
-    }
-
-    /**
-     * Get a room by id.
-     *
-     * @param id the id of the room
-     * @return the room
-     */
-    @GetMapping("/getRoom")
-    public long getRoom(@RequestParam long id) {
-
-        Reservation reservation = reservationRepo.findById(id).orElse(null);
-        if (reservation != null) {
-            return reservation.getRoomId();
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
-        }
-    }
-
-    /**
-     * Check what rooms are free in a given timeslot.
-     *
-     * @param rooms the rooms to check
-     * @param startTime the start of the timeslot
-     * @param endTime the end of the timeslot
-     * @return the rooms that are free in the timeslot
-     */
-    @GetMapping("/checkTimeslot")
-    public List<Long> checkTimeslot(@RequestParam List<Long> rooms,
-                                    @RequestParam String startTime,
-                                    @RequestParam String endTime) {
-        List<Long> filteredRooms = new ArrayList<>();
-
-        @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-        Set<Long> takenRooms = reservationRepo
-                .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(rooms,
-                LocalDateTime.parse(startTime), LocalDateTime.parse(endTime))
-                .stream().map(Reservation::getRoomId).collect(Collectors.toSet());
-
-        for (Long l : rooms) {
-            if (!takenRooms.contains(l)) {
-                filteredRooms.add(l);
-            }
-        }
-
-        return filteredRooms;
-    }
-
     /**
      * Edit a reservation.
      *
@@ -132,61 +56,97 @@ public class ReservationController {
      */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @GetMapping("/editReservation")
-    public String editReservation(@RequestParam long reservationId,
-                                  @RequestParam long roomId,
+    public String editReservation(@RequestParam long reservationId, @RequestParam long roomId,
                                   @RequestParam LocalDateTime start,
                                   @RequestParam LocalDateTime end,
                                   @RequestParam String editPurpose,
                                   @RequestHeader("Authorization") String token) {
+
         Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
         if (reservation == null) {
             return "Reservation was not found";
         }
-        long isForId = reservation.getUserId();
-        long madeById = reservation.getMadeBy();
 
-        if (roomId != -1 || start != null || end != null) {
-            if (roomId == -1) {
-                roomId = reservation.getRoomId();
-            }
-            if (start == null) {
-                start = reservation.getStart();
-            }
-            if (end == null) {
-                end = reservation.getEnd();
-            }
-        } else {
+        //refactoring to reduce cyclomatic complexity
+        List<Object> changes = checkChanges(reservation, roomId, start, end);
+
+        int size = 4;
+        if (changes.size() == size) {
             return "There is nothing to edit for the reservation";
         }
 
         if (getUserType(token).equals("ADMIN")
-                || getUser(token).equals(isForId)
-                || getUser(token).equals(madeById)) {
-            // set up validators
-            Validator handler = new CheckAvailabilityValidator();
-            handler.setNext(new CheckIfRoomIsNotReservedAlready(), token);
-            handler.setNext(new EmployeesCannotReserveMoreThanTwoWeeksInAdvance(), token);
-            handler.setNext(new EmployeesMakeEditCancelReservationForThemselves(), token);
-            handler.setNext(new EmployeesOneReservationDuringTimeSlot(), token);
-            handler.setNext(new SecretariesCanOnlyReserveEditForTheirResearchMembers(), token);
+                || getUser(token).equals(reservation.getUserId())
+                || getUser(token).equals(reservation.getMadeBy())) {
 
-            // edit the reservation
-            reservation.changeLocation(roomId, editPurpose);
-            reservation.changeTime(start, end, editPurpose);
+            //refactoring to reduce LOC
+            return editActualReservation(reservation, token, changes, editPurpose);
+        }
 
-            // perform the checks and save the reservation if valid
-            try {
-                boolean isValid = handle(handler, reservation, token);
-                System.out.print("Reservation status = " + isValid);
-                reservationRepo.save(reservation);
-            } catch (InvalidReservationException e) {
-                e.printStackTrace();
-            }
-        } else {
-            return "You do not have access to edit this reservation";
+        return "You do not have access to edit this reservation";
+    }
+
+    /**
+     * Edit the actual reservation in the database.
+     *
+     * @param reservation reservation to be changed
+     * @param token authentication token of the user
+     * @param changes the changes to be made
+     * @param editPurpose the reason why user is making the edit
+     */
+    public String editActualReservation(Reservation reservation, String token,
+                                      List<Object> changes, String editPurpose) {
+        //refactored to reduce LOC
+        Validator handler = setUpChainOfResponsibility(token);
+
+        // edit the reservation
+        reservation.changeLocation((long) changes.get(0), editPurpose);
+        reservation.changeTime((LocalDateTime) changes.get(1),
+                (LocalDateTime) changes.get(2), editPurpose);
+
+        // perform the checks and save the reservation if valid
+        try {
+            boolean isValid = handle(handler, reservation, token);
+            System.out.print("Reservation status = " + isValid);
+            reservationRepo.save(reservation);
+        } catch (InvalidReservationException e) {
+            e.printStackTrace();
         }
 
         return "Reservation was edited successfully";
+    }
+
+    /**
+     * Check if there are meaningful changes when editing a reservation.
+     *
+     * @param reservation the reservation to edit
+     * @param roomId new roomId
+     * @param start new start time
+     * @param end new end time
+     * @return list of the final fields of the reservation with an
+     *          extra integer at the end if none of the fields were changed
+     */
+    public List<Object> checkChanges(Reservation reservation, long roomId,
+                                     LocalDateTime start, LocalDateTime end) {
+        List<Object> changes = new ArrayList<>();
+        changes.add(roomId);
+        changes.add(start);
+        changes.add(end);
+
+        if ((long) changes.get(0) == -1 && changes.get(1) == null && changes.get(2) == null) {
+            changes.add(-1);
+        }
+        if ((long) changes.get(0) == -1) {
+            changes.set(0, reservation.getRoomId());
+        }
+        if (changes.get(1) == null) {
+            changes.set(1, reservation.getStart());
+        }
+        if (changes.get(2) == null) {
+            changes.set(2, reservation.getEnd());
+        }
+
+        return changes;
     }
 
     /**
@@ -252,12 +212,7 @@ public class ReservationController {
 
         Reservation reservation = builder.build();
 
-        Validator handler = new CheckAvailabilityValidator();
-        handler.setNext(new CheckIfRoomIsNotReservedAlready(), token);
-        handler.setNext(new EmployeesCannotReserveMoreThanTwoWeeksInAdvance(), token);
-        handler.setNext(new EmployeesMakeEditCancelReservationForThemselves(), token);
-        handler.setNext(new EmployeesOneReservationDuringTimeSlot(), token);
-        handler.setNext(new SecretariesCanOnlyReserveEditForTheirResearchMembers(), token);
+        Validator handler = setUpChainOfResponsibility(token);
 
         try {
             boolean isValid = handler.handle(reservation, token);
@@ -305,9 +260,21 @@ public class ReservationController {
             throws InvalidReservationException {
         return handler.handle(reservation, token);
     }
-    
-    @GetMapping("getSchedule")
-    public List<Reservation> getSchedule(@RequestParam long userId) {
-        return reservationRepo.findAllByUserId(userId);
+
+    /**
+     * Sets up the chain of validators in order.
+     *
+     * @param token authentication token of the user
+     * @return the Validator with all the chain set up
+     */
+    public Validator setUpChainOfResponsibility(String token) {
+        Validator handler = new CheckAvailabilityValidator();
+        handler.setNext(new CheckIfRoomIsNotReservedAlready(), token);
+        handler.setNext(new EmployeesCannotReserveMoreThanTwoWeeksInAdvance(), token);
+        handler.setNext(new EmployeesMakeEditCancelReservationForThemselves(), token);
+        handler.setNext(new EmployeesOneReservationDuringTimeSlot(), token);
+        handler.setNext(new SecretariesCanOnlyReserveEditForTheirResearchMembers(), token);
+
+        return handler;
     }
 }

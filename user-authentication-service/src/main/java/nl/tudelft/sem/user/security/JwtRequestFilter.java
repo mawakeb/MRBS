@@ -1,6 +1,7 @@
 package nl.tudelft.sem.user.security;
 
 import java.io.IOException;
+import java.util.Optional;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -38,34 +39,59 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
 
-        String netId = null;
-        String jwt = null;
+        Optional<String> jwt = this.getJwtFromAuthorizationHeader(
+                request.getHeader("Authorization")
+        );
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            netId = jwtUtil.extractUsername(jwt);
-        }
+        if (jwt.isPresent()) {
+            String netId = jwtUtil.extractUsername(jwt.get());
 
-        if (netId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailService.loadUserByUsername(netId);
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailService.loadUserByUsername(netId);
 
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
-                        = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext()
-                        .setAuthentication(usernamePasswordAuthenticationToken);
+                if (jwtUtil.validateToken(jwt.get(), userDetails)) {
+                    this.setAuthorization(userDetails, request);
+                }
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * gets an optional of the jwt from the authorization header.
+     *
+     * @param authorizationHeader the authorization header from the request
+     * @return jwt
+     */
+    private Optional<String> getJwtFromAuthorizationHeader(final String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return Optional.of(authorizationHeader.substring(7));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * sets the authorization for the request given user details.
+     *
+     * @param userDetails the user details
+     * @param request the request
+     */
+    private void setAuthorization(UserDetails userDetails, HttpServletRequest request) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
+                = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+        );
+
+        usernamePasswordAuthenticationToken.setDetails(
+                new WebAuthenticationDetailsSource().buildDetails(request)
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
 }
 

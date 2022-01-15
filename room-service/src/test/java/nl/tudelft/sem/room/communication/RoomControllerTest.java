@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -38,10 +39,6 @@ class RoomControllerTest {
     private transient Room room2;
     private transient Room room3;
     private transient Room room4;
-    private transient EquipmentInRoom eir1;
-    private transient EquipmentInRoom eir2;
-    private transient EquipmentInRoom eir3;
-    private transient EquipmentInRoom eir4;
 
     @Mock
     transient RoomRepository roomRepo;
@@ -65,7 +62,7 @@ class RoomControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        controller = new RoomController(roomRepo, buildingRepo, equipmentRepo, noticeRepo);
+        controller = new RoomController(roomRepo, equipmentRepo);
         roomList = List.of(new Room(1L, "meeting room1", 10L, 20),
                 new Room(2L, "meeting room2", 10L, 20),
                 new Room(3L, "meeting room3", 10L, 20));
@@ -81,12 +78,9 @@ class RoomControllerTest {
         room3 = new Room(6L, "ENTER", 5L, 250);
         room4 = new Room(7L, "NULL", 3L, 1000);
 
-        eir1 = new EquipmentInRoom(4L, testingUsedEquipment);
-        eir2 = new EquipmentInRoom(5L, "CHAIRS");
-        eir3 = new EquipmentInRoom(7L, "BOARD");
-        eir4 = new EquipmentInRoom(7L, testingUsedEquipment);
-
         //mock RoomRepository
+        lenient().when(roomRepo.findAllById(Arrays.asList(4L, 7L)))
+                .thenReturn(Arrays.asList(room1, room4));
         lenient().when(roomRepo.findAllById(Arrays.asList(6L, 7L)))
                 .thenReturn(Arrays.asList(room3, room4));
         lenient().when(roomRepo.findAll()).thenReturn(Arrays.asList(room1, room2, room3, room4));
@@ -97,7 +91,7 @@ class RoomControllerTest {
         //mock EquipmentRepository
         lenient().when(equipmentRepo.findAllByEquipmentName("")).thenReturn(List.of());
         lenient().when(equipmentRepo.findAllByEquipmentName(testingUsedEquipment))
-                .thenReturn(Arrays.asList(eir1, eir4));
+                .thenReturn(Arrays.asList(4L, 7L));
 
         //mock NoticeRepository
         lenient().when(noticeRepo.findByRoomId(1L))
@@ -105,20 +99,15 @@ class RoomControllerTest {
 
         //mock static communication methods
         spyController = Mockito.spy(controller);
-        lenient().doReturn("ADMIN").when(spyController).getRole(token);
-        lenient().doReturn(200L).when(spyController).getUserId(token);
+        lenient().doReturn(true).when(spyController).checkAdmin(token);
+        /*lenient().doReturn(200L).when(spyController).getUserId(token);
         lenient().doReturn(true).when(spyController)
                 .checkUserToReservation(200L, 105L, token);
         lenient().doReturn(1L).when(spyController)
-                .getRoomWithReservation(105L, token);
+                .getRoomWithReservation(105L, token);*/
         lenient().doReturn(Arrays.asList(6L, 7L)).when(spyController).getRoomsInTimeslot(
                 any(), any(), any(), any());
 
-    }
-
-    @Test
-    void testMethod() {
-        assertEquals("Hello_Room!", controller.testMethod());
     }
 
     @Test
@@ -132,15 +121,12 @@ class RoomControllerTest {
 
     @Test
     void checkNotAvailable() {
+        roomList.get(0).setUnderMaintenance(true);
         when(roomRepo.findById(1L)).thenReturn(roomList.get(0));
-        boolean actual1 = controller.checkAvailable(1L,
+        boolean actual = controller.checkAvailable(1L,
                 LocalTime.of(15, 0),
-                LocalTime.of(19, 0));
-        boolean actual2 = controller.checkAvailable(1L,
-                LocalTime.of(19, 0),
-                LocalTime.of(23, 0));
-        assertFalse(actual1);
-        assertFalse(actual2);
+                LocalTime.of(16, 0));
+        assertFalse(actual);
     }
 
 
@@ -149,7 +135,7 @@ class RoomControllerTest {
         when(roomRepo.findById(any())).thenReturn(Optional.ofNullable(roomList.get(0)));
         assertEquals(roomList.get(0), controller.getById(1L));
     }
-
+    /*
     @Test
     void leaveNotice() {
         String success = spyController.leaveNotice("token", 105L, "projector not working");
@@ -162,7 +148,7 @@ class RoomControllerTest {
         List<RoomNotice> actual = spyController.getNotice(token, 1L);
         List<RoomNotice> expected = List.of(noticeList.get(0), noticeList.get(1));
         assertEquals(expected, actual);
-    }
+    }*/
 
     @Test
     void changeStatus() {
@@ -180,6 +166,7 @@ class RoomControllerTest {
         verify(roomRepo, times(1)).save(any(Room.class));
     }
 
+    /*
     @Test
     void createBuilding() {
         when(buildingRepo.findById(11L)).thenReturn(null);
@@ -187,14 +174,15 @@ class RoomControllerTest {
                 LocalTime.of(8, 0), LocalTime.of(18, 0));
         assertEquals("Building has been saved successfully", success);
         verify(buildingRepo, times(1)).save(any(Building.class));
-    }
+    }*/
 
+    /*
     @Test
     void createEquipment() {
         String success = spyController.createEquipment(token, 1L, "chair");
         assertEquals("Equipment has been saved successfully", success);
         verify(equipmentRepo, times(1)).save(any(EquipmentInRoom.class));
-    }
+    }*/
 
 
     // I used MC/DC to determine my test cases
@@ -209,7 +197,7 @@ class RoomControllerTest {
 
         assertEquals(roomResultList, roomTestList);
         verify(roomRepo, times(1)).findAll();
-        verify(equipmentRepo, times(1)).findAllByEquipmentName("");
+        verify(equipmentRepo, never()).findAllByEquipmentName("");
         verifyNoInteractions(reservationCommunication);
     }
 
@@ -224,7 +212,7 @@ class RoomControllerTest {
 
         assertEquals(roomResultList, roomTestList);
         verify(roomRepo, times(1)).findAll();
-        verify(equipmentRepo, times(1)).findAllByEquipmentName("");
+        verify(equipmentRepo, never()).findAllByEquipmentName("");
         verifyNoInteractions(reservationCommunication);
     }
 
@@ -239,7 +227,7 @@ class RoomControllerTest {
 
         assertEquals(roomResultList, roomTestList);
         verify(roomRepo, times(1)).findAll();
-        verify(equipmentRepo, times(1)).findAllByEquipmentName("");
+        verify(equipmentRepo, never()).findAllByEquipmentName("");
         verifyNoInteractions(reservationCommunication);
 
     }
@@ -254,7 +242,8 @@ class RoomControllerTest {
                 testingUsedEquipment, "", "", token);
 
         assertEquals(roomResultList, roomTestList);
-        verify(roomRepo, times(1)).findAll();
+        verify(roomRepo, never()).findAll();
+        verify(roomRepo, times(1)).findAllById(any());
         verify(equipmentRepo, times(1)).findAllByEquipmentName(testingUsedEquipment);
         verifyNoInteractions(reservationCommunication);
 
@@ -274,7 +263,7 @@ class RoomControllerTest {
         assertEquals(roomResultList, roomTestList1);
         assertEquals(roomResultList, roomTestList2);
         verify(roomRepo, times(2)).findAll();
-        verify(equipmentRepo, times(2)).findAllByEquipmentName("");
+        verify(equipmentRepo, never()).findAllByEquipmentName("");
         verifyNoInteractions(reservationCommunication);
 
     }
@@ -294,7 +283,7 @@ class RoomControllerTest {
         assertEquals(roomResultList, roomTestList);
         verify(roomRepo, times(1)).findAll();
         verify(roomRepo, times(1)).findAllById(Arrays.asList(6L, 7L));
-        verify(equipmentRepo, times(1)).findAllByEquipmentName("");
+        verify(equipmentRepo, never()).findAllByEquipmentName("");
         verify(spyController, times(1)).getRoomsInTimeslot(any(), any(), any(), any());
     }
 }

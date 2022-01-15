@@ -1,5 +1,10 @@
 package nl.tudelft.sem.reservation.communication;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,12 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class RoomController {
 

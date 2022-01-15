@@ -1,5 +1,6 @@
 package nl.tudelft.sem.reservation.communication;
 
+import java.util.List;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 
 public class UserController {
 
@@ -46,6 +46,6 @@ public class UserController {
      */
     @GetMapping("getSchedule")
     public List<Reservation> getSchedule(@RequestParam long userId) {
-            return reservationRepo.findAllByUserId(userId);
+        return reservationRepo.findAllByUserId(userId);
     }
 }

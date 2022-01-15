@@ -1,12 +1,13 @@
 package nl.tudelft.sem.reservation.communication;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
 import nl.tudelft.sem.reservation.repository.ReservationRepository;

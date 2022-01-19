@@ -18,10 +18,10 @@ class UserServiceTest {
             new UserService(new BCryptPasswordEncoder(), userRepository);
 
     // User creation constants.
-    private long userId;
-    private String netId;
-    private String name;
-    private String password;
+    private transient long userId;
+    private transient String netId;
+    private transient String name;
+    private transient String password;
 
     @BeforeEach
     void setUp() {
@@ -84,6 +84,9 @@ class UserServiceTest {
         updated.setId(userId);
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(updated);
 
-        Assertions.assertEquals("User type changed successfully", userService.setUserType(userId, Type.ADMIN));
+        Assertions.assertEquals(
+                "User type changed successfully",
+                userService.setUserType(userId, Type.ADMIN)
+        );
     }
 }

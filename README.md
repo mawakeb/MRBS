@@ -35,7 +35,7 @@ gradle pmdTest
 
 ### How to Use
 - To begin, run (either with IntelliJ or gradle bootRun) the `discovery-server` Spring Application, followed by `user-authentication-service`, `room`, `group` and `reservation`. Then, run `api-gateway`. 
-- Make a request to `localhost:8900/user/register` (returning 200 if accepted and 400 if netId already exists) with body:
+- Make a request to `localhost:8090/user/register` (returning 200 if accepted and 400 if netId already exists) with body:
 ```
 {
     "netId": <your net id>,
@@ -45,7 +45,7 @@ gradle pmdTest
 }
 ```
 
-- After this, make a request to `localhost:8900/user/login` with body: 
+- After this, make a request to `localhost:8090/user/login` with body: 
 ```
 {
     "netId": <your net id>,

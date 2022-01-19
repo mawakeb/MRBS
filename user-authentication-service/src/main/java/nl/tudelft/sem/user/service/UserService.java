@@ -1,5 +1,6 @@
 package nl.tudelft.sem.user.service;
 
+import java.util.Optional;
 import nl.tudelft.sem.user.communication.request.RegisterRequest;
 import nl.tudelft.sem.user.entity.User;
 import nl.tudelft.sem.user.exception.NetIdAlreadyExistsException;
@@ -68,8 +69,9 @@ public class UserService {
      * @return the user type
      */
     public String setUserType(Long userId, Type newType) {
-        if (userRepository.findById(userId).isPresent()) {
-            User user = userRepository.findById(userId).get();
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
             user.setType(newType);
 
             userRepository.save(user);

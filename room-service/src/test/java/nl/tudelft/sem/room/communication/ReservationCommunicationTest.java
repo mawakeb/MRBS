@@ -47,18 +47,6 @@ class ReservationCommunicationTest {
     }
 
     @Test
-    void getHi() {
-        String expected = "hello_from_reservation";
-        String json = gson.toJson(expected);
-
-        // set response content
-        when(response.statusCode()).thenReturn(200);
-        when(response.body()).thenReturn(json);
-        String actual = ReservationCommunication.getHi("token");
-        assertEquals(expected, actual);
-    }
-
-    @Test
     void checkUserToReservation() {
         boolean expected = true;
         String json = gson.toJson(expected);

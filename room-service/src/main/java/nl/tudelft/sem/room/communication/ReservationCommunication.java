@@ -11,24 +11,6 @@ public class ReservationCommunication extends ServerCommunication {
     private static final String authorization = "Authorization";
 
     /**
-     * Test method.
-     *
-     * @param token the authentication token of the user
-     * @return hi is communicated successfully, status otherwise
-     */
-    public static String getHi(String token) {
-        HttpRequest request = HttpRequest
-                .newBuilder()
-                .GET()
-                .setHeader(authorization, token)
-                .uri(URI.create(requestString))
-                .build();
-        return gson
-                .fromJson(requestHandler(request).body(), new TypeToken<String>(){}
-                        .getType());
-    }
-
-    /**
      * Asks the reservation service if the given user is the user who made the reservation.
      *
      * @param userId id of the user

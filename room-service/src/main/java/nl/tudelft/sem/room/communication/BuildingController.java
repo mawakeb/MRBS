@@ -40,7 +40,7 @@ public class BuildingController {
                                  @RequestParam String name,
                                  @RequestParam LocalTime openTime,
                                  @RequestParam LocalTime closeTime) {
-        if (UserCommunication.getUserType(token).equals("ADMIN")) {
+        if (checkAdmin(token)) {
             if (buildingRepo.findById(id) == null) {
                 Building building = new Building(id, name, openTime, closeTime);
                 buildingRepo.save(building);
@@ -76,5 +76,15 @@ public class BuildingController {
 
         // return whether the building is open or not for the timeslot
         return building.isOpen(start, end);
+    }
+
+    /**
+     * Checks if given user is an admin.
+     *
+     * @param token authentication token of the user
+     * @return true if the user is an admin, false otherwise.
+     */
+    public boolean checkAdmin(String token) {
+        return UserCommunication.getUserType(token).equals("ADMIN");
     }
 }

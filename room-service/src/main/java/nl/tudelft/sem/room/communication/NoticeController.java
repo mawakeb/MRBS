@@ -31,7 +31,7 @@ public class NoticeController {
      * @param token authentication token of the user
      * @param reservationId id of the reservation which the user faced problems in.
      * @param message the actual message
-     * @return a success message if the process was successfull, return an error message otherwise
+     * @return a success message if the process was successful, return an error message otherwise
      */
     @PostMapping("/leaveNotice")
     public String leaveNotice(@RequestHeader("Authorization") String token,
@@ -55,20 +55,12 @@ public class NoticeController {
     /**
      * Retrieve all the notices left for a room.
      *
-     * @param token authentication token of the user
      * @param roomId if of the room to retrieve the messages
      * @return the list of RoomNotice
      */
     @GetMapping("/getNotice")
-    public List<RoomNotice> getNotice(@RequestHeader("Authorization") String token,
-                                      @RequestParam long roomId) {
-
-        if (UserCommunication.getUserType(token).equals("Admin")) {
-            List<RoomNotice> notices = noticeRepo.findByRoomId(roomId);
-            return notices;
-        } else {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "You do not have access to maintenance notices");
-        }
+    public List<RoomNotice> getNotice(@RequestParam long roomId) {
+        List<RoomNotice> notices = noticeRepo.findByRoomId(roomId);
+        return notices;
     }
 }

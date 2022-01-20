@@ -60,7 +60,7 @@ public class UserCommunication extends ServerCommunication {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .setHeader(authorization, token)
-                .uri(URI.create(requestString + "/getUserType"
+                .uri(URI.create(requestString + "/setUserType"
                         + "?id=" + id + "&type=" + type))
                 .build();
         return gson

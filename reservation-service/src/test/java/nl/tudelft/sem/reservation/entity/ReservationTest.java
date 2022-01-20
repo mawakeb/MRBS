@@ -2,6 +2,7 @@ package nl.tudelft.sem.reservation.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
@@ -94,13 +95,29 @@ public class ReservationTest {
 
     // equals method tests
     @Test
+    public void selfTest() {
+        assertEquals(reservation, reservation);
+    }
+
+    @Test
+    public void nullTest() {
+        assertNotEquals(reservation, null);
+    }
+
+    @Test
+    public void otherObjectTest() {
+        Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
+        assertNotEquals(reservation, testBuilder);
+    }
+
+    @Test
     public void equalTest() {
         Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
         Director testDirector = new Director(testBuilder);
         testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
-        assertTrue(reservation.equals(other));
+        assertEquals(reservation, other);
     }
 
     @Test
@@ -112,7 +129,7 @@ public class ReservationTest {
 
         other.cancelReservation(null);
 
-        assertFalse(reservation.equals(other));
+        assertNotEquals(reservation, other);
     }
 
     @Test
@@ -122,7 +139,7 @@ public class ReservationTest {
         testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
-        assertFalse(reservation.equals(other));
+        assertNotEquals(reservation, other);
     }
 
     @Test
@@ -132,7 +149,7 @@ public class ReservationTest {
         testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
-        assertFalse(reservation.equals(other));
+        assertNotEquals(reservation, other);
     }
 
     @Test
@@ -143,7 +160,7 @@ public class ReservationTest {
         testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
-        assertFalse(reservation.equals(other));
+        assertNotEquals(reservation, other);
     }
 
     @Test
@@ -154,7 +171,7 @@ public class ReservationTest {
         testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
-        assertFalse(reservation.equals(other));
+        assertNotEquals(reservation, other);
     }
 
     @Test
@@ -169,7 +186,7 @@ public class ReservationTest {
         testDirector2.buildAdminReservation(123L);
         Reservation other = testBuilder2.build();
 
-        assertFalse(one.equals(other));
+        assertNotEquals(one, other);
     }
 
     @Test
@@ -179,7 +196,7 @@ public class ReservationTest {
         testDirector.buildSingleReservation(567L, 345L, purpose);
         Reservation other = testBuilder.build();
 
-        assertFalse(reservation.equals(other));
+        assertNotEquals(reservation, other);
     }
 
     @Test
@@ -189,7 +206,7 @@ public class ReservationTest {
         testDirector.buildSingleReservation(234L, 678L, purpose);
         Reservation other = testBuilder.build();
 
-        assertFalse(reservation.equals(other));
+        assertNotEquals(reservation, other);
     }
 
     @Test
@@ -199,7 +216,7 @@ public class ReservationTest {
         testDirector.buildSingleReservation(234L, 345L, "Totally not testing purpose");
         Reservation other = testBuilder.build();
 
-        assertFalse(reservation.equals(other));
+        assertNotEquals(reservation, other);
     }
 
     @Test
@@ -211,6 +228,6 @@ public class ReservationTest {
 
         other.changeLocation(321L, "Testing purposes");
 
-        assertFalse(reservation.equals(other));
+        assertNotEquals(reservation, other);
     }
 }

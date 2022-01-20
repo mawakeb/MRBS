@@ -17,12 +17,13 @@ public class ReservationTest {
     private static LocalDateTime start = LocalDateTime.of(1, 2, 3, 4, 5);
     private static LocalDateTime end = LocalDateTime.of(5, 4, 3, 2, 1);
     private static Reservation reservation;
+    private static final String purpose = "Test purpose";
 
     @BeforeEach
     void setUp() {
         Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
         Director testDirector = new Director(testBuilder);
-        testDirector.buildSingleReservation(234L, 345L, "Test purpose");
+        testDirector.buildSingleReservation(234L, 345L, purpose);
         reservation = testBuilder.build();
     }
 
@@ -50,7 +51,7 @@ public class ReservationTest {
 
     @Test
     void getPurposeTest() {
-        assertEquals("Test purpose", reservation.getPurpose());
+        assertEquals(purpose, reservation.getPurpose());
     }
 
     @Test
@@ -96,7 +97,7 @@ public class ReservationTest {
     public void equalTest() {
         Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
         Director testDirector = new Director(testBuilder);
-        testDirector.buildSingleReservation(234L, 345L, "Test purpose");
+        testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
         assertTrue(reservation.equals(other));
@@ -106,7 +107,7 @@ public class ReservationTest {
     public void differentCancelled() {
         Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
         Director testDirector = new Director(testBuilder);
-        testDirector.buildSingleReservation(234L, 345L, "Test purpose");
+        testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
         other.cancelReservation(null);
@@ -118,7 +119,7 @@ public class ReservationTest {
     public void differentMadeBy() {
         Builder testBuilder = new ReservationBuilder(456L, 321L, start, end);
         Director testDirector = new Director(testBuilder);
-        testDirector.buildSingleReservation(234L, 345L, "Test purpose");
+        testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
         assertFalse(reservation.equals(other));
@@ -128,7 +129,7 @@ public class ReservationTest {
     public void differentRoomId() {
         Builder testBuilder = new ReservationBuilder(123L, 654L, start, end);
         Director testDirector = new Director(testBuilder);
-        testDirector.buildSingleReservation(234L, 345L, "Test purpose");
+        testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
         assertFalse(reservation.equals(other));
@@ -139,7 +140,7 @@ public class ReservationTest {
         LocalDateTime otherStart = LocalDateTime.of(1, 2, 3, 4, 6);
         Builder testBuilder = new ReservationBuilder(123L, 321L, otherStart, end);
         Director testDirector = new Director(testBuilder);
-        testDirector.buildSingleReservation(234L, 345L, "Test purpose");
+        testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
         assertFalse(reservation.equals(other));
@@ -150,7 +151,7 @@ public class ReservationTest {
         LocalDateTime otherEnd = LocalDateTime.of(5, 4, 3, 2, 0);
         Builder testBuilder = new ReservationBuilder(123L, 321L, start, otherEnd);
         Director testDirector = new Director(testBuilder);
-        testDirector.buildSingleReservation(234L, 345L, "Test purpose");
+        testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
         assertFalse(reservation.equals(other));
@@ -175,7 +176,7 @@ public class ReservationTest {
     public void differentUserId() {
         Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
         Director testDirector = new Director(testBuilder);
-        testDirector.buildSingleReservation(567L, 345L, "Test purpose");
+        testDirector.buildSingleReservation(567L, 345L, purpose);
         Reservation other = testBuilder.build();
 
         assertFalse(reservation.equals(other));
@@ -185,7 +186,7 @@ public class ReservationTest {
     public void differentGroupId() {
         Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
         Director testDirector = new Director(testBuilder);
-        testDirector.buildSingleReservation(234L, 678L, "Test purpose");
+        testDirector.buildSingleReservation(234L, 678L, purpose);
         Reservation other = testBuilder.build();
 
         assertFalse(reservation.equals(other));
@@ -205,7 +206,7 @@ public class ReservationTest {
     public void differentEditPurpose() {
         Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
         Director testDirector = new Director(testBuilder);
-        testDirector.buildSingleReservation(234L, 345L, "Test purpose");
+        testDirector.buildSingleReservation(234L, 345L, purpose);
         Reservation other = testBuilder.build();
 
         other.changeLocation(321L, "Testing purposes");

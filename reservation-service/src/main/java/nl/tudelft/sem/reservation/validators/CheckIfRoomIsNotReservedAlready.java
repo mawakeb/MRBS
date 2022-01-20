@@ -44,7 +44,7 @@ public class CheckIfRoomIsNotReservedAlready extends BaseValidator {
     public List<Reservation> findAllForSpecificRoomWithinGivenTimeRange(long roomId,
                                                                  LocalDateTime start,
                                                                  LocalDateTime end) {
-        return reservationRepo.findAllForSpecificRoomWithinGivenTimeRange(roomId,
+        return reservationRepo.findByRoomIdAndStartBeforeAndEndAfterAndCancelledIsFalse(roomId,
                 start, end);
     }
 }

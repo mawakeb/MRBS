@@ -9,8 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@SuppressWarnings("PMD.BeanMembersShouldSerialize")
 @Entity
-@Table(name = "room")
+@Table(name = "reservation")
 public class Reservation {
 
     @Id
@@ -18,31 +19,35 @@ public class Reservation {
     @Column(name = "id")
     private Long id;
 
-    private transient Long madeBy;
+    @Column(name = "madeBy")
+    private Long madeBy;
 
     @Column(name = "roomId")
-    private transient Long roomId;
+    private Long roomId;
 
     @Column(name = "start")
-    private transient LocalDateTime start;
+    private LocalDateTime start;
 
     @Column(name = "end")
-    private transient LocalDateTime end;
+    private LocalDateTime end;
 
-    private transient ReservationType type;
+    @Column(name = "type")
+    private ReservationType type;
 
-    private transient Long userId;
+    @Column(name = "userId")
+    private Long userId;
 
-    private transient Long groupId;
+    @Column(name = "groupId")
+    private Long groupId;
 
     @Column(name = "purpose")
-    private transient String purpose;
+    private String purpose;
 
     @Column(name = "editPurpose")
-    private transient String editPurpose;
+    private String editPurpose;
 
     @Column(name = "cancelled")
-    private transient boolean cancelled;
+    private boolean cancelled;
 
     /**
      * Constructor for the Reservation class.

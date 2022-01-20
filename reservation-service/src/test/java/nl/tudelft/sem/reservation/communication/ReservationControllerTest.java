@@ -76,10 +76,10 @@ public class ReservationControllerTest {
         lenient().when(reservationRepo.findById(5L)).thenReturn(Optional.empty());
 
         lenient().when(reservationRepo
-                        .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(
+                        .findByRoomIdInAndStartBeforeAndEndAfterAndCancelledIsFalse(
                         Arrays.asList(2L, 3L, 5L, 7L),
-                        LocalDateTime.parse("2022-01-09T09:30:00.643606500"),
-                        LocalDateTime.parse("2022-01-09T14:00:00.643606500")))
+                        LocalDateTime.parse("2022-01-09T14:00:00.643606500"),
+                        LocalDateTime.parse("2022-01-09T09:30:00.643606500")))
                 .thenReturn(Arrays.asList(reservation2, reservation3, reservation4));
 
         // mock static communication methods

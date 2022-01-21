@@ -55,10 +55,10 @@ public class RoomControllerTest {
 
         // mock ReservationRepository
         lenient().when(reservationRepo
-                        .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(
+                        .findByRoomIdInAndStartBeforeAndEndAfterAndCancelledIsFalse(
                                 Arrays.asList(2L, 3L, 5L, 7L),
-                                LocalDateTime.parse("2022-01-09T09:30:00.643606500"),
-                                LocalDateTime.parse("2022-01-09T14:00:00.643606500")))
+                                LocalDateTime.parse("2022-01-09T14:00:00.643606500"),
+                                LocalDateTime.parse("2022-01-09T09:30:00.643606500")))
                 .thenReturn(Arrays.asList(reservation2, reservation3, reservation4));
     }
 
@@ -77,8 +77,8 @@ public class RoomControllerTest {
         List<Long> roomTestList = spyController.checkTimeslot(rooms, start, end);
 
         verify(reservationRepo, times(1))
-                .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(rooms,
-                        LocalDateTime.parse(start), LocalDateTime.parse(end));
+                .findByRoomIdInAndStartBeforeAndEndAfterAndCancelledIsFalse(rooms,
+                        LocalDateTime.parse(end), LocalDateTime.parse(start));
         assertEquals(roomResultList, roomTestList);
     }
 }

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 /**
  * The Reservation Repository Interface.
@@ -22,33 +20,17 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Optional<Reservation> findById(Long id);
 
-    List<Reservation> findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(
-            Iterable<Long> roomIds, LocalDateTime startTime, LocalDateTime endTime);
+    List<Reservation> findByUserId(Long userId);
 
-    @Query("SELECT r FROM Reservation r "
-            + "WHERE r.roomId = :roomId AND ((r.start >= :start AND r.start < :end)"
-            + "OR (:start >= r.start AND :start < r.end))")
-    List<Reservation> findAllForSpecificRoomWithinGivenTimeRange(
-            @Param("roomId") Long roomId,
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end);
+    List<Reservation> findByRoomIdInAndStartBeforeAndEndAfterAndCancelledIsFalse(
+            Iterable<Long> roomIds, LocalDateTime endTime, LocalDateTime startTime);
 
-    //find reservations for a user that overlap with the given time
-    @Query("SELECT r FROM Reservation r "
-            + "WHERE r.userId = :userId AND ((r.start >= :start AND r.start < :end)"
-            + "OR (:start >= r.start AND :start < r.end))")
-    List<Reservation> findAllOverlappingWithGivenReservationByUserId(
-            @Param("userId") Long userId, @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end);
+    List<Reservation> findByRoomIdAndStartBeforeAndEndAfterAndCancelledIsFalse(
+            Long roomId, LocalDateTime endTime, LocalDateTime startTime);
 
-    @Query("SELECT r FROM Reservation r WHERE r.userId = :userId")
-    List<Reservation> findAllByUserId(@Param("userId") Long userId);
+    List<Reservation> findByUserIdAndStartBeforeAndEndAfterAndCancelledIsFalse(
+            Long userId, LocalDateTime endTime, LocalDateTime startTime);
 
-    //find reservations that overlap with the given time
-    @Query("SELECT r FROM Reservation r "
-            + "WHERE (r.start >= :start AND r.start < :end)"
-            + "OR (:start >= r.start AND :start < r.end)")
-    List<Reservation> findAllOverlapping(@Param("start") LocalDateTime start,
-                                         @Param("end") LocalDateTime end);
-
+    List<Reservation> findByStartBeforeAndEndAfterAndCancelledIsFalse(
+            LocalDateTime endTime, LocalDateTime startTime);
 }

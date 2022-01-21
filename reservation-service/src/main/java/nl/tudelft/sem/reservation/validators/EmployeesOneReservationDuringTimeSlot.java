@@ -86,7 +86,7 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
     public List<Reservation> findAllOverlappingWithGivenReservationByUserId(Long userId,
                                                                             LocalDateTime start,
                                                                             LocalDateTime end) {
-        return reservationRepo.findAllOverlappingWithGivenReservationByUserId(userId,
+        return reservationRepo.findByUserIdAndStartBeforeAndEndAfterAndCancelledIsFalse(userId,
                 start, end);
     }
 
@@ -98,7 +98,7 @@ public class EmployeesOneReservationDuringTimeSlot extends BaseValidator {
      * @return a list of the reservations in the given time frame
      */
     public List<Reservation> findAllOverlapping(LocalDateTime start, LocalDateTime end) {
-        return reservationRepo.findAllOverlapping(start, end);
+        return reservationRepo.findByStartBeforeAndEndAfterAndCancelledIsFalse(start, end);
     }
 
     /**

@@ -46,6 +46,6 @@ public class UserController {
      */
     @GetMapping("getSchedule")
     public List<Reservation> getSchedule(@RequestParam long userId) {
-        return reservationRepo.findAllByUserId(userId);
+        return reservationRepo.findByUserId(userId);
     }
 }

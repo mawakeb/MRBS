@@ -101,7 +101,6 @@ public class UserController {
      */
     @GetMapping("/getCurrentUserType")
     public String getCurrentUserType(@RequestHeader("Authorization") String token) {
-        System.out.println("random");
         Optional<User> authenticatedUser = userDetailsService.getAuthenticatedUser(token);
 
         return authenticatedUser.map(user -> user.getType().toString()).orElse(null);

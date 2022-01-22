@@ -2,6 +2,7 @@ package nl.tudelft.sem.reservation.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
@@ -17,13 +18,13 @@ public class ReservationTest {
     private static LocalDateTime start = LocalDateTime.of(1, 2, 3, 4, 5);
     private static LocalDateTime end = LocalDateTime.of(5, 4, 3, 2, 1);
     private static Reservation reservation;
+    private static final String purpose = "Test purpose";
 
     @BeforeEach
     void setUp() {
-
         Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
         Director testDirector = new Director(testBuilder);
-        testDirector.buildSingleReservation(234L, 345L, "Test purpose");
+        testDirector.buildSingleReservation(234L, 345L, purpose);
         reservation = testBuilder.build();
     }
 
@@ -51,7 +52,7 @@ public class ReservationTest {
 
     @Test
     void getPurposeTest() {
-        assertEquals("Test purpose", reservation.getPurpose());
+        assertEquals(purpose, reservation.getPurpose());
     }
 
     @Test
@@ -90,5 +91,143 @@ public class ReservationTest {
         assertTrue(reservation.isCancelled());
         assertEquals("Cancel purpose", reservation.getEditPurpose());
 
+    }
+
+    // equals method tests
+    @Test
+    public void selfTest() {
+        assertEquals(reservation, reservation);
+    }
+
+    @Test
+    public void nullTest() {
+        assertNotEquals(reservation, null);
+    }
+
+    @Test
+    public void otherObjectTest() {
+        Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
+        assertNotEquals(reservation, testBuilder);
+    }
+
+    @Test
+    public void equalTest() {
+        Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
+        Director testDirector = new Director(testBuilder);
+        testDirector.buildSingleReservation(234L, 345L, purpose);
+        Reservation other = testBuilder.build();
+
+        assertEquals(reservation, other);
+    }
+
+    @Test
+    public void differentCancelled() {
+        Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
+        Director testDirector = new Director(testBuilder);
+        testDirector.buildSingleReservation(234L, 345L, purpose);
+        Reservation other = testBuilder.build();
+
+        other.cancelReservation(null);
+
+        assertNotEquals(reservation, other);
+    }
+
+    @Test
+    public void differentMadeBy() {
+        Builder testBuilder = new ReservationBuilder(456L, 321L, start, end);
+        Director testDirector = new Director(testBuilder);
+        testDirector.buildSingleReservation(234L, 345L, purpose);
+        Reservation other = testBuilder.build();
+
+        assertNotEquals(reservation, other);
+    }
+
+    @Test
+    public void differentRoomId() {
+        Builder testBuilder = new ReservationBuilder(123L, 654L, start, end);
+        Director testDirector = new Director(testBuilder);
+        testDirector.buildSingleReservation(234L, 345L, purpose);
+        Reservation other = testBuilder.build();
+
+        assertNotEquals(reservation, other);
+    }
+
+    @Test
+    public void differentStart() {
+        LocalDateTime otherStart = LocalDateTime.of(1, 2, 3, 4, 6);
+        Builder testBuilder = new ReservationBuilder(123L, 321L, otherStart, end);
+        Director testDirector = new Director(testBuilder);
+        testDirector.buildSingleReservation(234L, 345L, purpose);
+        Reservation other = testBuilder.build();
+
+        assertNotEquals(reservation, other);
+    }
+
+    @Test
+    public void differentEnd() {
+        LocalDateTime otherEnd = LocalDateTime.of(5, 4, 3, 2, 0);
+        Builder testBuilder = new ReservationBuilder(123L, 321L, start, otherEnd);
+        Director testDirector = new Director(testBuilder);
+        testDirector.buildSingleReservation(234L, 345L, purpose);
+        Reservation other = testBuilder.build();
+
+        assertNotEquals(reservation, other);
+    }
+
+    @Test
+    public void differentType() {
+        Builder testBuilder1 = new ReservationBuilder(123L, 321L, start, end);
+        Director testDirector1 = new Director(testBuilder1);
+        testDirector1.buildSelfReservation();
+        Reservation one = testBuilder1.build();
+
+        Builder testBuilder2 = new ReservationBuilder(123L, 321L, start, end);
+        Director testDirector2 = new Director(testBuilder2);
+        testDirector2.buildAdminReservation(123L);
+        Reservation other = testBuilder2.build();
+
+        assertNotEquals(one, other);
+    }
+
+    @Test
+    public void differentUserId() {
+        Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
+        Director testDirector = new Director(testBuilder);
+        testDirector.buildSingleReservation(567L, 345L, purpose);
+        Reservation other = testBuilder.build();
+
+        assertNotEquals(reservation, other);
+    }
+
+    @Test
+    public void differentGroupId() {
+        Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
+        Director testDirector = new Director(testBuilder);
+        testDirector.buildSingleReservation(234L, 678L, purpose);
+        Reservation other = testBuilder.build();
+
+        assertNotEquals(reservation, other);
+    }
+
+    @Test
+    public void differentPurpose() {
+        Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
+        Director testDirector = new Director(testBuilder);
+        testDirector.buildSingleReservation(234L, 345L, "Totally not testing purpose");
+        Reservation other = testBuilder.build();
+
+        assertNotEquals(reservation, other);
+    }
+
+    @Test
+    public void differentEditPurpose() {
+        Builder testBuilder = new ReservationBuilder(123L, 321L, start, end);
+        Director testDirector = new Director(testBuilder);
+        testDirector.buildSingleReservation(234L, 345L, purpose);
+        Reservation other = testBuilder.build();
+
+        other.changeLocation(321L, "Testing purposes");
+
+        assertNotEquals(reservation, other);
     }
 }

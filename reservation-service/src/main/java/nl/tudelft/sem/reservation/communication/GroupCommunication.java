@@ -27,7 +27,7 @@ public class GroupCommunication extends ServerCommunication {
                 .build();
         return gson
                 .fromJson(requestHandler(request)
-                        .body(), new TypeToken<String>() {}
+                        .body(), new TypeToken<Boolean>() {}
                         .getType());
     }
 
@@ -48,7 +48,7 @@ public class GroupCommunication extends ServerCommunication {
                 .build();
         return gson
                 .fromJson(requestHandler(request)
-                        .body(), new TypeToken<String>() {}
+                        .body(), new TypeToken<Boolean>() {}
                         .getType());
     }
 
@@ -69,7 +69,7 @@ public class GroupCommunication extends ServerCommunication {
                 .build();
         return gson
                 .fromJson(requestHandler(request)
-                        .body(), new TypeToken<String>() {}
+                        .body(), new TypeToken<Boolean>() {}
                         .getType());
     }
 
@@ -90,7 +90,7 @@ public class GroupCommunication extends ServerCommunication {
                 .build();
         return gson
                 .fromJson(requestHandler(request)
-                        .body(), new TypeToken<String>() {}
+                        .body(), new TypeToken<Boolean>() {}
                         .getType());
     }
 }

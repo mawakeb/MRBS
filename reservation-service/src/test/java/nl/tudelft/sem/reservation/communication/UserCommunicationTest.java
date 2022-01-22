@@ -1,10 +1,10 @@
-package nl.tudelft.sem.room.communication;
+package nl.tudelft.sem.reservation.communication;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -16,7 +16,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 
-class ServerCommunicationTest {
+
+
+class UserCommunicationTest {
+
+    private static final Gson gson = new Gson();
 
     @Mock
     private transient HttpClient client;
@@ -24,9 +28,8 @@ class ServerCommunicationTest {
     @Mock
     private transient HttpResponse<String> response;
 
-    @Mock
-    private transient HttpRequest mockRequest;
-
+    private transient HttpRequest request;
+    private transient String token = "token";
 
     @BeforeEach
     void setUp() throws IOException, InterruptedException {
@@ -35,30 +38,35 @@ class ServerCommunicationTest {
         // supply response mock for calls to client.send(request, bodyHandler)
         // also stores the corresponding request for access during tests
         when(client.send(any(HttpRequest.class), ArgumentMatchers.any()))
-                .thenAnswer((InvocationOnMock invocation) -> response);
+                .thenAnswer((InvocationOnMock invocation) -> {
+                    request = (HttpRequest) invocation.getArguments()[0];
+                    return response;
+                });
 
         ServerCommunication.setHttpClient(client);
     }
 
     @Test
-    void requestHandler() {
-        // send an empty request
-        when(response.statusCode()).thenReturn(200);
-        HttpResponse<String> result = ServerCommunication.requestHandler(mockRequest);
+    void getUserType() {
+        String expected = "ADMIN";
+        String json = gson.toJson(expected);
 
-        // the httpClient responds without errors by default in @BeforeEach
-        // so the method should simply return the mocked response
-        assertEquals(response, result);
+        // set response content
+        when(response.statusCode()).thenReturn(200);
+        when(response.body()).thenReturn(json);
+        String actual = UserCommunication.getUserType(token);
+        assertEquals(expected, actual);
     }
 
     @Test
-    void wrongRequestHandler() {
-        // send an empty request
-        when(response.statusCode()).thenReturn(401);
-        HttpResponse<String> result = ServerCommunication.requestHandler(mockRequest);
+    void getUser() {
+        long expected = 1L;
+        String json = gson.toJson(expected);
 
-        // the httpClient responds without errors by default in @BeforeEach
-        // so the method should simply return the mocked response
-        assertEquals(null, result);
+        // set response content
+        when(response.statusCode()).thenReturn(200);
+        when(response.body()).thenReturn(json);
+        long actual = UserCommunication.getUser(token);
+        assertEquals(expected, actual);
     }
 }

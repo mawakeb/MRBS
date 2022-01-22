@@ -1,4 +1,4 @@
-package nl.tudelft.sem.room.communication;
+package nl.tudelft.sem.reservation.communication;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
+import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -18,7 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 
 
-class ReservationCommunicationTest {
+class RoomCommunicationTest {
 
     private static final Gson gson = new Gson();
 
@@ -47,43 +47,43 @@ class ReservationCommunicationTest {
     }
 
     @Test
-    void checkUserToReservation() {
+    void getRoomAvailability() {
         boolean expected = true;
         String json = gson.toJson(expected);
 
         // set response content
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(json);
-        boolean actual = ReservationCommunication
-                .checkUserToReservation(1L, 2L, token);
+        boolean actual = RoomCommunication
+                .getRoomAvailability(1L, token);
         assertEquals(expected, actual);
     }
 
     @Test
-    void getRoomsInTimeslot() {
-        List<Long> expected = List.of(1L, 2L, 3L);
+    void getBuildingAvailability() {
+        boolean expected = true;
         String json = gson.toJson(expected);
 
         // set response content
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(json);
-
-        List<Long> rooms = List.of(1L, 2L, 3L, 4L, 5L);
-        List<Long> actual = ReservationCommunication
-                .getRoomsInTimeslot(rooms, "4", "6", token);
+        boolean actual = RoomCommunication
+                .getBuildingAvailability(1L,
+                        LocalTime.of(9, 0),
+                        LocalTime.of(12, 0), token);
         assertEquals(expected, actual);
     }
 
     @Test
-    void getRoomWithReservation() {
-        Long expected = 2L;
+    void getBuildingId() {
+        long expected = 2L;
         String json = gson.toJson(expected);
 
         // set response content
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(json);
-        Long actual = ReservationCommunication
-                .getRoomWithReservation(1L, token);
+        long actual = RoomCommunication
+                .getBuildingId(1L, token);
         assertEquals(expected, actual);
     }
 }

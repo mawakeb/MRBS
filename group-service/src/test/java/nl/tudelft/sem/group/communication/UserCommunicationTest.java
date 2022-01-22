@@ -1,4 +1,4 @@
-package nl.tudelft.sem.room.communication;
+package nl.tudelft.sem.group.communication;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -17,8 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 
-
-class ReservationCommunicationTest {
+class UserCommunicationTest {
 
     private static final Gson gson = new Gson();
 
@@ -47,43 +45,40 @@ class ReservationCommunicationTest {
     }
 
     @Test
-    void checkUserToReservation() {
-        boolean expected = true;
+    void getCurrentUserType() {
+        String expected = "ADMIN";
         String json = gson.toJson(expected);
 
         // set response content
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(json);
-        boolean actual = ReservationCommunication
-                .checkUserToReservation(1L, 2L, token);
+        String actual = UserCommunication.getCurrentUserType(token);
         assertEquals(expected, actual);
     }
 
     @Test
-    void getRoomsInTimeslot() {
-        List<Long> expected = List.of(1L, 2L, 3L);
+    void getUserType() {
+        String expected = "EMPLOYEE";
         String json = gson.toJson(expected);
+        long id = 10;
 
         // set response content
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(json);
-
-        List<Long> rooms = List.of(1L, 2L, 3L, 4L, 5L);
-        List<Long> actual = ReservationCommunication
-                .getRoomsInTimeslot(rooms, "4", "6", token);
+        String actual = UserCommunication.getUserType(id, token);
         assertEquals(expected, actual);
     }
 
     @Test
-    void getRoomWithReservation() {
-        Long expected = 2L;
-        String json = gson.toJson(expected);
+    void setUserType() {
+        String type = "SECRETARY";
+        String json = gson.toJson(type);
+        long id = 10;
 
         // set response content
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(json);
-        Long actual = ReservationCommunication
-                .getRoomWithReservation(1L, token);
-        assertEquals(expected, actual);
+        String actual = UserCommunication.setUserType(id, type, token);
+        assertEquals(type, actual);
     }
 }

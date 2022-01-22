@@ -1,4 +1,4 @@
-package nl.tudelft.sem.room.communication;
+package nl.tudelft.sem.reservation.communication;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -17,8 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 
-
-class ReservationCommunicationTest {
+class GroupCommunicationTest {
 
     private static final Gson gson = new Gson();
 
@@ -47,43 +45,54 @@ class ReservationCommunicationTest {
     }
 
     @Test
-    void checkUserToReservation() {
+    void isSecretaryOfUser() {
         boolean expected = true;
         String json = gson.toJson(expected);
 
         // set response content
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(json);
-        boolean actual = ReservationCommunication
-                .checkUserToReservation(1L, 2L, token);
+        boolean actual = GroupCommunication
+                .isSecretaryOfUser(1L, 2L, token);
         assertEquals(expected, actual);
     }
 
     @Test
-    void getRoomsInTimeslot() {
-        List<Long> expected = List.of(1L, 2L, 3L);
+    void isSecretaryOfGroup() {
+        boolean expected = true;
         String json = gson.toJson(expected);
 
         // set response content
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(json);
-
-        List<Long> rooms = List.of(1L, 2L, 3L, 4L, 5L);
-        List<Long> actual = ReservationCommunication
-                .getRoomsInTimeslot(rooms, "4", "6", token);
+        boolean actual = GroupCommunication
+                .isSecretaryOfGroup(1L, 2L, token);
         assertEquals(expected, actual);
     }
 
     @Test
-    void getRoomWithReservation() {
-        Long expected = 2L;
+    void isInGroup() {
+        boolean expected = true;
         String json = gson.toJson(expected);
 
         // set response content
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(json);
-        Long actual = ReservationCommunication
-                .getRoomWithReservation(1L, token);
+        boolean actual = GroupCommunication
+                .isInGroup(1L, 2L, token);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void overlap() {
+        boolean expected = true;
+        String json = gson.toJson(expected);
+
+        // set response content
+        when(response.statusCode()).thenReturn(200);
+        when(response.body()).thenReturn(json);
+        boolean actual = GroupCommunication
+                .overlap(1L, 2L, token);
         assertEquals(expected, actual);
     }
 }

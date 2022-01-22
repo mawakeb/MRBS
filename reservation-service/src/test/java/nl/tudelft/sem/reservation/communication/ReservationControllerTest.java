@@ -1,7 +1,6 @@
 package nl.tudelft.sem.reservation.communication;
 
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,12 +10,14 @@ import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
+import nl.tudelft.sem.reservation.builder.Builder;
+import nl.tudelft.sem.reservation.builder.Director;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 import nl.tudelft.sem.reservation.repository.ReservationRepository;
+import nl.tudelft.sem.reservation.validators.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +25,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 
 
 @ExtendWith(MockitoExtension.class)
@@ -37,13 +37,23 @@ public class ReservationControllerTest {
 
     @Mock
     transient ReservationRepository reservationRepo;
+    @Mock
+    private transient Validator validator;
+    @Mock
+    private transient Director director;
+    @Mock
+    private transient Builder builder;
 
     private transient ReservationController controller;
     private transient ReservationController spyController;
     private final transient String adminToken = "adminToken";
     private final transient String token = "token";
+    private final transient String purposeString = "Scrum meeting";
     private final transient String editString = "Entered the wrong room";
     private final transient String cancelString = "Got covid";
+    private final transient String reservationSuccessful = "Reservation successful!";
+    private final transient String firstTime = "2022-01-09T14:22:23.643606500";
+    private final transient String secondTime = "2022-01-09T17:22:23.643606500";
 
     @BeforeEach
     void setUp() throws InvalidReservationException {
@@ -52,9 +62,9 @@ public class ReservationControllerTest {
 
         // setup objects
         reservation1 = new Reservation(89L, 3L,
-                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
-                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
-                ReservationType.SELF, 89L, -1L, "Scrum meeting");
+                LocalDateTime.parse(firstTime),
+                LocalDateTime.parse(secondTime),
+                ReservationType.SELF, 89L, -1L, purposeString);
         reservation2 = new Reservation(53L, 5L,
                 LocalDateTime.parse("2022-01-09T13:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T19:22:23.643606500"),
@@ -76,17 +86,17 @@ public class ReservationControllerTest {
         lenient().when(reservationRepo.findById(5L)).thenReturn(Optional.empty());
 
         lenient().when(reservationRepo
-                        .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(
+                        .findByRoomIdInAndStartBeforeAndEndAfterAndCancelledIsFalse(
                         Arrays.asList(2L, 3L, 5L, 7L),
-                        LocalDateTime.parse("2022-01-09T09:30:00.643606500"),
-                        LocalDateTime.parse("2022-01-09T14:00:00.643606500")))
+                        LocalDateTime.parse("2022-01-09T14:00:00.643606500"),
+                        LocalDateTime.parse("2022-01-09T09:30:00.643606500")))
                 .thenReturn(Arrays.asList(reservation2, reservation3, reservation4));
 
         // mock static communication methods
         spyController = Mockito.spy(controller);
         lenient().doReturn("EMPLOYEE").when(spyController).getUserType(token);
         lenient().doReturn("ADMIN").when(spyController).getUserType(adminToken);
-        lenient().doReturn(37L).when(spyController).getUser(token);
+        lenient().doReturn(37L).when(spyController).getUser(any());
         lenient().doReturn(true).when(spyController).handle(any(), any(), any());
     }
 
@@ -170,7 +180,6 @@ public class ReservationControllerTest {
         verify(reservationRepo, times(2)).findById(2L);
         verify(spyController, times(1)).handle(any(), any(), any());
         verify(reservationRepo, times(2)).save(any(Reservation.class));
-
     }
 
     /**
@@ -211,8 +220,94 @@ public class ReservationControllerTest {
         verify(reservationRepo, times(1)).findById(0L);
         assertEquals("There is nothing to edit for the reservation", editResult);
         assertEquals(3L, reservation1.getRoomId());
-        assertEquals(LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
+        assertEquals(LocalDateTime.parse(firstTime),
                 reservation1.getStart());
-        assertEquals(LocalDateTime.parse("2022-01-09T17:22:23.643606500"), reservation1.getEnd());
+        assertEquals(LocalDateTime.parse(secondTime), reservation1.getEnd());
+    }
+
+    @Test
+    void makeReservationSelf() throws InvalidReservationException {
+        lenient().when(spyController.setUpChainOfResponsibility(token))
+                .thenReturn(validator);
+        lenient().when(validator.handle(any(), any())).thenReturn(true);
+        lenient().when(spyController.getDirector(any())).thenReturn(director);
+
+        String result = spyController.makeReservation(37L, -1L, 5L,
+                LocalDateTime.parse(firstTime),
+                LocalDateTime.parse(secondTime),
+                purposeString, "SELF", token);
+
+        verify(director, times(1)).buildSelfReservation();
+        verify(reservationRepo, times(1)).save(any(Reservation.class));
+        assertEquals(reservationSuccessful, result);
+    }
+
+    @Test
+    void makeReservationAdmin() throws InvalidReservationException {
+        lenient().when(spyController.setUpChainOfResponsibility(adminToken))
+                .thenReturn(validator);
+        lenient().when(validator.handle(any(), any())).thenReturn(true);
+        lenient().when(spyController.getDirector(any())).thenReturn(director);
+
+        String result = spyController.makeReservation(23L, -1L, 5L,
+                LocalDateTime.parse("2022-01-09T15:22:23.643606500"),
+                LocalDateTime.parse("2022-01-09T18:22:23.643606500"),
+                purposeString, "ADMIN", adminToken);
+
+        //verify(director, times(1)).buildAdminReservation(any());
+        verify(reservationRepo, times(1)).save(any(Reservation.class));
+        assertEquals(reservationSuccessful, result);
+    }
+
+    @Test
+    void makeReservationSingle() throws InvalidReservationException {
+        lenient().when(spyController.setUpChainOfResponsibility(token))
+                .thenReturn(validator);
+        lenient().when(validator.handle(any(), any())).thenReturn(true);
+        lenient().when(spyController.getDirector(any())).thenReturn(director);
+
+        String result = spyController.makeReservation(96L, 17L, 5L,
+                LocalDateTime.parse("2022-01-09T16:22:23.643606500"),
+                LocalDateTime.parse("2022-01-09T19:22:23.643606500"),
+                purposeString, "SINGLE", token);
+
+        verify(director, times(1)).buildSingleReservation(any(), any(), any());
+        verify(reservationRepo, times(1)).save(any(Reservation.class));
+        assertEquals(reservationSuccessful, result);
+    }
+
+    @Test
+    void makeReservationGroup() throws InvalidReservationException {
+        lenient().when(spyController.setUpChainOfResponsibility(token))
+                .thenReturn(validator);
+        lenient().when(validator.handle(any(), any())).thenReturn(true);
+        lenient().when(spyController.getDirector(any())).thenReturn(director);
+
+        String result = spyController.makeReservation(57L, 17L, 5L,
+                LocalDateTime.parse("2022-01-09T17:22:22.643606500"),
+                LocalDateTime.parse("2022-01-09T20:22:23.643606500"),
+                purposeString, "GROUP", token);
+
+        verify(director, times(1)).buildGroupReservation(any(), any());
+        verify(reservationRepo, times(1)).save(any(Reservation.class));
+        assertEquals(reservationSuccessful, result);
+    }
+
+    @Test
+    void makeReservationInvalid() throws InvalidReservationException {
+        lenient().when(spyController.setUpChainOfResponsibility(token))
+                .thenReturn(validator);
+        lenient().when(validator.handle(any(), any())).thenThrow(InvalidReservationException.class);
+
+        assertEquals("Invalid reservation!", spyController.makeReservation(57L, 17L, 5L,
+                LocalDateTime.parse(firstTime),
+                LocalDateTime.parse(secondTime),
+                "Scrum meeting", "GROUP", token));
+    }
+
+    @Test
+    void getDirector() {
+        Director director = spyController.getDirector(builder);
+        assertEquals(director.getBuilder(), builder);
     }
 }

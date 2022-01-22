@@ -1,6 +1,8 @@
 package nl.tudelft.sem.reservation.communication;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -8,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
 import nl.tudelft.sem.reservation.repository.ReservationRepository;
@@ -16,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.web.server.ResponseStatusException;
 
 
 public class RoomControllerTest {
@@ -55,10 +59,10 @@ public class RoomControllerTest {
 
         // mock ReservationRepository
         lenient().when(reservationRepo
-                        .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(
+                        .findByRoomIdInAndStartBeforeAndEndAfterAndCancelledIsFalse(
                                 Arrays.asList(2L, 3L, 5L, 7L),
-                                LocalDateTime.parse("2022-01-09T09:30:00.643606500"),
-                                LocalDateTime.parse("2022-01-09T14:00:00.643606500")))
+                                LocalDateTime.parse("2022-01-09T14:00:00.643606500"),
+                                LocalDateTime.parse("2022-01-09T09:30:00.643606500")))
                 .thenReturn(Arrays.asList(reservation2, reservation3, reservation4));
     }
 
@@ -77,8 +81,24 @@ public class RoomControllerTest {
         List<Long> roomTestList = spyController.checkTimeslot(rooms, start, end);
 
         verify(reservationRepo, times(1))
-                .findAllByRoomIdInAndCancelledIsFalseAndStartBeforeAndEndAfter(rooms,
-                        LocalDateTime.parse(start), LocalDateTime.parse(end));
+                .findByRoomIdInAndStartBeforeAndEndAfterAndCancelledIsFalse(rooms,
+                        LocalDateTime.parse(end), LocalDateTime.parse(start));
         assertEquals(roomResultList, roomTestList);
+    }
+
+    @Test
+    void getRoomFound() {
+        lenient().when(reservationRepo.findById(any()))
+                .thenReturn(Optional.ofNullable(reservation1));
+        assertEquals(3L, spyController.getRoom(89L));
+    }
+
+    @Test
+    void getRoomNotFound() {
+        Mockito.when(reservationRepo.findById(any()))
+                .thenReturn(Optional.empty());
+        assertThrows(ResponseStatusException.class, () -> {
+            spyController.getRoom(1L);
+        });
     }
 }

@@ -24,7 +24,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -217,34 +218,45 @@ public class ReservationControllerTest {
 
     @Test
     void makeReservationSelf() {
-        String result = spyController.makeReservation(37L, 5L,
+        String result = spyController.makeReservation(37L, -1L, 5L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
-                "Scrum meeting", token);
+                "Scrum meeting", "SELF", token);
 
-        /*verify(reservationRepo, times(1)).save(any(Reservation.class));
-        assertEquals("Reservation successful!", result);*/
+        //verify(reservationRepo, times(1)).save(any(Reservation.class));
+        //assertEquals("Reservation successful!", result);
     }
 
     @Test
     void makeReservationAdmin() {
-        String result = spyController.makeReservation(23L, 5L,
+        String result = spyController.makeReservation(23L, -1L, 5L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
-                "Scrum meeting", token);
+                "Scrum meeting", "ADMIN", adminToken);
 
-        /*verify(reservationRepo, times(1)).save(any(Reservation.class));
-        assertEquals("Reservation successful!", result);*/
+        //verify(reservationRepo, times(1)).save(any(Reservation.class));
+        //assertEquals("Reservation successful!", result);
+    }
+
+    @Test
+    void makeReservationSingle() {
+        String result = spyController.makeReservation(96L, 17L, 5L,
+                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
+                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
+                "Scrum meeting", "SINGLE", token);
+
+        //verify(reservationRepo, times(1)).save(any(Reservation.class));
+        //assertEquals("Reservation successful!", result);
     }
 
     @Test
     void makeReservationGroup() {
-        String result = spyController.makeReservation(57L, 5L,
+        String result = spyController.makeReservation(57L, 17L, 5L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
-                "Scrum meeting", token);
+                "Scrum meeting", "GROUP", token);
 
-        /*verify(reservationRepo, times(1)).save(any(Reservation.class));
-        assertEquals("Reservation successful!", result);*/
+        //verify(reservationRepo, times(1)).save(any(Reservation.class));
+        //assertEquals("Reservation successful!", result);
     }
 }

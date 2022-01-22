@@ -183,31 +183,37 @@ public class ReservationController {
     /**
      * Make a new reservation.
      *
-     * @param targetUserOrGroupId who the reservation is for
-     * @param roomId the room id for the reservation
-     * @param start the start time of the reservation
-     * @param end the end time of the reservation
-     * @param purpose the purpose of the reservation
-     * @param token an authorization token
+     * @param userId    who the reservation is for
+     * @param groupId   which group the reservation is for
+     * @param roomId    the room id for the reservation
+     * @param start     the start time of the reservation
+     * @param end       the end time of the reservation
+     * @param purpose   the purpose of the reservation
+     * @param purpose   the kind of reservation
+     * @param token     an authorization token
      * @return a status message regarding the success
      */
     @PostMapping("/makeReservation")
-    public String makeReservation(@RequestParam Long targetUserOrGroupId,
+    public String makeReservation(@RequestParam Long userId,
+                                  @RequestParam Long groupId,
                                   @RequestParam Long roomId,
                                   @RequestParam LocalDateTime start,
                                   @RequestParam LocalDateTime end,
                                   @RequestParam String purpose,
+                                  @RequestParam String type,
                                   @RequestHeader("Authorization") String token) {
-        Long userId = UserCommunication.getUser(token);
-        Builder builder = new ReservationBuilder(userId, roomId, start, end);
+        Long madeBy = UserCommunication.getUser(token);
+        Builder builder = new ReservationBuilder(madeBy, roomId, start, end);
         Director director = new Director(builder);
 
-        if (Objects.equals(targetUserOrGroupId, userId)) {
+        if (type.equals("SELF")) {
             director.buildSelfReservation();
-        } else if (UserCommunication.getUserType(token).equals("ADMIN")) {
-            director.buildAdminReservation(targetUserOrGroupId);
-        } else {
-            director.buildGroupReservation(targetUserOrGroupId, purpose);
+        } else if (type.equals("SINGLE")) {
+            director.buildSingleReservation(userId, groupId, purpose);
+        } else if (type.equals("ADMIN")) {
+            director.buildAdminReservation(userId);
+        } else if (type.equals("GROUP")) {
+            director.buildGroupReservation(groupId, purpose);
         }
 
         Reservation reservation = builder.build();
@@ -220,6 +226,7 @@ public class ReservationController {
             reservationRepo.save(reservation);
         } catch (InvalidReservationException e) {
             e.printStackTrace();
+            return "Invalid reservation!";
         }
 
         return "Reservation successful!";

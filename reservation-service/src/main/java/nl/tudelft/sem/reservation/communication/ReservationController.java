@@ -33,6 +33,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/reservation")
+@SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.EmptyCatchBlock"})
 public class ReservationController {
 
 
@@ -107,10 +108,8 @@ public class ReservationController {
         // perform the checks and save the reservation if valid
         try {
             boolean isValid = handle(handler, reservation, token);
-            System.out.print("Reservation status = " + isValid);
             reservationRepo.save(reservation);
         } catch (InvalidReservationException e) {
-            e.printStackTrace();
         }
 
         return "Reservation was edited successfully";
@@ -183,32 +182,37 @@ public class ReservationController {
     /**
      * Make a new reservation.
      *
-     * @param targetUserOrGroupId who the reservation is for
-     * @param roomId the room id for the reservation
-     * @param start the start time of the reservation
-     * @param end the end time of the reservation
-     * @param purpose the purpose of the reservation
-     * @param token an authorization token
+     * @param userId    who the reservation is for
+     * @param groupId   which group the reservation is for
+     * @param roomId    the room id for the reservation
+     * @param start     the start time of the reservation
+     * @param end       the end time of the reservation
+     * @param purpose   the purpose of the reservation
+     * @param purpose   the kind of reservation
+     * @param token     an authorization token
      * @return a status message regarding the success
      */
     @PostMapping("/makeReservation")
-    public String makeReservation(@RequestParam Long targetUserOrGroupId,
+    @SuppressWarnings("DataflowAnomalyAnalysis")
+    public String makeReservation(@RequestParam Long userId,
+                                  @RequestParam Long groupId,
                                   @RequestParam Long roomId,
                                   @RequestParam LocalDateTime start,
                                   @RequestParam LocalDateTime end,
                                   @RequestParam String purpose,
+                                  @RequestParam String type,
                                   @RequestHeader("Authorization") String token) {
-        Long userId = UserCommunication.getUser(token);
-        Builder builder = new ReservationBuilder(userId, roomId, start, end);
-        Director director = new Director(builder);
+        Long madeBy = getUser(token);
+        Builder builder = getBuilder(roomId, start, end, madeBy);
+        Director director = getDirector(builder);
 
-        if (Objects.equals(targetUserOrGroupId, userId)) {
+        if (type.equals("SELF")) {
             director.buildSelfReservation();
-        } else if (UserCommunication.getUserType(token).equals("ADMIN")) {
-            director.buildAdminReservation(targetUserOrGroupId);
-        } else {
-            director.buildGroupReservation(targetUserOrGroupId, purpose);
-        }
+        } else if (type.equals("SINGLE")) {
+            director.buildSingleReservation(userId, groupId, purpose);
+        } else if (type.equals("GROUP")) {
+            director.buildGroupReservation(groupId, purpose);
+        } else director.buildAdminReservation(userId);
 
         Reservation reservation = builder.build();
 
@@ -216,13 +220,22 @@ public class ReservationController {
 
         try {
             boolean isValid = handler.handle(reservation, token);
-            System.out.print("Reservation status = " + isValid);
             reservationRepo.save(reservation);
         } catch (InvalidReservationException e) {
-            e.printStackTrace();
+            return "Invalid reservation!";
         }
 
         return "Reservation successful!";
+    }
+
+    public Director getDirector(Builder builder) {
+        Director director = new Director(builder);
+        return director;
+    }
+
+    public Builder getBuilder(Long roomId, LocalDateTime start, LocalDateTime end, Long madeBy) {
+        Builder builder = new ReservationBuilder(madeBy, roomId, start, end);
+        return builder;
     }
 
     /**

@@ -107,10 +107,8 @@ public class ReservationController {
         // perform the checks and save the reservation if valid
         try {
             boolean isValid = handle(handler, reservation, token);
-            System.out.print("Reservation status = " + isValid);
             reservationRepo.save(reservation);
         } catch (InvalidReservationException e) {
-            e.printStackTrace();
         }
 
         return "Reservation was edited successfully";
@@ -221,10 +219,8 @@ public class ReservationController {
 
         try {
             boolean isValid = handler.handle(reservation, token);
-            System.out.print("Reservation status = " + isValid);
             reservationRepo.save(reservation);
         } catch (InvalidReservationException e) {
-            e.printStackTrace();
             return "Invalid reservation!";
         }
 

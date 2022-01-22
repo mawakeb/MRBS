@@ -194,6 +194,7 @@ public class ReservationController {
      * @return a status message regarding the success
      */
     @PostMapping("/makeReservation")
+    @SuppressWarnings("DataflowAnomalyAnalysis")
     public String makeReservation(@RequestParam Long userId,
                                   @RequestParam Long groupId,
                                   @RequestParam Long roomId,
@@ -210,11 +211,9 @@ public class ReservationController {
             director.buildSelfReservation();
         } else if (type.equals("SINGLE")) {
             director.buildSingleReservation(userId, groupId, purpose);
-        } else if (type.equals("ADMIN")) {
-            director.buildAdminReservation(userId);
         } else if (type.equals("GROUP")) {
             director.buildGroupReservation(groupId, purpose);
-        }
+        } else director.buildAdminReservation(userId);
 
         Reservation reservation = builder.build();
 

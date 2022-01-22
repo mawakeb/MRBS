@@ -1,17 +1,13 @@
 package nl.tudelft.sem.reservation.communication;
 
-
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import nl.tudelft.sem.reservation.builder.Builder;
 import nl.tudelft.sem.reservation.builder.Director;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
@@ -25,8 +21,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -48,8 +42,10 @@ public class ReservationControllerTest {
     private transient ReservationController spyController;
     private final transient String adminToken = "adminToken";
     private final transient String token = "token";
+    private final transient String purposeString = "Scrum meeting";
     private final transient String editString = "Entered the wrong room";
     private final transient String cancelString = "Got covid";
+    private final transient String reservationSuccessful = "Reservation successful!";
 
     @BeforeEach
     void setUp() throws InvalidReservationException {
@@ -60,7 +56,7 @@ public class ReservationControllerTest {
         reservation1 = new Reservation(89L, 3L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
-                ReservationType.SELF, 89L, -1L, "Scrum meeting");
+                ReservationType.SELF, 89L, -1L, purposeString);
         reservation2 = new Reservation(53L, 5L,
                 LocalDateTime.parse("2022-01-09T13:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T19:22:23.643606500"),
@@ -229,11 +225,11 @@ public class ReservationControllerTest {
         String result = spyController.makeReservation(37L, -1L, 5L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
-                "Scrum meeting", "SELF", token);
+                purposeString, "SELF", token);
 
-        //verify(director, times(1)).buildSelfReservation();
+        verify(director, times(1)).buildSelfReservation();
         verify(reservationRepo, times(1)).save(any(Reservation.class));
-        assertEquals("Reservation successful!", result);
+        assertEquals(reservationSuccessful, result);
     }
 
     @Test
@@ -242,12 +238,12 @@ public class ReservationControllerTest {
                 .thenReturn(validator);
         lenient().when(validator.handle(any(), any())).thenReturn(true);
         String result = spyController.makeReservation(23L, -1L, 5L,
-                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
-                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
-                "Scrum meeting", "ADMIN", adminToken);
+                LocalDateTime.parse("2022-01-09T15:22:23.643606500"),
+                LocalDateTime.parse("2022-01-09T18:22:23.643606500"),
+                purposeString, "ADMIN", adminToken);
 
         verify(reservationRepo, times(1)).save(any(Reservation.class));
-        assertEquals("Reservation successful!", result);
+        assertEquals(reservationSuccessful, result);
     }
 
     @Test
@@ -256,12 +252,12 @@ public class ReservationControllerTest {
                 .thenReturn(validator);
         lenient().when(validator.handle(any(), any())).thenReturn(true);
         String result = spyController.makeReservation(96L, 17L, 5L,
-                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
-                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
-                "Scrum meeting", "SINGLE", token);
+                LocalDateTime.parse("2022-01-09T16:22:23.643606500"),
+                LocalDateTime.parse("2022-01-09T19:22:23.643606500"),
+                purposeString, "SINGLE", token);
 
         verify(reservationRepo, times(1)).save(any(Reservation.class));
-        assertEquals("Reservation successful!", result);
+        assertEquals(reservationSuccessful, result);
     }
 
     @Test
@@ -270,12 +266,12 @@ public class ReservationControllerTest {
                 .thenReturn(validator);
         lenient().when(validator.handle(any(), any())).thenReturn(true);
         String result = spyController.makeReservation(57L, 17L, 5L,
-                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
-                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
-                "Scrum meeting", "GROUP", token);
+                LocalDateTime.parse("2022-01-09T17:22:22.643606500"),
+                LocalDateTime.parse("2022-01-09T20:22:23.643606500"),
+                purposeString, "GROUP", token);
 
         verify(reservationRepo, times(1)).save(any(Reservation.class));
-        assertEquals("Reservation successful!", result);
+        assertEquals(reservationSuccessful, result);
     }
 
     @Test
@@ -286,9 +282,9 @@ public class ReservationControllerTest {
 
         Exception exception = assertThrows(InvalidReservationException.class,
                 () -> spyController.makeReservation(57L, 17L, 5L,
-                        LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
-                        LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
-                        "Scrum meeting", "GROUP", token));
+                        LocalDateTime.parse("2022-18-09T14:22:23.643606500"),
+                        LocalDateTime.parse("2022-21-09T17:22:23.643606500"),
+                        purposeString, "GROUP", token));
 
         String expectedMessage = "Invalid reservation!";
         String actualMessage = exception.getMessage();

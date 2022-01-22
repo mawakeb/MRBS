@@ -202,7 +202,7 @@ public class ReservationController {
                                   @RequestParam String purpose,
                                   @RequestParam String type,
                                   @RequestHeader("Authorization") String token) {
-        Long madeBy = UserCommunication.getUser(token);
+        Long madeBy = getUser(token);
         Builder builder = new ReservationBuilder(madeBy, roomId, start, end);
         Director director = new Director(builder);
 

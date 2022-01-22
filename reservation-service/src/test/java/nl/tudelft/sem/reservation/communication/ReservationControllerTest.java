@@ -2,21 +2,22 @@ package nl.tudelft.sem.reservation.communication;
 
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import nl.tudelft.sem.reservation.builder.Builder;
+import nl.tudelft.sem.reservation.builder.Director;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
 import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 import nl.tudelft.sem.reservation.repository.ReservationRepository;
+import nl.tudelft.sem.reservation.validators.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +39,10 @@ public class ReservationControllerTest {
 
     @Mock
     transient ReservationRepository reservationRepo;
+    @Mock
+    private transient Validator validator;
+    @Mock
+    private transient Director director;
 
     private transient ReservationController controller;
     private transient ReservationController spyController;
@@ -217,46 +222,77 @@ public class ReservationControllerTest {
     }
 
     @Test
-    void makeReservationSelf() {
+    void makeReservationSelf() throws InvalidReservationException {
+        lenient().when(spyController.setUpChainOfResponsibility(token))
+                .thenReturn(validator);
+        lenient().when(validator.handle(any(), any())).thenReturn(true);
         String result = spyController.makeReservation(37L, -1L, 5L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
                 "Scrum meeting", "SELF", token);
 
-        //verify(reservationRepo, times(1)).save(any(Reservation.class));
-        //assertEquals("Reservation successful!", result);
+        //verify(director, times(1)).buildSelfReservation();
+        verify(reservationRepo, times(1)).save(any(Reservation.class));
+        assertEquals("Reservation successful!", result);
     }
 
     @Test
-    void makeReservationAdmin() {
+    void makeReservationAdmin() throws InvalidReservationException {
+        lenient().when(spyController.setUpChainOfResponsibility(token))
+                .thenReturn(validator);
+        lenient().when(validator.handle(any(), any())).thenReturn(true);
         String result = spyController.makeReservation(23L, -1L, 5L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
                 "Scrum meeting", "ADMIN", adminToken);
 
-        //verify(reservationRepo, times(1)).save(any(Reservation.class));
-        //assertEquals("Reservation successful!", result);
+        verify(reservationRepo, times(1)).save(any(Reservation.class));
+        assertEquals("Reservation successful!", result);
     }
 
     @Test
-    void makeReservationSingle() {
+    void makeReservationSingle() throws InvalidReservationException {
+        lenient().when(spyController.setUpChainOfResponsibility(token))
+                .thenReturn(validator);
+        lenient().when(validator.handle(any(), any())).thenReturn(true);
         String result = spyController.makeReservation(96L, 17L, 5L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
                 "Scrum meeting", "SINGLE", token);
 
-        //verify(reservationRepo, times(1)).save(any(Reservation.class));
-        //assertEquals("Reservation successful!", result);
+        verify(reservationRepo, times(1)).save(any(Reservation.class));
+        assertEquals("Reservation successful!", result);
     }
 
     @Test
-    void makeReservationGroup() {
+    void makeReservationGroup() throws InvalidReservationException {
+        lenient().when(spyController.setUpChainOfResponsibility(token))
+                .thenReturn(validator);
+        lenient().when(validator.handle(any(), any())).thenReturn(true);
         String result = spyController.makeReservation(57L, 17L, 5L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
                 "Scrum meeting", "GROUP", token);
 
-        //verify(reservationRepo, times(1)).save(any(Reservation.class));
-        //assertEquals("Reservation successful!", result);
+        verify(reservationRepo, times(1)).save(any(Reservation.class));
+        assertEquals("Reservation successful!", result);
+    }
+
+    @Test
+    void makeReservationInvalid() throws InvalidReservationException {
+        lenient().when(spyController.setUpChainOfResponsibility(token))
+                .thenReturn(validator);
+        lenient().when(validator.handle(any(), any())).thenThrow(InvalidReservationException.class);
+
+        Exception exception = assertThrows(InvalidReservationException.class,
+                () -> spyController.makeReservation(57L, 17L, 5L,
+                        LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
+                        LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
+                        "Scrum meeting", "GROUP", token));
+
+        String expectedMessage = "Invalid reservation!";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 }

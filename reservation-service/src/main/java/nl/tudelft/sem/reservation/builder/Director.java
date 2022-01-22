@@ -4,6 +4,7 @@ import nl.tudelft.sem.reservation.entity.ReservationType;
 
 @SuppressWarnings("PMD.BeanMembersShouldSerialize")
 public class Director {
+
     private Builder builder;
 
     /**
@@ -60,5 +61,9 @@ public class Director {
         builder.type(ReservationType.GROUP);
         builder.group(forGroup);
         builder.purpose(purpose);
+    }
+
+    public Builder getBuilder() {
+        return builder;
     }
 }

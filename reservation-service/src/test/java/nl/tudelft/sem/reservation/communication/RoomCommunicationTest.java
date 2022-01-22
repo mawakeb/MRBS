@@ -1,5 +1,6 @@
 package nl.tudelft.sem.reservation.communication;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -54,10 +56,10 @@ class RoomCommunicationTest {
         when(response.body()).thenReturn(json);
         //TODO:IllegalArgumentException ??
         /*boolean actual = RoomCommunication
-                .getRoomAvailability(1l,
+                .getRoomAvailability(1L,
                         LocalTime.of(8, 0),
                         LocalTime.of(18, 0),
-                        token);*/
-        //assertEquals(expected, actual);
+                        token);
+        assertEquals(expected, actual);*/
     }
 }

@@ -1,5 +1,6 @@
 package nl.tudelft.sem.reservation.communication;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -53,7 +54,7 @@ class GroupCommunicationTest {
         when(response.body()).thenReturn(json);
         boolean actual = GroupCommunication
                 .isSecretaryOfUser(1L, 2L, token);
-        //assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -66,7 +67,7 @@ class GroupCommunicationTest {
         when(response.body()).thenReturn(json);
         boolean actual = GroupCommunication
                 .isSecretaryOfGroup(1L, 2L, token);
-        //assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -79,7 +80,7 @@ class GroupCommunicationTest {
         when(response.body()).thenReturn(json);
         boolean actual = GroupCommunication
                 .isInGroup(1L, 2L, token);
-        //assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -92,6 +93,6 @@ class GroupCommunicationTest {
         when(response.body()).thenReturn(json);
         boolean actual = GroupCommunication
                 .overlap(1L, 2L, token);
-        //assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 }

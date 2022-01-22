@@ -1,6 +1,7 @@
 package nl.tudelft.sem.reservation.communication;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import  static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -15,7 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
+import org.springframework.web.server.ResponseStatusException;
 
 
 class UserControllerTest {
@@ -51,17 +52,10 @@ class UserControllerTest {
 
     @Test
     void checkUserException() {
-        when(reservationRepo.findById(any())).thenReturn(null);
-        //TODO: why does it throw a NullPointerException
-        /*Exception exception = assertThrows(ResponseStatusException.class,
-                () -> controller.checkUser(89L, 2L));
-        ResponseStatusException ex = new ResponseStatusException
-                                                (HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
-        assertEquals(ex, exception);*/
-
-        /*assertThrows(ResponseStatusException.class, () -> {
+        when(reservationRepo.findById(any())).thenReturn(Optional.empty());
+        assertThrows(ResponseStatusException.class, () -> {
             controller.checkUser(89L, 2L);
-        });*/
+        });
     }
 
     @Test

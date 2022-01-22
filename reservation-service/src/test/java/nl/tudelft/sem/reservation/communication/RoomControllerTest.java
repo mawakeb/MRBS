@@ -8,7 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 
@@ -98,16 +96,9 @@ public class RoomControllerTest {
     @Test
     void getRoomNotFound() {
         Mockito.when(reservationRepo.findById(any()))
-                .thenReturn(null);
-        //TODO: why does it throw a NullPointerException
-       /* Exception exception = assertThrows(ResponseStatusException.class,
-                () -> spyController.getRoom(1L));
-        ResponseStatusException ex = new ResponseStatusException
-                                        (HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND");
-        assertEquals(ex, exception);*/
-
-        /*assertThrows(ResponseStatusException.class, () -> {
+                .thenReturn(Optional.empty());
+        assertThrows(ResponseStatusException.class, () -> {
             spyController.getRoom(1L);
-        });*/
+        });
     }
 }

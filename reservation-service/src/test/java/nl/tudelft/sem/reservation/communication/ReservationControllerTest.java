@@ -170,7 +170,6 @@ public class ReservationControllerTest {
         verify(reservationRepo, times(2)).findById(2L);
         verify(spyController, times(1)).handle(any(), any(), any());
         verify(reservationRepo, times(2)).save(any(Reservation.class));
-
     }
 
     /**
@@ -214,5 +213,38 @@ public class ReservationControllerTest {
         assertEquals(LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 reservation1.getStart());
         assertEquals(LocalDateTime.parse("2022-01-09T17:22:23.643606500"), reservation1.getEnd());
+    }
+
+    @Test
+    void makeReservationSelf() {
+        String result = spyController.makeReservation(37L, 5L,
+                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
+                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
+                "Scrum meeting", token);
+
+        /*verify(reservationRepo, times(1)).save(any(Reservation.class));
+        assertEquals("Reservation successful!", result);*/
+    }
+
+    @Test
+    void makeReservationAdmin() {
+        String result = spyController.makeReservation(23L, 5L,
+                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
+                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
+                "Scrum meeting", token);
+
+        /*verify(reservationRepo, times(1)).save(any(Reservation.class));
+        assertEquals("Reservation successful!", result);*/
+    }
+
+    @Test
+    void makeReservationGroup() {
+        String result = spyController.makeReservation(57L, 5L,
+                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
+                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
+                "Scrum meeting", token);
+
+        /*verify(reservationRepo, times(1)).save(any(Reservation.class));
+        assertEquals("Reservation successful!", result);*/
     }
 }

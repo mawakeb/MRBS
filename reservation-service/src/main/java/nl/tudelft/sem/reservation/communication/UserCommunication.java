@@ -25,7 +25,7 @@ public class UserCommunication extends ServerCommunication {
                 .build();
         return gson
                 .fromJson(requestHandler(request)
-                        .body(), new TypeToken<String>() {}
+                        .body(), new TypeToken<Long>() {}
                         .getType());
     }
 

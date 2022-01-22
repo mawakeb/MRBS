@@ -1,13 +1,16 @@
 package nl.tudelft.sem.reservation.communication;
 
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
-
 import nl.tudelft.sem.reservation.builder.Builder;
 import nl.tudelft.sem.reservation.builder.Director;
 import nl.tudelft.sem.reservation.entity.Reservation;
@@ -295,9 +298,9 @@ public class ReservationControllerTest {
         lenient().when(validator.handle(any(), any())).thenThrow(InvalidReservationException.class);
 
         assertEquals("Invalid reservation!", spyController.makeReservation(57L, 17L, 5L,
-                        LocalDateTime.parse("2022-18-09T14:22:23.643606500"),
-                        LocalDateTime.parse("2022-21-09T17:22:23.643606500"),
-                        purposeString, "GROUP", token));
+                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
+                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
+                "Scrum meeting", "GROUP", token));
     }
 
     @Test

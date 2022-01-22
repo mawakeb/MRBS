@@ -52,6 +52,8 @@ public class ReservationControllerTest {
     private final transient String editString = "Entered the wrong room";
     private final transient String cancelString = "Got covid";
     private final transient String reservationSuccessful = "Reservation successful!";
+    private final transient String firstTime = "2022-01-09T14:22:23.643606500";
+    private final transient String secondTime = "2022-01-09T17:22:23.643606500";
 
     @BeforeEach
     void setUp() throws InvalidReservationException {
@@ -60,8 +62,8 @@ public class ReservationControllerTest {
 
         // setup objects
         reservation1 = new Reservation(89L, 3L,
-                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
-                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
+                LocalDateTime.parse(firstTime),
+                LocalDateTime.parse(secondTime),
                 ReservationType.SELF, 89L, -1L, purposeString);
         reservation2 = new Reservation(53L, 5L,
                 LocalDateTime.parse("2022-01-09T13:22:23.643606500"),
@@ -218,9 +220,9 @@ public class ReservationControllerTest {
         verify(reservationRepo, times(1)).findById(0L);
         assertEquals("There is nothing to edit for the reservation", editResult);
         assertEquals(3L, reservation1.getRoomId());
-        assertEquals(LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
+        assertEquals(LocalDateTime.parse(firstTime),
                 reservation1.getStart());
-        assertEquals(LocalDateTime.parse("2022-01-09T17:22:23.643606500"), reservation1.getEnd());
+        assertEquals(LocalDateTime.parse(secondTime), reservation1.getEnd());
     }
 
     @Test
@@ -231,8 +233,8 @@ public class ReservationControllerTest {
         lenient().when(spyController.getDirector(any())).thenReturn(director);
 
         String result = spyController.makeReservation(37L, -1L, 5L,
-                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
-                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
+                LocalDateTime.parse(firstTime),
+                LocalDateTime.parse(secondTime),
                 purposeString, "SELF", token);
 
         verify(director, times(1)).buildSelfReservation();
@@ -298,8 +300,8 @@ public class ReservationControllerTest {
         lenient().when(validator.handle(any(), any())).thenThrow(InvalidReservationException.class);
 
         assertEquals("Invalid reservation!", spyController.makeReservation(57L, 17L, 5L,
-                LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
-                LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
+                LocalDateTime.parse(firstTime),
+                LocalDateTime.parse(secondTime),
                 "Scrum meeting", "GROUP", token));
     }
 

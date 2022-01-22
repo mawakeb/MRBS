@@ -54,12 +54,36 @@ class RoomCommunicationTest {
         // set response content
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn(json);
-        //TODO:IllegalArgumentException ??
-        /*boolean actual = RoomCommunication
-                .getRoomAvailability(1L,
-                        LocalTime.of(8, 0),
-                        LocalTime.of(18, 0),
-                        token);
-        assertEquals(expected, actual);*/
+        boolean actual = RoomCommunication
+                .getRoomAvailability(1L, token);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getBuildingAvailability() {
+        boolean expected = true;
+        String json = gson.toJson(expected);
+
+        // set response content
+        when(response.statusCode()).thenReturn(200);
+        when(response.body()).thenReturn(json);
+        boolean actual = RoomCommunication
+                .getBuildingAvailability(1L,
+                        LocalTime.of(9, 0),
+                        LocalTime.of(12, 0), token);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getBuildingId() {
+        long expected = 2L;
+        String json = gson.toJson(expected);
+
+        // set response content
+        when(response.statusCode()).thenReturn(200);
+        when(response.body()).thenReturn(json);
+        long actual = RoomCommunication
+                .getBuildingId(1L, token);
+        assertEquals(expected, actual);
     }
 }

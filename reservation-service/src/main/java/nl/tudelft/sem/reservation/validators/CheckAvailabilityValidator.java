@@ -8,8 +8,6 @@ import nl.tudelft.sem.reservation.exception.InvalidReservationException;
 
 public class CheckAvailabilityValidator extends BaseValidator {
 
-    protected static Gson gson = new Gson();
-
     @Override
     public boolean handle(Reservation reservation, String token)
             throws InvalidReservationException {
@@ -39,6 +37,11 @@ public class CheckAvailabilityValidator extends BaseValidator {
      * @return true if room is available, false if otherwise
      */
     boolean getRoomAvailability(Long roomId, LocalTime start, LocalTime end, String token) {
-        return RoomCommunication.getRoomAvailability(roomId, start, end, token);
+        boolean roomAvailability = RoomCommunication.getRoomAvailability(roomId, token);
+        long buildingId = RoomCommunication.getBuildingId(roomId, token);
+        boolean buildingAvailability = RoomCommunication
+                .getBuildingAvailability(buildingId,
+                start, end, token);
+        return roomAvailability && buildingAvailability;
     }
 }

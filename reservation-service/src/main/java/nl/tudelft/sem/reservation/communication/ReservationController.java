@@ -204,8 +204,8 @@ public class ReservationController {
                                   @RequestParam String type,
                                   @RequestHeader("Authorization") String token) {
         Long madeBy = getUser(token);
-        Builder builder = new ReservationBuilder(madeBy, roomId, start, end);
-        Director director = new Director(builder);
+        Builder builder = getBuilder(roomId, start, end, madeBy);
+        Director director = getDirector(builder);
 
         if (type.equals("SELF")) {
             director.buildSelfReservation();
@@ -229,6 +229,16 @@ public class ReservationController {
         }
 
         return "Reservation successful!";
+    }
+
+    public Director getDirector(Builder builder) {
+        Director director = new Director(builder);
+        return director;
+    }
+
+    public Builder getBuilder(Long roomId, LocalDateTime start, LocalDateTime end, Long madeBy) {
+        Builder builder = new ReservationBuilder(madeBy, roomId, start, end);
+        return builder;
     }
 
     /**

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 
+import nl.tudelft.sem.reservation.builder.Builder;
 import nl.tudelft.sem.reservation.builder.Director;
 import nl.tudelft.sem.reservation.entity.Reservation;
 import nl.tudelft.sem.reservation.entity.ReservationType;
@@ -37,6 +38,8 @@ public class ReservationControllerTest {
     private transient Validator validator;
     @Mock
     private transient Director director;
+    @Mock
+    private transient Builder builder;
 
     private transient ReservationController controller;
     private transient ReservationController spyController;
@@ -88,7 +91,7 @@ public class ReservationControllerTest {
         spyController = Mockito.spy(controller);
         lenient().doReturn("EMPLOYEE").when(spyController).getUserType(token);
         lenient().doReturn("ADMIN").when(spyController).getUserType(adminToken);
-        lenient().doReturn(37L).when(spyController).getUser(token);
+        lenient().doReturn(37L).when(spyController).getUser(any());
         lenient().doReturn(true).when(spyController).handle(any(), any(), any());
     }
 
@@ -222,6 +225,8 @@ public class ReservationControllerTest {
         lenient().when(spyController.setUpChainOfResponsibility(token))
                 .thenReturn(validator);
         lenient().when(validator.handle(any(), any())).thenReturn(true);
+        lenient().when(spyController.getDirector(any())).thenReturn(director);
+
         String result = spyController.makeReservation(37L, -1L, 5L,
                 LocalDateTime.parse("2022-01-09T14:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T17:22:23.643606500"),
@@ -234,14 +239,17 @@ public class ReservationControllerTest {
 
     @Test
     void makeReservationAdmin() throws InvalidReservationException {
-        lenient().when(spyController.setUpChainOfResponsibility(token))
+        lenient().when(spyController.setUpChainOfResponsibility(adminToken))
                 .thenReturn(validator);
         lenient().when(validator.handle(any(), any())).thenReturn(true);
+        lenient().when(spyController.getDirector(any())).thenReturn(director);
+
         String result = spyController.makeReservation(23L, -1L, 5L,
                 LocalDateTime.parse("2022-01-09T15:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T18:22:23.643606500"),
                 purposeString, "ADMIN", adminToken);
 
+        //verify(director, times(1)).buildAdminReservation(any());
         verify(reservationRepo, times(1)).save(any(Reservation.class));
         assertEquals(reservationSuccessful, result);
     }
@@ -251,11 +259,14 @@ public class ReservationControllerTest {
         lenient().when(spyController.setUpChainOfResponsibility(token))
                 .thenReturn(validator);
         lenient().when(validator.handle(any(), any())).thenReturn(true);
+        lenient().when(spyController.getDirector(any())).thenReturn(director);
+
         String result = spyController.makeReservation(96L, 17L, 5L,
                 LocalDateTime.parse("2022-01-09T16:22:23.643606500"),
                 LocalDateTime.parse("2022-01-09T19:22:23.643606500"),
                 purposeString, "SINGLE", token);
 
+        verify(director, times(1)).buildSingleReservation(any(), any(), any());
         verify(reservationRepo, times(1)).save(any(Reservation.class));
         assertEquals(reservationSuccessful, result);
     }
@@ -265,11 +276,14 @@ public class ReservationControllerTest {
         lenient().when(spyController.setUpChainOfResponsibility(token))
                 .thenReturn(validator);
         lenient().when(validator.handle(any(), any())).thenReturn(true);
+        lenient().when(spyController.getDirector(any())).thenReturn(director);
+
         String result = spyController.makeReservation(57L, 17L, 5L,
                 LocalDateTime.parse("2022-01-09T17:22:22.643606500"),
                 LocalDateTime.parse("2022-01-09T20:22:23.643606500"),
                 purposeString, "GROUP", token);
 
+        verify(director, times(1)).buildGroupReservation(any(), any());
         verify(reservationRepo, times(1)).save(any(Reservation.class));
         assertEquals(reservationSuccessful, result);
     }
@@ -280,15 +294,15 @@ public class ReservationControllerTest {
                 .thenReturn(validator);
         lenient().when(validator.handle(any(), any())).thenThrow(InvalidReservationException.class);
 
-        Exception exception = assertThrows(InvalidReservationException.class,
-                () -> spyController.makeReservation(57L, 17L, 5L,
+        assertEquals("Invalid reservation!", spyController.makeReservation(57L, 17L, 5L,
                         LocalDateTime.parse("2022-18-09T14:22:23.643606500"),
                         LocalDateTime.parse("2022-21-09T17:22:23.643606500"),
                         purposeString, "GROUP", token));
+    }
 
-        String expectedMessage = "Invalid reservation!";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+    @Test
+    void getDirector() {
+        Director director = spyController.getDirector(builder);
+        assertEquals(director.getBuilder(), builder);
     }
 }

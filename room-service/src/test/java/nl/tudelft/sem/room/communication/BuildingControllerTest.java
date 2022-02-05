@@ -49,7 +49,7 @@ class BuildingControllerTest {
         lenient().doReturn(true).when(spyController).checkAdmin(Mockito.any());
         when(buildingRepo.findById(11L)).thenReturn(null);
         String success = spyController.createBuilding("token", 11L, "building2",
-                LocalTime.of(8, 0), LocalTime.of(18, 0));
+                LocalTime.of(8, 0).toString(), LocalTime.of(18, 0).toString());
         assertEquals("Building has been saved successfully", success);
         verify(buildingRepo, times(1)).save(any(Building.class));
     }
@@ -59,33 +59,33 @@ class BuildingControllerTest {
         lenient().doReturn(false).when(spyController).checkAdmin(Mockito.any());
         assertThrows(ResponseStatusException.class, () -> {
             spyController.createBuilding("token", 11L, "building3",
-                    LocalTime.of(8, 0), LocalTime.of(18, 0));
+                    LocalTime.of(8, 0).toString(), LocalTime.of(18, 0).toString());
         });
     }
 
     @Test
-    void createBuildingButAlredyExists() {
+    void createBuildingButAlreadyExists() {
         lenient().doReturn(true).when(spyController).checkAdmin(Mockito.any());
         when(buildingRepo.findById(11L)).thenReturn(building);
         assertThrows(ResponseStatusException.class, () -> {
             spyController.createBuilding("token", 11L, "building4",
-                    LocalTime.of(8, 0), LocalTime.of(18, 0));
+                    LocalTime.of(8, 0).toString(), LocalTime.of(18, 0).toString());
         });
     }
 
     @Test
     void checkAvailable() {
         when(buildingRepo.findById(1L)).thenReturn(building);
-        boolean success = controller.checkAvailable(1L, LocalTime.of(9, 0),
-                LocalTime.of(11, 0));
+        boolean success = controller.checkAvailable(1L, LocalTime.of(9, 0).toString(),
+                LocalTime.of(11, 0).toString());
         assertTrue(success);
     }
 
     @Test
     void checkNotAvailable() {
         when(buildingRepo.findById(1L)).thenReturn(null);
-        boolean success = controller.checkAvailable(1L, LocalTime.of(9, 0),
-                LocalTime.of(11, 0));
+        boolean success = controller.checkAvailable(1L, LocalTime.of(9, 0).toString(),
+                LocalTime.of(11, 0).toString());
         assertFalse(success);
     }
 }

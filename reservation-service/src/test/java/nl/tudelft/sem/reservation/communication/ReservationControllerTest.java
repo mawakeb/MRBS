@@ -162,7 +162,7 @@ public class ReservationControllerTest {
     @Test
     void editAndCancelReservationMadeByUser() throws InvalidReservationException {
         String editResult = spyController.editReservation(2L, -1L,
-                LocalDateTime.parse("2022-01-09T10:00:00.643606500"), null,
+                "2022-01-09T10:00:00.643606500", null,
                 "Entered the wrong start time", token);
         assertEquals("Entered the wrong start time", reservation3.getEditPurpose());
         String cancelResult = spyController.cancelReservation(2L, cancelString, token);
@@ -189,7 +189,7 @@ public class ReservationControllerTest {
     @Test
     void editAndCancelReservationForTheUser() throws InvalidReservationException {
         String editResult = spyController.editReservation(3L, -1L, null,
-                LocalDateTime.parse("2022-01-09T13:59:59.643606500"),
+                "2022-01-09T13:59:59.643606500",
                 "Entered the wrong end time", token);
         assertEquals("Entered the wrong end time", reservation4.getEditPurpose());
         String cancelResult = spyController.cancelReservation(3L, cancelString, token);
@@ -233,8 +233,7 @@ public class ReservationControllerTest {
         lenient().when(spyController.getDirector(any())).thenReturn(director);
 
         String result = spyController.makeReservation(37L, -1L, 5L,
-                LocalDateTime.parse(firstTime),
-                LocalDateTime.parse(secondTime),
+                firstTime, secondTime,
                 purposeString, "SELF", token);
 
         verify(director, times(1)).buildSelfReservation();
@@ -250,8 +249,8 @@ public class ReservationControllerTest {
         lenient().when(spyController.getDirector(any())).thenReturn(director);
 
         String result = spyController.makeReservation(23L, -1L, 5L,
-                LocalDateTime.parse("2022-01-09T15:22:23.643606500"),
-                LocalDateTime.parse("2022-01-09T18:22:23.643606500"),
+                "2022-01-09T15:22:23.643606500",
+                "2022-01-09T18:22:23.643606500",
                 purposeString, "ADMIN", adminToken);
 
         //verify(director, times(1)).buildAdminReservation(any());
@@ -267,8 +266,8 @@ public class ReservationControllerTest {
         lenient().when(spyController.getDirector(any())).thenReturn(director);
 
         String result = spyController.makeReservation(96L, 17L, 5L,
-                LocalDateTime.parse("2022-01-09T16:22:23.643606500"),
-                LocalDateTime.parse("2022-01-09T19:22:23.643606500"),
+                "2022-01-09T16:22:23.643606500",
+                "2022-01-09T19:22:23.643606500",
                 purposeString, "SINGLE", token);
 
         verify(director, times(1)).buildSingleReservation(any(), any(), any());
@@ -284,8 +283,8 @@ public class ReservationControllerTest {
         lenient().when(spyController.getDirector(any())).thenReturn(director);
 
         String result = spyController.makeReservation(57L, 17L, 5L,
-                LocalDateTime.parse("2022-01-09T17:22:22.643606500"),
-                LocalDateTime.parse("2022-01-09T20:22:23.643606500"),
+                "2022-01-09T17:22:22.643606500",
+                "2022-01-09T20:22:23.643606500",
                 purposeString, "GROUP", token);
 
         verify(director, times(1)).buildGroupReservation(any(), any());
@@ -300,8 +299,7 @@ public class ReservationControllerTest {
         lenient().when(validator.handle(any(), any())).thenThrow(InvalidReservationException.class);
 
         assertEquals("Invalid reservation!", spyController.makeReservation(57L, 17L, 5L,
-                LocalDateTime.parse(firstTime),
-                LocalDateTime.parse(secondTime),
+                firstTime, secondTime,
                 "Scrum meeting", "GROUP", token));
     }
 

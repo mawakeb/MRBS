@@ -38,11 +38,11 @@ public class BuildingController {
     public String createBuilding(@RequestHeader("Authorization") String token,
                                  @RequestParam long id,
                                  @RequestParam String name,
-                                 @RequestParam LocalTime openTime,
-                                 @RequestParam LocalTime closeTime) {
+                                 @RequestParam String openTime,
+                                 @RequestParam String closeTime) {
         if (checkAdmin(token)) {
             if (buildingRepo.findById(id) == null) {
-                Building building = new Building(id, name, openTime, closeTime);
+                Building building = new Building(id, name, LocalTime.parse(openTime), LocalTime.parse(closeTime));
                 buildingRepo.save(building);
                 return "Building has been saved successfully";
             } else {
@@ -65,8 +65,8 @@ public class BuildingController {
      */
     @GetMapping("/checkAvailable")
     public boolean checkAvailable(@RequestParam long buildingId,
-                                  @RequestParam LocalTime start,
-                                  @RequestParam LocalTime end) {
+                                  @RequestParam String start,
+                                  @RequestParam String end) {
 
         Building building = buildingRepo.findById(buildingId);
 
@@ -75,7 +75,7 @@ public class BuildingController {
         }
 
         // return whether the building is open or not for the timeslot
-        return building.isOpen(start, end);
+        return building.isOpen(LocalTime.parse(start), LocalTime.parse(end));
     }
 
     /**

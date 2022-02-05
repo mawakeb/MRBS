@@ -2,6 +2,8 @@ package nl.tudelft.sem.reservation.communication;
 
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -49,8 +51,8 @@ public class ReservationController {
      *
      * @param reservationId the reservation id
      * @param roomId a potential new roomId
-     * @param start a potential new start time
-     * @param end a potential new end time
+     * @param startTime a potential new start time
+     * @param endTime a potential new end time
      * @param editPurpose the purpose of this edit
      * @param token an authorization token
      * @return a status message regarding the success
@@ -58,8 +60,8 @@ public class ReservationController {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @GetMapping("/editReservation")
     public String editReservation(@RequestParam long reservationId, @RequestParam long roomId,
-                                  @RequestParam LocalDateTime start,
-                                  @RequestParam LocalDateTime end,
+                                  @RequestParam String startTime,
+                                  @RequestParam String endTime,
                                   @RequestParam String editPurpose,
                                   @RequestHeader("Authorization") String token) {
 
@@ -69,7 +71,7 @@ public class ReservationController {
         }
 
         //refactoring to reduce cyclomatic complexity
-        List<Object> changes = checkChanges(reservation, roomId, start, end);
+        List<Object> changes = checkChanges(reservation, roomId, startTime, endTime);
 
         int size = 4;
         if (changes.size() == size) {
@@ -102,8 +104,8 @@ public class ReservationController {
 
         // edit the reservation
         reservation.changeLocation((long) changes.get(0), editPurpose);
-        reservation.changeTime((LocalDateTime) changes.get(1),
-                (LocalDateTime) changes.get(2), editPurpose);
+        reservation.changeTime(LocalDateTime.parse((CharSequence) changes.get(1)),
+                LocalDateTime.parse((CharSequence) changes.get(2)), editPurpose);
 
         // perform the checks and save the reservation if valid
         try {
@@ -126,7 +128,7 @@ public class ReservationController {
      *          extra integer at the end if none of the fields were changed
      */
     public List<Object> checkChanges(Reservation reservation, long roomId,
-                                     LocalDateTime start, LocalDateTime end) {
+                                     String start, String end) {
         List<Object> changes = new ArrayList<>();
         changes.add(roomId);
         changes.add(start);
@@ -139,10 +141,10 @@ public class ReservationController {
             changes.set(0, reservation.getRoomId());
         }
         if (changes.get(1) == null) {
-            changes.set(1, reservation.getStart());
+            changes.set(1, reservation.getStart().toString());
         }
         if (changes.get(2) == null) {
-            changes.set(2, reservation.getEnd());
+            changes.set(2, reservation.getEnd().toString());
         }
 
         return changes;
@@ -185,8 +187,8 @@ public class ReservationController {
      * @param userId    who the reservation is for
      * @param groupId   which group the reservation is for
      * @param roomId    the room id for the reservation
-     * @param start     the start time of the reservation
-     * @param end       the end time of the reservation
+     * @param startTime the start time of the reservation
+     * @param endTime   the end time of the reservation
      * @param purpose   the purpose of the reservation
      * @param purpose   the kind of reservation
      * @param token     an authorization token
@@ -197,12 +199,14 @@ public class ReservationController {
     public String makeReservation(@RequestParam Long userId,
                                   @RequestParam Long groupId,
                                   @RequestParam Long roomId,
-                                  @RequestParam LocalDateTime start,
-                                  @RequestParam LocalDateTime end,
+                                  @RequestParam String startTime,
+                                  @RequestParam String endTime,
                                   @RequestParam String purpose,
                                   @RequestParam String type,
                                   @RequestHeader("Authorization") String token) {
         Long madeBy = getUser(token);
+        LocalDateTime start = LocalDateTime.parse(startTime);
+        LocalDateTime end = LocalDateTime.parse(endTime);
         Builder builder = getBuilder(roomId, start, end, madeBy);
         Director director = getDirector(builder);
 

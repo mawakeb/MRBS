@@ -1,5 +1,7 @@
 # CSE2115 - Project
 
+This project was developed as part of the CSE2115 course in TUDelft. The repository does not capture all commits, branches, pull requests and other version managements that took place in the original repository in GitLab. 
+
 ### Running 
 `gradle bootRun`
 
@@ -53,3 +55,7 @@ gradle pmdTest
 }
 ```
 - You will receive a response body with a JWT; copy this, and then add it to the header "Authorization", with value "Bearer <your jwt>". This will be needed for all next requests.
+
+
+### Contributors
+Anna Nikolcheva, Cherin Kim, Pau Faraldos, Thijs Penning, Timo Heijnemans
